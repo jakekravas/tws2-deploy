@@ -11,7 +11,7 @@ module.exports = new Sequelize(
     host: "bulkmatic-postgres-dev.chsi0luwnscx.us-east-2.rds.amazonaws.com",
     // host: "ec2-3-210-255-177.compute-1.amazonaws.com",
     dialect: "postgres",
-    // schema: "tw_scheduler",
+    schema: "tw_scheduler",
     operatorsAliases: false,
 
     pool: {
