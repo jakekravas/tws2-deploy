@@ -1,17 +1,23 @@
 const express = require('express');
-const connectDB = require('./config/db');
 const path = require('path');
 
 const app = express();
 
-connectDB();
+// Database
+const db = require('./config/db');
 
+// DB
+db.authenticate()
+  .then(() => console.log("Database connected..."))
+  .catch(err => console.log("Error: " + err));
+
+  
 app.use(express.json({
   extended: false
 }));
 
 // Routes
-// app.use("/api/locations", require('./routes/api/location'));
+// app.use("/api/locations", require('./routes/api/locations'));
 // app.use("/api/washtypes", require('./routes/api/washtypes'));
 // app.use("/api/workorders", require('./routes/api/workorders'));
 
@@ -27,6 +33,4 @@ if (process.env.NODE_ENV ==="production") {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-});
+app.listen(PORT, console.log(`Server started on port ${PORT}`));
