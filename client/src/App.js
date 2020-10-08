@@ -10,7 +10,8 @@ function App() {
   return (
     <Provider store={store}>
       <div className="container">
-        <MainCard/>
+        {/* <MainCard/> */}
+        test
       </div>
     </Provider>
   );
