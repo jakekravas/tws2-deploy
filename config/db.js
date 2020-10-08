@@ -1,22 +1,19 @@
-const mongoose = require('mongoose');
-const config = require('config');
-const db = config.get("mongoURI");
+const { Sequelize } = require('sequelize');
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(db, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false
-    });
+module.exports = new Sequelize(
+  "bulkmatic", // database
+  "bmtDbAdmin187", // user
+  "39qsYf73IJbakP3Ql5Oc", // password
+  {
+    host: "bulkmatic-postgres-dev.chsi0luwnscx.us-east-2.rds.amazonaws.com",
+    dialect: "postgres",
+    schema: "tw_scheduler",
+    operatorsAliases: false,
 
-    console.log("MongoDB Connected...");
-  } catch (err) {
-    console.error(err.message);
-    // Exit process with failure
-    process.exit(1);
-  }
-}
-
-module.exports = connectDB;
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+});
