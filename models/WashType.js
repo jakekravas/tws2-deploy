@@ -1,36 +1,30 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Sequelize = require('sequelize');
+const db = require('../config/database');
 
-const WashTypeSchema = new Schema({
-  code: {
-    type: String,
-    required: true
+const WashType = db.define("wash_type", {
+  wash_code: {
+    type: Sequelize.STRING
   },
   description: {
-    type: String,
-    required: true
+    type: Sequelize.STRING
   },
   type: {
-    type: String,
-    required: true,
-    defaultValue: "I"
+    type: Sequelize.STRING
   },
-  teamHours: {
-    type: Number,
-    defaultValue: 2
+  team_hours: {
+    type: Sequelize.INTEGER
   },
-  teamMinutes: {
-    type: Number,
-    defaultValue: 0
+  team_minutes: {
+    type: Sequelize.INTEGER
   },
-  soloHours: {
-    type: Number,
-    defaultValue: 2
+  solo_hours: {
+    type: Sequelize.INTEGER
   },
-  soloMinutes: {
-    type: Number,
-    defaultValue: 0
+  solo_minutes: {
+    type: Sequelize.INTEGER
   }
 });
 
-module.exports = WashType = mongoose.model("washtypes", WashTypeSchema);
+// WashType.schema("tw_scheduler")
+
+module.exports = WashType;

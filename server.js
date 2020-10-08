@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 // Database
-const db = require('./config/db');
+const db = require('./config/database');
 
 // DB
 db.authenticate()
@@ -17,9 +17,9 @@ app.use(express.json({
 }));
 
 // Routes
-// app.use("/api/locations", require('./routes/api/locations'));
-// app.use("/api/washtypes", require('./routes/api/washtypes'));
-// app.use("/api/workorders", require('./routes/api/workorders'));
+app.use("/api/locations", require('./routes/api/locations'));
+app.use("/api/washtypes", require('./routes/api/washtypes'));
+app.use("/api/workorders", require('./routes/api/workorders'));
 
 // Server static assets in production
 if (process.env.NODE_ENV ==="production") {

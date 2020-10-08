@@ -15,9 +15,10 @@ export default (state = initialState, dispatch) => {
 
   switch (type) {
     case GET_WORK_ORDERS_OF_LOCATION:
+      console.log(payload);
       return {
         ...state,
-        workOrders: payload.workOrders,
+        workOrders: payload,
         loading: false
       }
 

@@ -9,31 +9,12 @@ const WorkOrder = require('../../models/WorkOrder');
 // @access     Public
 router.get("/", async (req, res) => {
   try {
-    const washTypes = await WashType.find();
-
-    res.json({ washTypes });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// @route      POST api/washtypes
-// @desc       Add wash type
-// @access     Public
-router.post("/", async (req, res) => {
-  try {
-    const washType = new WashType({
-      code: req.body.code,
-      description: req.body.description,
-      type: req.body.type,
-      hours: req.body.hours,
-      minutes: req.body.minutes
+    const washTypes = await WashType.findAll({
+      order: [
+        ['wash_code', 'ASC'],
+      ]
     });
-    
-    await washType.save();
-    
-    const washTypes = await WashType.find();
+
     res.json({ washTypes });
   } catch (err) {
     console.error(err.message);
@@ -41,76 +22,63 @@ router.post("/", async (req, res) => {
   }
 });
 
-// @route      PUT api/washtypes
+// @route      PUT api/washtypes/:id
 // @desc       Edit wash type
 // @access     Public
 router.put("/:id", async (req, res) => {
   try {
-    const updatedFields = {};
-    
-    if (req.body.code) {updatedFields.code = req.body.code};
-    if (req.body.description) {updatedFields.description = req.body.description};
+    let washType = await WashType.findOne({ where: {id: req.params.id} });
 
-    if (req.body.teamHours || req.body.teamHours === 0) {
-      updatedFields.teamHours = req.body.teamHours
-    };
-    if (req.body.teamMinutes || req.body.teamMinutes === 0) {
-      updatedFields.teamMinutes = req.body.teamMinutes
-    };
-    if (req.body.soloHours || req.body.soloHours === 0) {
-      updatedFields.soloHours = req.body.soloHours
-    };
-    if (req.body.soloMinutes || req.body.soloMinutes === 0) {
-      updatedFields.soloMinutes = req.body.soloMinutes
-    };
+    let ordersToUpdate;
 
-    if (req.body.type === "I") {
-      await WorkOrder.updateMany(
-        {intWashCode: req.body.code, isScheduled: false},
-        {$set: {
-          intDurationMins: (req.body.teamHours * 60) + req.body.teamMinutes,
-          intDurationMinsSolo: (req.body.soloHours * 60) + req.body.soloMinutes
-        }}
-      );
-    } else if (req.body.type === "E") {
-      await WorkOrder.updateMany(
-        {extWashCode: req.body.code, isScheduled: false},
-        {$set: {
-          extDurationMins: (req.body.teamHours * 60) + req.body.teamMinutes,
-          extDurationMinsSolo: (req.body.soloHours * 60) + req.body.soloMinutes
-        }}
-      );
+    // If the wash type we're updating is an interior wash, get all unscheduled orders with that interior wash code
+    if (washType.type === "I") {
+      ordersToUpdate = await WorkOrder.findAll({
+        where: {int_wash_code: washType.wash_code, is_scheduled: false}
+      });
+
+      for (let i = 0; i < ordersToUpdate.length; i++) {
+        await ordersToUpdate[i].update(
+          {
+            int_duration_mins_team: (req.body.teamHours * 60) + req.body.teamMinutes,
+            int_duration_mins_solo: (req.body.soloHours * 60) + req.body.soloMinutes
+          },
+          { where: { id: ordersToUpdate[i].id } }
+        )
+      }
+      
+    // If the wash type we're updating is an exterior wash, get all unscheduled orders with that exterior wash code
+    } else if (washType.type === "E") {
+      ordersToUpdate = await WorkOrder.findAll({
+        where: {ext_wash_code: washType.wash_code, is_scheduled: false}
+      });
+
+      for (let i = 0; i < ordersToUpdate.length; i++) {
+        await ordersToUpdate[i].update(
+          {
+            ext_duration_mins_team: (req.body.teamHours * 60) + req.body.teamMinutes,
+            ext_duration_mins_solo: (req.body.soloHours * 60) + req.body.soloMinutes
+          },
+          { where: { id: ordersToUpdate[i].id } }
+        )
+      }
     }
 
-    const washType = await WashType.findByIdAndUpdate(
-      req.params.id,
-      { $set: updatedFields },
-      { new: true }
+    await washType.update(
+      {
+        team_hours: req.body.teamHours,
+        team_minutes: req.body.teamMinutes,
+        solo_hours: req.body.soloHours,
+        solo_minutes: req.body.soloMinutes
+      },
+      { where: {id: washType.id} }
     );
 
-    // await WorkOrder.updateMany(
-    //   {intWashCode: req.body.code, isScheduled: false},
-    //   {intWashDurationMins: }
-    // );
-    
-    await washType.save();
-
-    const washTypes = await WashType.find();
-
-    res.json({ washTypes });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// @route      DELETE api/washtypes
-// @desc       Delete wash type
-// @access     Public
-router.delete("/:id", async (req, res) => {
-  try {
-    await WashType.findByIdAndDelete(req.params.id);
-    const washTypes = await WashType.find();
+    const washTypes = await WashType.findAll({
+      order: [
+        ['wash_code', 'ASC'],
+      ]
+    });
 
     res.json({ washTypes });
   } catch (err) {

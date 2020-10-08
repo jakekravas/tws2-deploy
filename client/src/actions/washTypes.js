@@ -38,8 +38,11 @@ export const addWashType = formData => async dispatch => {
 };
 
 export const updateWashType = (id, formData) => async dispatch => {
+  console.log(formData);
   try {
     const res = await axios.put(`/api/washtypes/${id}`, formData);
+
+    console.log(res.data);
 
     dispatch({
       type: UPDATE_WASH_TYPE,

@@ -1,42 +1,42 @@
 import React from 'react'
 
 const DayHoursView = ({ selectedLocation, dayBayOne, dayBayTwo, dayText, configureDisplay, configureShift2Display }) => {
-
+  
   return (
     <tr>
       <th className="schedule-time-text" scope="row">{dayText}</th>
       <td className="aaa">
         {selectedLocation &&
           <div>
-            {dayBayOne.isOpen && <strong>Shift 1: </strong>}
+            {dayBayOne.is_open && <strong>Shift 1: </strong>}
             {configureDisplay(dayBayOne)}
-            {dayBayOne.isOpen && ", " + dayBayOne.type}
+            {dayBayOne.is_open && ", " + dayBayOne.shift_one_type}
             <br/>
-            {dayBayOne.isOpen && dayBayOne.shift2 &&
+            {dayBayOne.is_open && dayBayOne.shift_two_open &&
               <div>
                 <strong>Shift 2: </strong>
                 {configureShift2Display(
-                  dayBayOne.shift2Start,
-                  dayBayOne.shift2End
-                )}, {dayBayOne.shift2Type}
+                  dayBayOne.shift_two_start,
+                  dayBayOne.shift_two_end
+                )}, {dayBayOne.shift_two_type}
               </div>
             }
           </div>
         }
       </td>
-      {selectedLocation && selectedLocation.washBays === 2 &&
+      {selectedLocation && selectedLocation.wash_bays === 2 &&
         <td className="aaa">
-          {dayBayTwo.isOpen && <strong>Shift 1: </strong>}
+          {dayBayTwo.is_open && <strong>Shift 1: </strong>}
           {configureDisplay(dayBayTwo)}
-          {dayBayTwo.isOpen && ", " + dayBayTwo.type}
+          {dayBayTwo.is_open && ", " + dayBayTwo.shift_one_type}
           <br/>
-          {dayBayTwo.isOpen && dayBayTwo.shift2 &&
+          {dayBayTwo.is_open && dayBayTwo.shift_two_open &&
             <div>
               <strong>Shift 2: </strong>
               {configureShift2Display(
-                dayBayTwo.shift2Start,
-                dayBayTwo.shift2End
-              )}, {dayBayTwo.shift2Type}
+                dayBayTwo.shift_two_start,
+                dayBayTwo.shift_two_end
+              )}, {dayBayTwo.shift_two_type}
             </div>
           }
         </td>

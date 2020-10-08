@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from "react-redux";
 import WashSchedule from "./WashSchedule";
+import WashScheduleBU from "./WashScheduleBU";
 import HoursOfOperation from "./HoursOfOperation";
 import { getAllLocations, getLocationInfo } from "../../actions/location";
 
@@ -16,7 +17,7 @@ const ToggleView = ({ getLocationInfo, location: { locations, selectedLocation, 
           {!selectedLocation && <option value="">--</option>}
           {!loading && locations && 
             locations.map(loc => (
-            <option value={loc._id} key={loc._id}>{loc.city}, {loc.state}</option>
+            <option value={loc.id} key={loc.id}>{loc.city}, {loc.state}</option>
           ))}
         </select>
       </div>
@@ -38,6 +39,7 @@ const ToggleView = ({ getLocationInfo, location: { locations, selectedLocation, 
       {
         view === "schedule" ?
         <WashSchedule/>
+        // <WashScheduleBU/>
         :
         <HoursOfOperation/>
       }

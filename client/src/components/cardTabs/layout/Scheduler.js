@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
 import Modal from "react-modal";
-import {DayPilot, DayPilotCalendar, DayPilotNavigator} from "daypilot-pro-react";
+import {DayPilot, DayPilotCalendar, DayPilotScheduler, DayPilotNavigator} from "daypilot-pro-react";
+import DraggableOrder from "../layout/DraggableOrder"
 
 class Scheduler extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      viewType: "Day",
-      dayBeginsHour: this.props.startHr,
-      dayEndsHour: this.props.endHr,
+      // timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Hour"}],
+      timeHeaders: [{"groupBy": "Hour"}],
+      treeEnabled: true,
+      treeAnimation: false,
+      cellDuration: 30,
+      // cellDuration: this.props.cellDuration,
       allowEventOverlap: false,
       currentDP: null,
       cellHeight: 20,
@@ -27,58 +31,161 @@ class Scheduler extends Component {
       unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
+      // onmousedown: return DayPilotCalendar.dragStart(null, 60*30, "125", this.innerHTML),
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
       },
       // prevents box resizing
       onEventResizing: () => this.forceUpdate(),
+      // When order is dragged and released in the scheduler
       onEventMoved: args => {
-
-        // If the difference in minutes between the needed by date/time and the new end date/time is greater than 0, don't update and show alert
-        if (
-          ((new Date(args.e.data.neededDate) - new Date(args.e.data.end.value)) / 60000) < 0
-        ) {
-          this.props.preventSave(args.e.data.neededDateDisplayStr);
-        } else if (this.props.shiftType === "team") {
-          this.props.test(
-            args.e.data._id,
-            args.e.data.bay,
-            args.e.data.start.value,
-            args.e.data.start.value,
-            parseInt(args.e.data.intDurationMins + args.e.data.extDurationMins)
-          );
-        } else if (this.props.shiftType === "solo") {
-          this.props.test(
-            args.e.data._id,
-            args.e.data.bay,
-            args.e.data.start.value,
-            args.e.data.start.value,
-            parseInt(args.e.data.intDurationMinsSolo + args.e.data.extDurationMinsSolo)
-          );
-        }
+        console.log(args.e.data);
+        this.props.test(
+          args.e.data.id,
+          args.e.data.resource,
+          args.e.data.start.value,
+          args.e.data.end.value
+        );
       },
       timeRangeSelectedHandling: "Enabled",
       onTimeRangeSelected: args => this.handleScheduleClick(this.calendar, args),
       eventDeleteHandling: "Update",
-      onEventDelete: args => this.props.onUnschedule(args.e.data._id)
+      onEventDelete: args => this.props.onUnschedule(args.e.data.id),
 
+      // HIDING CELLS
+      onIncludeTimeCell: args => {
+
+        // If both bays are open
+        if (this.props.bayOneOpen && this.props.bayTwoOpen) {
+          if (this.props.startHrStrB1S1 < this.props.startHrStrB2S1) {
+            if (new Date(args.cell.end.value) <= this.props.startHrStrB1S1) {
+              args.cell.visible = false;
+            }
+          } else {
+            if (new Date(args.cell.end.value) <= this.props.startHrStrB2S1) {
+              args.cell.visible = false;
+            }
+          }
+
+          // If both bays have 2nd shifts
+          if (this.props.bayOneS2Open && this.props.bayTwoS2Open) {
+            // If the 2nd shift of bay one ends after the second shift of bay 2
+            if (this.props.endHrStrB1S2 > this.props.endHrStrB2S2) {
+              if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
+                args.cell.visible = false;
+              }
+            } else {
+              if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
+                args.cell.visible = false;
+              }
+            }
+          // If bay 1 has a 2nd shift and bay 2 doesn't
+          } else if (this.props.bayOneS2Open && !this.props.bayTwoS2Open) {
+            if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
+              args.cell.visible = false;
+            }
+          // If bay 2 has a 2nd shift and bay 1 doesn't
+          } else if (!this.props.bayOneS2Open && this.props.bayTwoS2Open) {
+            if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
+              args.cell.visible = false;
+            }
+          // If neither bay has a 2nd shift
+          } else {
+            // If the first shift of bay 1 ends after the first shift of bay 2
+            if (this.props.endHrStrB1S1 > this.props.endHrStrB2S1) {
+              if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1) {
+                args.cell.visible = false;
+              }
+            } else {
+              if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1) {
+                args.cell.visible = false;
+              }
+            }
+          }
+
+      // If bay 1 is open and bay 2 isn't
+      } else if (this.props.bayOneOpen && !this.props.bayTwoOpen) {
+        // Hide every cell with an end time <= to the start time
+        if (new Date(args.cell.end.value) <= this.props.startHrStrB1S1) {
+          args.cell.visible = false;
+        }
+        // If there is a second shift
+        if (this.props.bayOneS2Open) {
+          // Hide every cell with a start time >= to the end time
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
+            args.cell.visible = false;
+          }
+        } else {
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1) {
+            args.cell.visible = false;
+          }
+        }
+      // If bay 2 is open and bay 1 isn't
+      } else if (!this.props.bayOneOpen && this.props.bayTwoOpen) {
+        // Hide every cell with an end time <= to the start time
+        if (new Date(args.cell.end.value) <= this.props.startHrStrB2S1) {
+          args.cell.visible = false;
+        }
+        // If there is a second shift
+        if (this.props.bayTwoS2Open) {
+          // Hide every cell with a start time >= to the end time
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
+            args.cell.visible = false;
+          }
+        } else {
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1) {
+            args.cell.visible = false;
+          }
+        }
+      }
+      },
+      // DISABLING CELLS
+      onBeforeCellRender: args => {
+        // Disable cells of location title row
+        if (typeof args.cell.resource === "number") {
+          args.cell.disabled = true;
+          args.cell.backColor = "#eee";
+        }
+
+        // If bay one is open and has a second shift
+        if (this.props.bayOneOpen && this.props.bayOneS2Open && this.props.startHrStrB1S2) {
+          // Disable cells if they start after shift one and before shift 2
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        }
+
+        // If bay two is open and has a second shift
+        if (this.props.bayTwoOpen && this.props.bayTwoS2Open && this.props.startHrStrB2S2) {
+          // Disable cells if they start after shift one and before shift 2
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) !== this.props.endHrStrB2S2 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        }
+      },
     };
     this.handleScheduleClick = this.handleScheduleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleAlert = this.handleAlert.bind(this);
+    this.handleCellDurationChange = this.handleCellDurationChange.bind(this);
   }
 
   componentDidMount() {
     // load event data
     this.setState({
       startDate: this.props.dateStr,
-      events: this.props.events
+      resources: this.props.resources,
+      events: this.props.events,
+      // cellDuration: this.props.cellDuration
     });
   }
-
+  
   componentDidUpdate() {
+    console.log(this.props);
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
@@ -91,6 +198,12 @@ class Scheduler extends Component {
     if (this.state.events !== this.props.events) {
       this.setState({ events: this.props.events });
     }
+    if (this.state.resources !== this.props.resources) {
+      this.setState({ resources: this.props.resources });
+    }
+    // if (this.state.cellDuration !== this.props.cellDuration) {
+    //   this.setState({ cellDuration: this.props.cellDuration });
+    // }
   }
 
   handleScheduleClick(dp, args) {
@@ -122,28 +235,28 @@ class Scheduler extends Component {
         if (this.props.shiftType === "team") {
           // Schedulable orders
           ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.intDurationMins + wo.extDurationMins) <= nextSchedMinuteDifference
-            && (wo.intDurationMins + wo.extDurationMins) <= ((new Date(wo.neededDate) - selectedStartTime) / 60000)
-            && wo.intDurationMins + wo.extDurationMins <= closeHrMinuteDifference
+            (wo.int_duration_mins_team + wo.ext_duration_mins_team) <= nextSchedMinuteDifference
+            && (wo.int_duration_mins_team + wo.ext_duration_mins_team) <= ((new Date(wo.needed_date) - selectedStartTime) / 60000)
+            && wo.int_duration_mins_team + wo.ext_duration_mins_team <= closeHrMinuteDifference
             );
           // Unschedulable orders
           disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.intDurationMins + wo.extDurationMins) > nextSchedMinuteDifference
-            || (wo.intDurationMins + wo.extDurationMins) > ((new Date(wo.neededDate) - selectedStartTime) / 60000)
-            || wo.intDurationMins + wo.extDurationMins > closeHrMinuteDifference
+            (wo.int_duration_mins_team + wo.ext_duration_mins_team) > nextSchedMinuteDifference
+            || (wo.int_duration_mins_team + wo.ext_duration_mins_team) > ((new Date(wo.needed_date) - selectedStartTime) / 60000)
+            || wo.int_duration_mins_team + wo.ext_duration_mins_team > closeHrMinuteDifference
             );
           } else {
           // Schedulable orders
           ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.intDurationMinsSolo + wo.extDurationMinsSolo) <= nextSchedMinuteDifference
-            && (wo.intDurationMinsSolo + wo.extDurationMinsSolo) <= ((new Date(wo.neededDate) - selectedStartTime) / 60000)
-            && wo.intDurationMinsSolo + wo.extDurationMinsSolo <= closeHrMinuteDifference
+            (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) <= nextSchedMinuteDifference
+            && (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) <= ((new Date(wo.needed_date) - selectedStartTime) / 60000)
+            && wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= closeHrMinuteDifference
           );
           // Unschedulable orders
           disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.intDurationMinsSolo + wo.extDurationMinsSolo) > nextSchedMinuteDifference
-            && (wo.intDurationMinsSolo + wo.extDurationMinsSolo) > ((new Date(wo.neededDate) - selectedStartTime) / 60000)
-            && wo.intDurationMinsSolo + wo.extDurationMinsSolo > closeHrMinuteDifference
+            (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) > nextSchedMinuteDifference
+            && (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) > ((new Date(wo.needed_date) - selectedStartTime) / 60000)
+            && wo.int_duration_mins_solo + wo.ext_duration_mins_solo > closeHrMinuteDifference
           );
         }
         
@@ -159,24 +272,24 @@ class Scheduler extends Component {
         if (this.props.shiftType === "team") {
           // Schedulable orders
           ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.intDurationMins + wo.extDurationMins <= (new Date(wo.neededDate) - selectedStartTime) / 60000 &&
-            wo.intDurationMins + wo.extDurationMins <= closeHrMinuteDifference
+            wo.int_duration_mins_team + wo.ext_duration_mins_team <= (new Date(wo.needed_date) - selectedStartTime) / 60000 &&
+            wo.int_duration_mins_team + wo.ext_duration_mins_team <= closeHrMinuteDifference
           );
           // Unschedulable orders
           disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.intDurationMins + wo.extDurationMins > (new Date(wo.neededDate) - selectedStartTime) / 60000 ||
-            wo.intDurationMins + wo.extDurationMins > closeHrMinuteDifference
+            wo.int_duration_mins_team + wo.ext_duration_mins_team > (new Date(wo.needed_date) - selectedStartTime) / 60000 ||
+            wo.int_duration_mins_team + wo.ext_duration_mins_team > closeHrMinuteDifference
           );
         } else {
           // Schedulable orders
           ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.intDurationMinsSolo + wo.extDurationMinsSolo <= (new Date(wo.neededDate) - selectedStartTime) / 60000 &&
-            wo.intDurationMinsSolo + wo.extDurationMinsSolo <= closeHrMinuteDifference
+            wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= (new Date(wo.needed_date) - selectedStartTime) / 60000 &&
+            wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= closeHrMinuteDifference
           );
           // Unschedulable orders
           disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.intDurationMinsSolo + wo.extDurationMinsSolo > (new Date(wo.neededDate) - selectedStartTime) / 60000 ||
-            wo.intDurationMinsSolo + wo.extDurationMinsSolo > closeHrMinuteDifference
+            wo.int_duration_mins_solo + wo.ext_duration_mins_solo > (new Date(wo.needed_date) - selectedStartTime) / 60000 ||
+            wo.int_duration_mins_solo + wo.ext_duration_mins_solo > closeHrMinuteDifference
           );
         }
   
@@ -190,13 +303,13 @@ class Scheduler extends Component {
       this.state.currentDP.clearSelection();
       this.setState({ modalOpen: true });
       if (this.props.unscheduledWorkOrders.length > 0) {
-        if (this.props.unscheduledWorkOrders[0].intDurationMins !== this.state.inpDuration) {
-          this.setState({ inpDuration: this.props.unscheduledWorkOrders[0].intDurationMins });
+        if (this.props.unscheduledWorkOrders[0].int_duration_mins_team !== this.state.inpDuration) {
+          this.setState({ inpDuration: this.props.unscheduledWorkOrders[0].int_duration_mins_team });
         }
       }
       if (this.props.unscheduledWorkOrders.length > 0) {
-        if (this.props.unscheduledWorkOrders[0]._id !== this.state.inpId) {
-          this.setState({ inpId: this.props.unscheduledWorkOrders[0]._id });
+        if (this.props.unscheduledWorkOrders[0].id !== this.state.inpId) {
+          this.setState({ inpId: this.props.unscheduledWorkOrders[0].id });
         }
       }
     }
@@ -229,160 +342,60 @@ class Scheduler extends Component {
     this.setState({ modalOpen: false, inpId: null, inpDuration: null });
   }
 
+  handleCellDurationChange(e) {
+    console.log(e.target);
+    this.setState({ cellDuration: parseInt(e.target.value) });
+    console.log(this.state.cellDuration);
+    // this.setState({  });
+  }
+
   render() {
     var {...config} = this.state;
 
     return (
-      <div>
-        <div>
-        <DayPilotCalendar
-          {...config}
-          
-          ref={component => {
-            this.calendar = component && component.control;
-          }}
-        />
-        <Modal
-          isOpen={this.state.modalOpen}
-          className="modall"
-          style = {
-            {
-              content: {
-                width: "300px",
-              }
-            }
-          }
-        >
-          <div className="card wo-card">
-            <div className="card text-center">
-              <div className="card-body">
-                {this.state.unscheduledOrders.length > 0 || this.state.unscheduledOrdersDisabled.length > 0 ?
-                <div>
-                  <h5 className="card-title">Select Work Order</h5>
-                  <div style={{display: this.state.alertDisplay, fontSize: "14px"}} className="alert alert-danger p-1 my-0 text-center">
-                    Work orders cannot overlap with other work orders, exceed their needed by date, or exceed the closing time
-                  </div>
-                  <div className="work-orders-container">
-                    {this.props.shiftType === "team" && this.state.unscheduledOrders.length > 0 &&
-                      <div>
-                        {this.state.unscheduledOrders.map(wo => (
-                          <div key={wo._id} className="work-order">
-                            <input onChange={this.handleChange} type="radio" value={wo._id} name="selectedWorkOrder" id={wo.intDurationMins + wo.extDurationMins}/>
-                            <span className="work-order-title-section">
-                              Trailer {wo.trailerId}
-                              <br/>
-                              <span className="work-order-duration">
-                                <i class="far fa-clock"></i> {
-                                  Math.floor((wo.intDurationMins + wo.extDurationMins) / 60)
-                                  } hrs&nbsp;
-                                  {
-                                  ((wo.intDurationMins + wo.extDurationMins) % 60) > 0 && <span>{(wo.intDurationMins + wo.extDurationMins) % 60} mins</span>
-                                  }
-                              </span>
-                            </span>
-                            <span className="work-order-dates">
-                              Needed by:
-                              <br/>
-                              {wo.neededDateDisplayStr}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    }
-                    {this.props.shiftType === "team" && this.state.unscheduledOrdersDisabled.length > 0 &&
-                      <div>
-                        {this.state.unscheduledOrdersDisabled.map(wo => (
-                          <div onClick={this.handleAlert} key={wo._id} className="work-order">
-                            <input onChange={this.handleChange} disabled={true} type="radio" value={wo._id} name="selectedWorkOrder" id={wo.intDurationMins + wo.extDurationMins}/>
-                            <span className="work-order-title-section">
-                              Trailer {wo.trailerId}
-                              <br/>
-                              <span className="work-order-duration">
-                                <i class="far fa-clock"></i> {
-                                  Math.floor((wo.intDurationMins + wo.extDurationMins) / 60)
-                                  } hrs&nbsp;
-                                  {
-                                  ((wo.intDurationMins + wo.extDurationMins) % 60) > 0 && <span>{(wo.intDurationMins + wo.extDurationMins) % 60} mins</span>
-                                  }
-                              </span>
-                            </span>
-                            <span className="work-order-dates">
-                              Needed by:
-                              <br/>
-                              {wo.neededDateDisplayStr}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    }
-                    {this.props.shiftType === "solo" && this.state.unscheduledOrders.length > 0 &&
-                      <div>
-                        {this.state.unscheduledOrders.map(wo => (
-                          <div key={wo._id} className="work-order">
-                            <input onChange={this.handleChange} type="radio" value={wo._id} name="selectedWorkOrder" id={wo.intDurationMins + wo.extDurationMins}/>
-                            <span className="work-order-title-section">
-                              Trailer {wo.trailerId}
-                              <br/>
-                              <span className="work-order-duration">
-                                <i class="far fa-clock"></i> {
-                                  Math.floor((wo.intDurationMins + wo.extDurationMins) / 60)
-                                  } hrs&nbsp;
-                                  {
-                                  ((wo.intDurationMins + wo.extDurationMins) % 60) > 0 && <span>{(wo.intDurationMins + wo.extDurationMins) % 60} mins</span>
-                                  }
-                              </span>
-                            </span>
-                            <span className="work-order-dates">
-                              Needed by:
-                              <br/>
-                              {wo.neededDateDisplayStr}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    }
-                    {this.props.shiftType === "solo" && this.state.unscheduledOrdersDisabled.length > 0 &&
-                      <div>
-                        {this.state.unscheduledOrdersDisabled.map(wo => (
-                          <div onClick={this.handleAlert} key={wo._id} className="work-order">
-                            <input onChange={this.handleChange} disabled={true} type="radio" value={wo._id} name="selectedWorkOrder" id={wo.intDurationMins + wo.extDurationMins}/>
-                            <span className="work-order-title-section">
-                              Trailer {wo.trailerId}
-                              <br/>
-                              <span className="work-order-duration">
-                                <i class="far fa-clock"></i> {
-                                  Math.floor((wo.intDurationMins + wo.extDurationMins) / 60)
-                                  } hrs&nbsp;
-                                  {
-                                  ((wo.intDurationMins + wo.extDurationMins) % 60) > 0 && <span>{(wo.intDurationMins + wo.extDurationMins) % 60} mins</span>
-                                  }
-                              </span>
-                            </span>
-                            <span className="work-order-dates">
-                              Needed by:
-                              <br/>
-                              {wo.neededDateDisplayStr}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    }
-                  </div>
-                  <div className="mt-3">
-                    <button className="btn cancel-add-btn mr-1" onClick={this.closeModal}>Cancel</button>
-                    <button className="btn submit-btn ml-1" disabled={this.state.inpDisable} onClick={this.handleAdd}>Add</button>
-                  </div>
-                </div>
-                :
-                <div>
-                  <h6 className="card-title">No unscheduled work orders to display for this timeslot</h6>
-                  <button className="btn cancel-add-btn" onClick={this.closeModal}>Close</button>
-                </div>
-                }
-              </div>
-            </div>
+      <div className="row mx-auto">
+        <div className="col-sm-3 px-0">
+          <div id="work-orders-header">
+            <h6 className="text-center text-dark my-2">Work Orders</h6>
           </div>
-        </Modal>
+          <div className="work-orders-container">
+            {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
+              <DraggableOrder
+                wo={wo}
+                id={wo.id}
+                name={`Trailer ${wo.trailer_id}`}
+                text={wo.text}
+                duration={ this.props.shiftType === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+              />
+            ))}
+          </div>
+        </div>
+        <div className="col-sm-9 px-0">
+          <div className="scheduler-view-interval-cont text-dark my-2 text-right pr-2">
+            Interval:&nbsp;
+            <button
+              value={60}
+              onClick={this.handleCellDurationChange}
+              className={this.state.cellDuration === 60 ? "cd-btn-1 active-cd-btn" : "cd-btn-1"}>
+                60 min</button>
+            <button
+              value={30}
+              onClick={this.handleCellDurationChange}
+              className={this.state.cellDuration === 30 ? "cd-btn-middle active-cd-btn" : "cd-btn-middle"}>
+                30 min</button>
+            <button
+              value={15}
+              onClick={this.handleCellDurationChange}
+              className={this.state.cellDuration === 15 ? "cd-btn-2 active-cd-btn" : "cd-btn-2"}>
+                15 min</button>
+          </div>
+          <DayPilotScheduler
+            {...config}
+            
+            ref={component => {
+              this.calendar = component && component.control;
+            }}
+          />
         </div>
       </div>
     );

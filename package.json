@@ -25,7 +25,6 @@
     "config": "^3.3.2",
     "express": "^4.17.1",
     "moment": "^2.29.1",
-    "mongoose": "^5.10.8",
     "pg": "^8.4.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5"

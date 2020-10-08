@@ -1,70 +1,60 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Sequelize = require('sequelize');
+const db = require('../config/database');
 
-const WorkOrderSchema = new Schema({
-  mainId: {
-    type: String,
-    required: true
+const WorkOrder = db.define("work_order", {
+  is_scheduled: {
+    type: Sequelize.BOOLEAN
   },
-  id: {
-    type: String,
-    required: true
+  main_id: {
+    type: Sequelize.STRING
   },
-  trailerId: {
-    type: String,
-    required: true
+  trailer_id: {
+    type: Sequelize.STRING
   },
-  extWashCode: {
-    type: String,
-    required: true
+  ext_wash_code: {
+    type: Sequelize.STRING
   },
-  intWashCode: {
-    type: String,
-    required: true
+  int_wash_code: {
+    type: Sequelize.STRING
   },
-  washLocationId: {
-    type: String,
-    required: true
+  wash_location_id: {
+    type: Sequelize.STRING
   },
-  neededDate: {
-    type: String
+  needed_date: {
+    type: Sequelize.STRING
   },
-  neededDateDisplayStr: {
-    type: String
+  needed_date_display_str: {
+    type: Sequelize.STRING
   },
-  intDurationMins: {
-    type: Number,
-    required: true
+  int_duration_mins_team: {
+    type: Sequelize.INTEGER
   },
-  extDurationMins: {
-    type: Number,
-    required: true
+  ext_duration_mins_team: {
+    type: Sequelize.INTEGER
   },
-  intDurationMinsSolo: {
-    type: Number,
-    required: true
+  int_duration_mins_solo: {
+    type: Sequelize.INTEGER
   },
-  extDurationMinsSolo: {
-    type: Number,
-    required: true
-  },
-  isScheduled: {
-    type: Boolean,
-    default: false,
-    required: true
-  },
-  bay: {
-    type: Number
-  },
-  start: {
-    type: String
-  },
-  end: {
-    type: String
+  ext_duration_mins_solo: {
+    type: Sequelize.INTEGER
   },
   text: {
-    type: String
+    type: Sequelize.STRING
+  },
+  bay: {
+    type: Sequelize.INTEGER
+  },
+  start_time: {
+    type: Sequelize.STRING
+  },
+  end_time: {
+    type: Sequelize.STRING
+  },
+  resource: {
+    type: Sequelize.STRING
   }
 });
 
-module.exports = WorkOrder = mongoose.model("workorders", WorkOrderSchema);
+// WorkOrder.schema("tw_scheduler");
+
+module.exports = WorkOrder;

@@ -38,7 +38,7 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
     } else if (editTeamHours === 0 && editTeamMinutes === 0) {
       alert("Duration cannot be empty");
     } else {
-      let type = washTypes.filter(wt => wt.code === codeToEdit)[0].type;
+      let type = washTypes.filter(wt => wt.wash_code === codeToEdit)[0].type;
       const formData = {
         code: codeToEdit,
         type: type,
@@ -56,15 +56,18 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
 
   const editClick = e => {
     // Finding wash type that matches the one we clicked
+    console.log(e.target.id);
     setCodeToEdit(e.target.id);
-    const washTypeToEdit = washTypes.filter(i => i.code === e.target.id)[0];
+    const washTypeToEdit = washTypes.filter(i => i.wash_code === e.target.id)[0];
+
+    console.log(washTypeToEdit);
     
     setEditWashType({
-      id: washTypeToEdit._id,
-      editTeamHours: washTypeToEdit.teamHours,
-      editTeamMinutes: washTypeToEdit.teamMinutes,
-      editSoloHours: washTypeToEdit.soloHours,
-      editSoloMinutes: washTypeToEdit.soloMinutes
+      id: washTypeToEdit.id,
+      editTeamHours: washTypeToEdit.team_hours,
+      editTeamMinutes: washTypeToEdit.team_minutes,
+      editSoloHours: washTypeToEdit.solo_hours,
+      editSoloMinutes: washTypeToEdit.solo_minutes
     });
 
     setEditOpen(true);
@@ -108,16 +111,16 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
               <td></td>
             </tr>
             {!loading && washTypes && washTypes.filter(type =>
-              (type.code.includes(filter.codeFilter.toUpperCase())
+              (type.wash_code.includes(filter.codeFilter.toUpperCase())
               && type.description.toLowerCase().includes(filter.descriptionFilter.toLowerCase())
               && filter.typeFilter.includes(type.type)
               )
             ).map(type => (
-              <tr key={type._id}>
-                <td>{type.code}</td>
+              <tr key={type.id}>
+                <td>{type.wash_code}</td>
                 <td>{type.description}</td>
                 <td className="text-center">{type.type === "I" ? "Interior" : "Exterior"}</td>
-                {editOpen && codeToEdit === type.code ?
+                {editOpen && codeToEdit === type.wash_code ?
                   <td className="px-0 text-center" style={{width: "50%"}}>
                     <input
                       style={{width: "34px"}}
@@ -141,10 +144,10 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
                   </td>
                 :
                   <td>
-                    {type.teamHours !== 0 && <span>{type.teamHours}hr</span>} {type.teamMinutes !== 0 && <span>{type.teamMinutes}min</span>}
+                    {type.team_hours !== 0 && <span>{type.team_hours}hr</span>} {type.team_minutes !== 0 && <span>{type.team_minutes}min</span>}
                   </td>
                 }
-                {editOpen && codeToEdit === type.code ?
+                {editOpen && codeToEdit === type.wash_code ?
                   <td className="px-0 text-center" style={{width: "50%"}}>
                     <input
                       style={{width: "34px"}}
@@ -168,12 +171,12 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
                   </td>
                 :
                   <td>
-                    {type.soloHours !== 0 && <span>{type.soloHours}hr</span>} {type.soloMinutes !== 0 && <span>{type.soloMinutes}min</span>}
+                    {type.solo_hours !== 0 && <span>{type.solo_hours}hr</span>} {type.solo_minutes !== 0 && <span>{type.solo_minutes}min</span>}
                   </td>
                 }
                 <td>
                   <i
-                    id={type.code}
+                    id={type.wash_code}
                     onClick={editClick}
                     className="fas fa-pen edit-wash-btn float-right pt-1 mx-0"
                   />

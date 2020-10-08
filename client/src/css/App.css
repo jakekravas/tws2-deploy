@@ -31,9 +31,13 @@
   padding: 0 8px;
 }
 
+.work-order-trailer {
+  font-size: 12px;
+}
+
 #work-orders-header {
   border-bottom: 1px solid #999;
-  padding: 12.7px 0;
+  /* padding: 12.7px 0; */
   margin-bottom: 0 !important;
 }
 
@@ -49,11 +53,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px;
+  padding: 3px;
 }
 
 .work-order-duration {
-  font-size: 13px;
+  font-size: 12px;
   float: left;
 }
 
@@ -262,6 +266,12 @@
   background-color: transparent;
   color: #e77918;
 }
+.wb-btn-middle {
+  border: 1px solid #e77918;
+  /* border-radius: 0 2.5px 2.5px 0; */
+  background-color: transparent;
+  color: #e77918;
+}
 .active-wb-btn {
   background-color: #e77918;
   color: #f6f6f6;
@@ -451,6 +461,33 @@ tr {
   /* margin-top: 5.5px;
   margin-left: 5px; */
   cursor: pointer;
+}
+
+/* Cell Duration Buttons */
+.cd-btn-1 {
+  font-size: 14.5px;
+  border: 1px solid #e77918;
+  border-radius: 2.5px 0 0 2.5px;
+  background-color: transparent;
+  color: #e77918;
+}
+.cd-btn-2 {
+  font-size: 14.5px;
+  border: 1px solid #e77918;
+  border-radius: 0 2.5px 2.5px 0;
+  background-color: transparent;
+  color: #e77918;
+}
+.cd-btn-middle {
+  font-size: 14.5px;
+  border: 1px solid #e77918;
+  /* border-radius: 0 2.5px 2.5px 0; */
+  background-color: transparent;
+  color: #e77918;
+}
+.active-cd-btn {
+  background-color: #e77918;
+  color: #f6f6f6;
 }
 
 .add-duration {

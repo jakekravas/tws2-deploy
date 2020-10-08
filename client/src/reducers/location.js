@@ -25,23 +25,27 @@ export default (state = initialState, dispatch) => {
       }
 
     case GET_LOCATION_INFO:
+      console.log(payload);
       return {
         ...state,
-        selectedLocation: payload.location,
+        // selectedLocation: payload.location,
+        selectedLocation: payload,
         loading: false
       }
       
     case UPDATE_LOCATION_HOURS:
+      console.log(payload);
       return {
         ...state,
-        selectedLocation: payload.location,
+        // selectedLocation: payload.location,
+        selectedLocation: payload,
         loading: false
       }
 
     case UPDATE_BAY_QUANTITY:
       return {
         ...state,
-        selectedLocation: payload.location,
+        selectedLocation: payload,
         loading: false
       }
 

@@ -10,6 +10,7 @@ import {
 export const getAllLocations = () => async dispatch => {
   try {
     const res = await axios.get("/api/locations");
+    console.log(res.data);
 
     dispatch({
       type: GET_ALL_LOCATIONS,
@@ -23,18 +24,19 @@ export const getAllLocations = () => async dispatch => {
 };
 
 export const getLocationInfo = id => async dispatch => {
+  console.log(id);
   try {
     const res = await axios.get(`/api/locations/${id}`);
+    console.log(res.data);
 
-    let x = res.data.location;
+    let locationInfo = res.data.location;
 
-    x.test = "aaa";
-
-    console.log(x);
+    locationInfo.bayOneHours = res.data.bayOneHours;
+    locationInfo.bayTwoHours = res.data.bayTwoHours;
 
     dispatch({
       type: GET_LOCATION_INFO,
-      payload: res.data
+      payload: locationInfo
     });
   } catch (err) {
     dispatch({
@@ -46,10 +48,14 @@ export const getLocationInfo = id => async dispatch => {
 export const updateLocationHrs = (id, formData) => async dispatch => {
   try {
     const res = await axios.put(`api/locations/hours/${id}`, formData);
-    
+    let locationInfo = res.data.location;
+
+    locationInfo.bayOneHours = res.data.bayOneHours;
+    locationInfo.bayTwoHours = res.data.bayTwoHours;
+
     dispatch({
       type: UPDATE_LOCATION_HOURS,
-      payload: res.data
+      payload: locationInfo
     });
   } catch (err) {
     dispatch({
@@ -61,10 +67,14 @@ export const updateLocationHrs = (id, formData) => async dispatch => {
 export const updateWashBayQuantity = (id, formData) => async dispatch => {
   try {
     const res = await axios.put(`api/locations/washbays/${id}`, formData);
-    
+    let locationInfo = res.data.location;
+
+    locationInfo.bayOneHours = res.data.bayOneHours;
+    locationInfo.bayTwoHours = res.data.bayTwoHours;
+
     dispatch({
       type: UPDATE_BAY_QUANTITY,
-      payload: res.data
+      payload: locationInfo
     });
   } catch (err) {
     dispatch({

@@ -110,23 +110,6 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
     bayTwoShift2SunType
   } = shiftType;
 
-  const [twentyFourHrDays, setTwentyFourHrDays] = useState({
-    monday24: false,
-    tuesday24: false,
-    wednesday24: false,
-    thursday24: false,
-    friday24: false,
-    saturday24: false,
-    sunday24: false,
-    monday242: false,
-    tuesday242: false,
-    wednesday242: false,
-    thursday242: false,
-    friday242: false,
-    saturday242: false,
-    sunday242: false
-  });
-
   const [startTimes, setStartTimes] = useState({
     mondayStart: "",
     tuesdayStart: "",
@@ -205,23 +188,6 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
     saturdayOpen2,
     sundayOpen2
   } = daysOpen;
-  
-  const {
-    monday24,
-    tuesday24,
-    wednesday24,
-    thursday24,
-    friday24,
-    saturday24,
-    sunday24,
-    monday242,
-    tuesday242,
-    wednesday242,
-    thursday242,
-    friday242,
-    saturday242,
-    sunday242
-  } = twentyFourHrDays;
 
   const {
     mondayStart,
@@ -291,166 +257,147 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
     }
     setDaysOpen({
       // Bay 1
-      mondayOpen: selectedLocation && selectedLocation.bayOneHours.monday.isOpen,
-      tuesdayOpen: selectedLocation && selectedLocation.bayOneHours.tuesday.isOpen,
-      wednesdayOpen: selectedLocation && selectedLocation.bayOneHours.wednesday.isOpen,
-      thursdayOpen: selectedLocation && selectedLocation.bayOneHours.thursday.isOpen,
-      fridayOpen: selectedLocation && selectedLocation.bayOneHours.friday.isOpen,
-      saturdayOpen: selectedLocation && selectedLocation.bayOneHours.saturday.isOpen,
-      sundayOpen: selectedLocation && selectedLocation.bayOneHours.sunday.isOpen,
+      mondayOpen: selectedLocation && selectedLocation.bayOneHours.monday.is_open,
+      tuesdayOpen: selectedLocation && selectedLocation.bayOneHours.tuesday.is_open,
+      wednesdayOpen: selectedLocation && selectedLocation.bayOneHours.wednesday.is_open,
+      thursdayOpen: selectedLocation && selectedLocation.bayOneHours.thursday.is_open,
+      fridayOpen: selectedLocation && selectedLocation.bayOneHours.friday.is_open,
+      saturdayOpen: selectedLocation && selectedLocation.bayOneHours.saturday.is_open,
+      sundayOpen: selectedLocation && selectedLocation.bayOneHours.sunday.is_open,
       // Bay 2
-      mondayOpen2: selectedLocation && selectedLocation.bayTwoHours.monday.isOpen,
-      tuesdayOpen2: selectedLocation && selectedLocation.bayTwoHours.tuesday.isOpen,
-      wednesdayOpen2: selectedLocation && selectedLocation.bayTwoHours.wednesday.isOpen,
-      thursdayOpen2: selectedLocation && selectedLocation.bayTwoHours.thursday.isOpen,
-      fridayOpen2: selectedLocation && selectedLocation.bayTwoHours.friday.isOpen,
-      saturdayOpen2: selectedLocation && selectedLocation.bayTwoHours.saturday.isOpen,
-      sundayOpen2: selectedLocation && selectedLocation.bayTwoHours.sunday.isOpen
-    });
-
-    setTwentyFourHrDays({
-      // Bay 1
-      monday24: selectedLocation && selectedLocation.bayOneHours.monday.twentyFourHrs,
-      tuesday24: selectedLocation && selectedLocation.bayOneHours.tuesday.twentyFourHrs,
-      wednesday24: selectedLocation && selectedLocation.bayOneHours.wednesday.twentyFourHrs,
-      thursday24: selectedLocation && selectedLocation.bayOneHours.thursday.twentyFourHrs,
-      friday24: selectedLocation && selectedLocation.bayOneHours.friday.twentyFourHrs,
-      saturday24: selectedLocation && selectedLocation.bayOneHours.saturday.twentyFourHrs,
-      sunday24: selectedLocation && selectedLocation.bayOneHours.sunday.twentyFourHrs,
-      // Bay 2
-      monday242: selectedLocation && selectedLocation.bayTwoHours.monday.twentyFourHrs,
-      tuesday242: selectedLocation && selectedLocation.bayTwoHours.tuesday.twentyFourHrs,
-      wednesday242: selectedLocation && selectedLocation.bayTwoHours.wednesday.twentyFourHrs,
-      thursday242: selectedLocation && selectedLocation.bayTwoHours.thursday.twentyFourHrs,
-      friday242: selectedLocation && selectedLocation.bayTwoHours.friday.twentyFourHrs,
-      saturday242: selectedLocation && selectedLocation.bayTwoHours.saturday.twentyFourHrs,
-      sunday242: selectedLocation && selectedLocation.bayTwoHours.sunday.twentyFourHrs
+      mondayOpen2: selectedLocation && selectedLocation.bayTwoHours.monday.is_open,
+      tuesdayOpen2: selectedLocation && selectedLocation.bayTwoHours.tuesday.is_open,
+      wednesdayOpen2: selectedLocation && selectedLocation.bayTwoHours.wednesday.is_open,
+      thursdayOpen2: selectedLocation && selectedLocation.bayTwoHours.thursday.is_open,
+      fridayOpen2: selectedLocation && selectedLocation.bayTwoHours.friday.is_open,
+      saturdayOpen2: selectedLocation && selectedLocation.bayTwoHours.saturday.is_open,
+      sundayOpen2: selectedLocation && selectedLocation.bayTwoHours.sunday.is_open
     });
 
     setStartTimes({
       // Bay 1 Shift 1
-      mondayStart: selectedLocation && selectedLocation.bayOneHours.monday.start,
-      tuesdayStart: selectedLocation && selectedLocation.bayOneHours.tuesday.start,
-      wednesdayStart: selectedLocation && selectedLocation.bayOneHours.wednesday.start,
-      thursdayStart: selectedLocation && selectedLocation.bayOneHours.thursday.start,
-      fridayStart: selectedLocation && selectedLocation.bayOneHours.friday.start,
-      saturdayStart: selectedLocation && selectedLocation.bayOneHours.saturday.start,
-      sundayStart: selectedLocation && selectedLocation.bayOneHours.sunday.start,
+      mondayStart: selectedLocation && selectedLocation.bayOneHours.monday.shift_one_start,
+      tuesdayStart: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_one_start,
+      wednesdayStart: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_one_start,
+      thursdayStart: selectedLocation && selectedLocation.bayOneHours.thursday.shift_one_start,
+      fridayStart: selectedLocation && selectedLocation.bayOneHours.friday.shift_one_start,
+      saturdayStart: selectedLocation && selectedLocation.bayOneHours.saturday.shift_one_start,
+      sundayStart: selectedLocation && selectedLocation.bayOneHours.sunday.shift_one_start,
       
       // Bay 1 Shift 2
-      mondayStartB1S2: selectedLocation && selectedLocation.bayOneHours.monday.shift2Start,
-      tuesdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.tuesday.shift2Start,
-      wednesdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.wednesday.shift2Start,
-      thursdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.thursday.shift2Start,
-      fridayStartB1S2: selectedLocation && selectedLocation.bayOneHours.friday.shift2Start,
-      saturdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.saturday.shift2Start,
-      sundayStartB1S2: selectedLocation && selectedLocation.bayOneHours.sunday.shift2Start,
+      mondayStartB1S2: selectedLocation && selectedLocation.bayOneHours.monday.shift_two_start,
+      tuesdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_two_start,
+      wednesdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_two_start,
+      thursdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.thursday.shift_two_start,
+      fridayStartB1S2: selectedLocation && selectedLocation.bayOneHours.friday.shift_two_start,
+      saturdayStartB1S2: selectedLocation && selectedLocation.bayOneHours.saturday.shift_two_start,
+      sundayStartB1S2: selectedLocation && selectedLocation.bayOneHours.sunday.shift_two_start,
 
       // Bay 2
-      mondayStart2: selectedLocation && selectedLocation.bayTwoHours.monday.start,
-      tuesdayStart2: selectedLocation && selectedLocation.bayTwoHours.tuesday.start,
-      wednesdayStart2: selectedLocation && selectedLocation.bayTwoHours.wednesday.start,
-      thursdayStart2: selectedLocation && selectedLocation.bayTwoHours.thursday.start,
-      fridayStart2: selectedLocation && selectedLocation.bayTwoHours.friday.start,
-      saturdayStart2: selectedLocation && selectedLocation.bayTwoHours.saturday.start,
-      sundayStart2: selectedLocation && selectedLocation.bayTwoHours.sunday.start,
+      mondayStart2: selectedLocation && selectedLocation.bayTwoHours.monday.shift_one_start,
+      tuesdayStart2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_one_start,
+      wednesdayStart2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_one_start,
+      thursdayStart2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_one_start,
+      fridayStart2: selectedLocation && selectedLocation.bayTwoHours.friday.shift_one_start,
+      saturdayStart2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_one_start,
+      sundayStart2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_one_start,
 
       // Bay 2 Shift 2
-      mondayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.monday.shift2Start,
-      tuesdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift2Start,
-      wednesdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift2Start,
-      thursdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift2Start,
-      fridayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.friday.shift2Start,
-      saturdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift2Start,
-      sundayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift2Start,
+      mondayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.monday.shift_two_start,
+      tuesdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_two_start,
+      wednesdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_two_start,
+      thursdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_two_start,
+      fridayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.friday.shift_two_start,
+      saturdayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_two_start,
+      sundayStartB2S2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_two_start,
     });
 
     setEndTimes({
       // Bay 1
-      mondayEnd: selectedLocation && selectedLocation.bayOneHours.monday.end,
-      tuesdayEnd: selectedLocation && selectedLocation.bayOneHours.tuesday.end,
-      wednesdayEnd: selectedLocation && selectedLocation.bayOneHours.wednesday.end,
-      thursdayEnd: selectedLocation && selectedLocation.bayOneHours.thursday.end,
-      fridayEnd: selectedLocation && selectedLocation.bayOneHours.friday.end,
-      saturdayEnd: selectedLocation && selectedLocation.bayOneHours.saturday.end,
-      sundayEnd: selectedLocation && selectedLocation.bayOneHours.sunday.end,
+      mondayEnd: selectedLocation && selectedLocation.bayOneHours.monday.shift_one_end,
+      tuesdayEnd: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_one_end,
+      wednesdayEnd: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_one_end,
+      thursdayEnd: selectedLocation && selectedLocation.bayOneHours.thursday.shift_one_end,
+      fridayEnd: selectedLocation && selectedLocation.bayOneHours.friday.shift_one_end,
+      saturdayEnd: selectedLocation && selectedLocation.bayOneHours.saturday.shift_one_end,
+      sundayEnd: selectedLocation && selectedLocation.bayOneHours.sunday.shift_one_end,
 
       // Bay 1 Shift 2
-      mondayEndB1S2: selectedLocation && selectedLocation.bayOneHours.monday.shift2End,
-      tuesdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.tuesday.shift2End,
-      wednesdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.wednesday.shift2End,
-      thursdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.thursday.shift2End,
-      fridayEndB1S2: selectedLocation && selectedLocation.bayOneHours.friday.shift2End,
-      saturdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.saturday.shift2End,
-      sundayEndB1S2: selectedLocation && selectedLocation.bayOneHours.sunday.shift2End,
+      mondayEndB1S2: selectedLocation && selectedLocation.bayOneHours.monday.shift_two_end,
+      tuesdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_two_end,
+      wednesdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_two_end,
+      thursdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.thursday.shift_two_end,
+      fridayEndB1S2: selectedLocation && selectedLocation.bayOneHours.friday.shift_two_end,
+      saturdayEndB1S2: selectedLocation && selectedLocation.bayOneHours.saturday.shift_two_end,
+      sundayEndB1S2: selectedLocation && selectedLocation.bayOneHours.sunday.shift_two_end,
 
       // Bay 2
-      mondayEnd2: selectedLocation && selectedLocation.bayTwoHours.monday.end,
-      tuesdayEnd2: selectedLocation && selectedLocation.bayTwoHours.tuesday.end,
-      wednesdayEnd2: selectedLocation && selectedLocation.bayTwoHours.wednesday.end,
-      thursdayEnd2: selectedLocation && selectedLocation.bayTwoHours.thursday.end,
-      fridayEnd2: selectedLocation && selectedLocation.bayTwoHours.friday.end,
-      saturdayEnd2: selectedLocation && selectedLocation.bayTwoHours.saturday.end,
-      sundayEnd2: selectedLocation && selectedLocation.bayTwoHours.sunday.end,
+      mondayEnd2: selectedLocation && selectedLocation.bayTwoHours.monday.shift_one_end,
+      tuesdayEnd2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_one_end,
+      wednesdayEnd2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_one_end,
+      thursdayEnd2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_one_end,
+      fridayEnd2: selectedLocation && selectedLocation.bayTwoHours.friday.shift_one_end,
+      saturdayEnd2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_one_end,
+      sundayEnd2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_one_end,
 
       // Bay 2 Shift 2
-      mondayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.monday.shift2End,
-      tuesdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift2End,
-      wednesdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift2End,
-      thursdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift2End,
-      fridayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.friday.shift2End,
-      saturdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift2End,
-      sundayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift2End
+      mondayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.monday.shift_two_end,
+      tuesdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_two_end,
+      wednesdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_two_end,
+      thursdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_two_end,
+      fridayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.friday.shift_two_end,
+      saturdayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_two_end,
+      sundayEndB2S2: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_two_end
     });
 
-    setBayOneShift2Mon( selectedLocation && selectedLocation.bayOneHours.monday.shift2 );
-    setBayOneShift2Tues( selectedLocation && selectedLocation.bayOneHours.tuesday.shift2 );
-    setBayOneShift2Wed( selectedLocation && selectedLocation.bayOneHours.wednesday.shift2 );
-    setBayOneShift2Thurs( selectedLocation && selectedLocation.bayOneHours.thursday.shift2 );
-    setBayOneShift2Fri( selectedLocation && selectedLocation.bayOneHours.friday.shift2 );
-    setBayOneShift2Sat( selectedLocation && selectedLocation.bayOneHours.saturday.shift2 );
-    setBayOneShift2Sun( selectedLocation && selectedLocation.bayOneHours.sunday.shift2 );
+    setBayOneShift2Mon( selectedLocation && selectedLocation.bayOneHours.monday.shift_two_open );
+    setBayOneShift2Tues( selectedLocation && selectedLocation.bayOneHours.tuesday.shift_two_open );
+    setBayOneShift2Wed( selectedLocation && selectedLocation.bayOneHours.wednesday.shift_two_open );
+    setBayOneShift2Thurs( selectedLocation && selectedLocation.bayOneHours.thursday.shift_two_open );
+    setBayOneShift2Fri( selectedLocation && selectedLocation.bayOneHours.friday.shift_two_open );
+    setBayOneShift2Sat( selectedLocation && selectedLocation.bayOneHours.saturday.shift_two_open );
+    setBayOneShift2Sun( selectedLocation && selectedLocation.bayOneHours.sunday.shift_two_open );
 
-    setBayTwoShift2Mon( selectedLocation && selectedLocation.bayTwoHours.monday.shift2 );
-    setBayTwoShift2Tues( selectedLocation && selectedLocation.bayTwoHours.tuesday.shift2 );
-    setBayTwoShift2Wed( selectedLocation && selectedLocation.bayTwoHours.wednesday.shift2 );
-    setBayTwoShift2Thurs( selectedLocation && selectedLocation.bayTwoHours.thursday.shift2 );
-    setBayTwoShift2Fri( selectedLocation && selectedLocation.bayTwoHours.friday.shift2 );
-    setBayTwoShift2Sat( selectedLocation && selectedLocation.bayTwoHours.saturday.shift2 );
-    setBayTwoShift2Sun( selectedLocation && selectedLocation.bayTwoHours.sunday.shift2 );
+    setBayTwoShift2Mon( selectedLocation && selectedLocation.bayTwoHours.monday.shift_two_open );
+    setBayTwoShift2Tues( selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_two_open );
+    setBayTwoShift2Wed( selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_two_open );
+    setBayTwoShift2Thurs( selectedLocation && selectedLocation.bayTwoHours.thursday.shift_two_open );
+    setBayTwoShift2Fri( selectedLocation && selectedLocation.bayTwoHours.friday.shift_two_open );
+    setBayTwoShift2Sat( selectedLocation && selectedLocation.bayTwoHours.saturday.shift_two_open );
+    setBayTwoShift2Sun( selectedLocation && selectedLocation.bayTwoHours.sunday.shift_two_open );
 
     setShiftType({
-      bayOneShift1MonType: selectedLocation && selectedLocation.bayOneHours.monday.type,
-      bayOneShift1TuesType: selectedLocation && selectedLocation.bayOneHours.tuesday.type,
-      bayOneShift1WedType: selectedLocation && selectedLocation.bayOneHours.wednesday.type,
-      bayOneShift1ThursType: selectedLocation && selectedLocation.bayOneHours.thursday.type,
-      bayOneShift1FriType: selectedLocation && selectedLocation.bayOneHours.friday.type,
-      bayOneShift1SatType: selectedLocation && selectedLocation.bayOneHours.saturday.type,
-      bayOneShift1SunType: selectedLocation && selectedLocation.bayOneHours.sunday.type,
+      bayOneShift1MonType: selectedLocation && selectedLocation.bayOneHours.monday.shift_one_type,
+      bayOneShift1TuesType: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_one_type,
+      bayOneShift1WedType: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_one_type,
+      bayOneShift1ThursType: selectedLocation && selectedLocation.bayOneHours.thursday.shift_one_type,
+      bayOneShift1FriType: selectedLocation && selectedLocation.bayOneHours.friday.shift_one_type,
+      bayOneShift1SatType: selectedLocation && selectedLocation.bayOneHours.saturday.shift_one_type,
+      bayOneShift1SunType: selectedLocation && selectedLocation.bayOneHours.sunday.shift_one_type,
 
-      bayOneShift2MonType: selectedLocation && selectedLocation.bayOneHours.monday.shift2Type,
-      bayOneShift2TuesType: selectedLocation && selectedLocation.bayOneHours.tuesday.shift2Type,
-      bayOneShift2WedType: selectedLocation && selectedLocation.bayOneHours.wednesday.shift2Type,
-      bayOneShift2ThursType: selectedLocation && selectedLocation.bayOneHours.thursday.shift2Type,
-      bayOneShift2FriType: selectedLocation && selectedLocation.bayOneHours.friday.shift2Type,
-      bayOneShift2SatType: selectedLocation && selectedLocation.bayOneHours.saturday.shift2Type,
-      bayOneShift2SunType: selectedLocation && selectedLocation.bayOneHours.sunday.shift2Type,
+      bayOneShift2MonType: selectedLocation && selectedLocation.bayOneHours.monday.shift_two_type,
+      bayOneShift2TuesType: selectedLocation && selectedLocation.bayOneHours.tuesday.shift_two_type,
+      bayOneShift2WedType: selectedLocation && selectedLocation.bayOneHours.wednesday.shift_two_type,
+      bayOneShift2ThursType: selectedLocation && selectedLocation.bayOneHours.thursday.shift_two_type,
+      bayOneShift2FriType: selectedLocation && selectedLocation.bayOneHours.friday.shift_two_type,
+      bayOneShift2SatType: selectedLocation && selectedLocation.bayOneHours.saturday.shift_two_type,
+      bayOneShift2SunType: selectedLocation && selectedLocation.bayOneHours.sunday.shift_two_type,
 
-      bayTwoShift1MonType: selectedLocation && selectedLocation.bayTwoHours.monday.type,
-      bayTwoShift1TuesType: selectedLocation && selectedLocation.bayTwoHours.tuesday.type,
-      bayTwoShift1WedType: selectedLocation && selectedLocation.bayTwoHours.wednesday.type,
-      bayTwoShift1ThursType: selectedLocation && selectedLocation.bayTwoHours.thursday.type,
-      bayTwoShift1FriType: selectedLocation && selectedLocation.bayTwoHours.friday.type,
-      bayTwoShift1SatType: selectedLocation && selectedLocation.bayTwoHours.saturday.type,
-      bayTwoShift1SunType: selectedLocation && selectedLocation.bayTwoHours.sunday.type,
+      bayTwoShift1MonType: selectedLocation && selectedLocation.bayTwoHours.monday.shift_one_type,
+      bayTwoShift1TuesType: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_one_type,
+      bayTwoShift1WedType: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_one_type,
+      bayTwoShift1ThursType: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_one_type,
+      bayTwoShift1FriType: selectedLocation && selectedLocation.bayTwoHours.friday.shift_one_type,
+      bayTwoShift1SatType: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_one_type,
+      bayTwoShift1SunType: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_one_type,
 
-      bayTwoShift2MonType: selectedLocation && selectedLocation.bayTwoHours.monday.shift2Type,
-      bayTwoShift2TuesType: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift2Type,
-      bayTwoShift2WedType: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift2Type,
-      bayTwoShift2ThursType: selectedLocation && selectedLocation.bayTwoHours.thursday.shift2Type,
-      bayTwoShift2FriType: selectedLocation && selectedLocation.bayTwoHours.friday.shift2Type,
-      bayTwoShift2SatType: selectedLocation && selectedLocation.bayTwoHours.saturday.shift2Type,
-      bayTwoShift2SunType: selectedLocation && selectedLocation.bayTwoHours.sunday.shift2Type
+      bayTwoShift2MonType: selectedLocation && selectedLocation.bayTwoHours.monday.shift_two_type,
+      bayTwoShift2TuesType: selectedLocation && selectedLocation.bayTwoHours.tuesday.shift_two_type,
+      bayTwoShift2WedType: selectedLocation && selectedLocation.bayTwoHours.wednesday.shift_two_type,
+      bayTwoShift2ThursType: selectedLocation && selectedLocation.bayTwoHours.thursday.shift_two_type,
+      bayTwoShift2FriType: selectedLocation && selectedLocation.bayTwoHours.friday.shift_two_type,
+      bayTwoShift2SatType: selectedLocation && selectedLocation.bayTwoHours.saturday.shift_two_type,
+      bayTwoShift2SunType: selectedLocation && selectedLocation.bayTwoHours.sunday.shift_two_type
     });
 
   }, [ selectedLocation ]);
@@ -464,13 +411,15 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
   }
 
   const openEdit = async () => {
-    await getLocationInfo(selectedLocation._id);
+    // await getLocationInfo(selectedLocation.id);
+    setBayEditHours(1);
     setEditOpen(true);
   }
   
   const onBayQuantityChange = e => {
+    console.log("ON BAY CHANGE");
     const formData = { washBays: e.target.value }
-    updateWashBayQuantity(selectedLocation._id, formData);
+    updateWashBayQuantity(selectedLocation.id, formData);
   }
 
   const onCancel = () => {
@@ -483,7 +432,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
       bayOneHours: {
         monday: {
           isOpen: mondayOpen,
-          twentyFourHrs: monday24,
+          // twentyFourHrs: monday24,
           start: mondayStart,
           end: mondayEnd,
           type: bayOneShift1MonType,
@@ -494,7 +443,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         tuesday: {
           isOpen: tuesdayOpen,
-          twentyFourHrs: tuesday24,
+          // twentyFourHrs: tuesday24,
           start: tuesdayStart,
           end: tuesdayEnd,
           type: bayOneShift1TuesType,
@@ -505,7 +454,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         wednesday: {
           isOpen: wednesdayOpen,
-          twentyFourHrs: wednesday24,
+          // twentyFourHrs: wednesday24,
           start: wednesdayStart,
           end: wednesdayEnd,
           type: bayOneShift1WedType,
@@ -516,7 +465,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         thursday: {
           isOpen: thursdayOpen,
-          twentyFourHrs: thursday24,
+          // twentyFourHrs: thursday24,
           start: thursdayStart,
           end: thursdayEnd,
           type: bayOneShift1ThursType,
@@ -527,7 +476,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         friday: {
           isOpen: fridayOpen,
-          twentyFourHrs: friday24,
+          // twentyFourHrs: friday24,
           start: fridayStart,
           end: fridayEnd,
           type: bayOneShift1FriType,
@@ -538,7 +487,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         saturday: {
           isOpen: saturdayOpen,
-          twentyFourHrs: saturday24,
+          // twentyFourHrs: saturday24,
           start: saturdayStart,
           end: saturdayEnd,
           type: bayOneShift1SatType,
@@ -549,7 +498,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         sunday: {
           isOpen: sundayOpen,
-          twentyFourHrs: sunday24,
+          // twentyFourHrs: sunday24,
           start: sundayStart,
           end: sundayEnd,
           type: bayOneShift1SunType,
@@ -561,11 +510,11 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
       }
     }
 
-    if (selectedLocation.washBays === 2) {
+    if (selectedLocation.wash_bays === 2) {
       newHrs.bayTwoHours = {
         monday: {
           isOpen: mondayOpen2,
-          twentyFourHrs: monday242,
+          // twentyFourHrs: monday242,
           start: mondayStart2,
           end: mondayEnd2,
           type: bayTwoShift1MonType,
@@ -576,7 +525,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         tuesday: {
           isOpen: tuesdayOpen2,
-          twentyFourHrs: tuesday242,
+          // twentyFourHrs: tuesday242,
           start: tuesdayStart2,
           end: tuesdayEnd2,
           type: bayTwoShift1TuesType,
@@ -587,7 +536,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         wednesday: {
           isOpen: wednesdayOpen2,
-          twentyFourHrs: wednesday242,
+          // twentyFourHrs: wednesday242,
           start: wednesdayStart2,
           end: wednesdayEnd2,
           type: bayTwoShift1WedType,
@@ -598,7 +547,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         thursday: {
           isOpen: thursdayOpen2,
-          twentyFourHrs: thursday242,
+          // twentyFourHrs: thursday242,
           start: thursdayStart2,
           end: thursdayEnd2,
           type: bayTwoShift1ThursType,
@@ -609,7 +558,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         friday: {
           isOpen: fridayOpen2,
-          twentyFourHrs: friday242,
+          // twentyFourHrs: friday242,
           start: fridayStart2,
           end: fridayEnd2,
           type: bayTwoShift1FriType,
@@ -620,7 +569,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         saturday: {
           isOpen: saturdayOpen2,
-          twentyFourHrs: saturday242,
+          // twentyFourHrs: saturday242,
           start: saturdayStart2,
           end: saturdayEnd2,
           type: bayTwoShift1SatType,
@@ -631,7 +580,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
         },
         sunday: {
           isOpen: sundayOpen2,
-          twentyFourHrs: sunday242,
+          // twentyFourHrs: sunday242,
           start: sundayStart2,
           end: sundayEnd2,
           type: bayTwoShift1SunType,
@@ -643,8 +592,8 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
       }
     }
 
-    await updateLocationHrs(selectedLocation._id, newHrs);
-    await getLocationInfo(selectedLocation._id);
+    await updateLocationHrs(selectedLocation.location_id, newHrs);
+    // await getLocationInfo(selectedLocation.location_id);
     setEditOpen(false);
     setBayEditHours(1);
   }
@@ -670,14 +619,16 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
   }
 
   const configureDisplay = day => {
-    if (!day.isOpen) {
+    if (!day.is_open) {
       return "Closed";
     } else {
-      return `${formatTime(day.start)} - ${ formatTime(day.end)}`;
+      return `${formatTime(day.shift_one_start)} - ${ formatTime(day.shift_one_end)}`;
     }
   }
 
   const configureShift2Display = (start, end) => {
+    console.log(start);
+    console.log(end);
     return `${formatTime(start)} - ${ formatTime(end)}`;
   }
 
@@ -698,7 +649,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
             <tr className="text-center">
               <th></th>
               <th className="font-weight-normal">Bay 1</th>
-              {selectedLocation && selectedLocation.washBays === 2 && <th className="font-weight-normal">Bay 2</th>}
+              {selectedLocation && selectedLocation.wash_bays === 2 && <th className="font-weight-normal">Bay 2</th>}
             </tr>
           </thead>
           <tbody className="text-center">
@@ -771,14 +722,14 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
           Number of wash bays: &nbsp;
           <button
             value="1"
-            className={selectedLocation && selectedLocation.washBays == 1 ? `wb-btn-1 active-wb-btn` : `wb-btn-1`}
+            className={selectedLocation && selectedLocation.wash_bays === 1 ? `wb-btn-1 active-wb-btn` : `wb-btn-1`}
             onClick={onBayQuantityChange}
           >
             1
           </button>
           <button
             value="2"
-            className={selectedLocation && selectedLocation.washBays == 2 ? `wb-btn-2 active-wb-btn` : `wb-btn-2`}
+            className={selectedLocation && selectedLocation.wash_bays === 2 ? `wb-btn-2 active-wb-btn` : `wb-btn-2`}
             onClick={onBayQuantityChange}
           >
             2
@@ -790,7 +741,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
       // EDIT SECTION
       <section>
       <div id="hours-of-operation-card" className="card-body">
-        {selectedLocation.washBays === 2 &&
+        {selectedLocation && selectedLocation.wash_bays === 2 &&
         <div className="text-center mb-4">
           <button
             onClick={() => setBayEditHours(1)}
