@@ -39,13 +39,19 @@ class Scheduler extends Component {
       onEventResizing: () => this.forceUpdate(),
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
-        console.log(args.e.data);
-        this.props.test(
-          args.e.data.id,
-          args.e.data.resource,
-          args.e.data.start.value,
-          args.e.data.end.value
-        );
+
+        // If args starts within a shift range, schedule it
+        if ((new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S1) || (new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S2)) {
+          this.props.test(
+            args.e.data.id,
+            args.e.data.resource,
+            args.e.data.start.value,
+            args.e.data.end.value
+          );
+        } else {
+          this.props.preventTimeExceed();
+        }
+
       },
       timeRangeSelectedHandling: "Enabled",
       onTimeRangeSelected: args => this.handleScheduleClick(this.calendar, args),
@@ -153,7 +159,12 @@ class Scheduler extends Component {
           if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
+            // args.cell.backColor = "rgb(212, 212, 212)";
           }
+          // else {
+          //   args.cell.backColor = "rgb(212, 212, 212)";
+
+          // }
         }
 
         // If bay two is open and has a second shift
@@ -343,10 +354,7 @@ class Scheduler extends Component {
   }
 
   handleCellDurationChange(e) {
-    console.log(e.target);
     this.setState({ cellDuration: parseInt(e.target.value) });
-    console.log(this.state.cellDuration);
-    // this.setState({  });
   }
 
   render() {
@@ -356,7 +364,7 @@ class Scheduler extends Component {
       <div className="row mx-auto">
         <div className="col-sm-3 px-0">
           <div id="work-orders-header">
-            <h6 className="text-center text-dark my-2">Work Orders</h6>
+            <h6 style={{margin: "10px 0"}} className="text-center text-dark">Work Orders</h6>
           </div>
           <div className="work-orders-container">
             {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
@@ -364,6 +372,7 @@ class Scheduler extends Component {
                 wo={wo}
                 id={wo.id}
                 name={`Trailer ${wo.trailer_id}`}
+                cityState={`${this.props.city}, ${this.props.state}`}
                 text={wo.text}
                 duration={ this.props.shiftType === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
               />

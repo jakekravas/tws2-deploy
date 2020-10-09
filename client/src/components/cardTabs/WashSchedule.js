@@ -300,6 +300,15 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     }, 5000);
   }
 
+  const preventTimeExceed = () => {
+    getWorkOrdersOfLocation(selectedLocation.location_id);
+    // setNeededDateAlert(neededDateStr);
+    setAlertDisplay("block");
+    setTimeout(() => {
+      setAlertDisplay("none");
+    }, 5000);
+  }
+
   const test = (id, resource, start, end) => {
     updateWorkOrderStatus(id, resource, start, end, selectedLocation.location_id);
   }
@@ -362,7 +371,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
             <span></span>
           </div>
           <div style={{display: alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
-            This wash must be completed no later than {neededDateAlert}
+            {/* This wash must be completed no later than {neededDateAlert} */}
+          The end of a wash cannot exceed the end of a shift
           </div>
           {/* 2 BAYS AND BOTH OPEN */}
             {selectedLocation.wash_bays === 2 && bayOneOpen && bayTwoOpen ?
@@ -392,6 +402,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     }
                     test={test}
                     preventSave={preventSave}
+                    preventTimeExceed={preventTimeExceed}
                     onUnschedule={onUnschedule}
                     unscheduledWorkOrders={
                       workOrders.workOrders.filter(wo =>

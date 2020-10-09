@@ -15,24 +15,32 @@ function DraggableOrder(props) {
       keepElement: true
     });
   }}>
-    <div key={props.wo.id} className="work-order">
-      <span className="work-order-title-section">
-        <span className="work-order-trailer">Trailer {props.wo.trailer_id}</span>
-        <br/>
-        <span className="work-order-duration">
-          <i className="far fa-clock"/> {
-          Math.floor((props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) / 60)
-          }h&nbsp;
-          {
-          ((props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) % 60) > 0 && <span>{(props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) % 60}m</span>
-          }
+    <div className="work-order-item-container">
+      <div className="work-order-trailer">Trailer {props.wo.trailer_id} - {props.cityState}</div>
+      <div key={props.wo.id} className="work-order-content">
+        <span className="work-order-title-section">
+          <span className="work-order-duration">
+            {/* Team <i className="far fa-clock"/> { */}
+            Team: {
+            Math.floor((props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) / 60)
+            }h&nbsp;
+            {
+            ((props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) % 60) > 0 && <span>{(props.wo.int_duration_mins_team + props.wo.ext_duration_mins_team) % 60}m</span>
+            }<br/>
+            Solo: {
+            Math.floor((props.wo.int_duration_mins_solo + props.wo.ext_duration_mins_solo) / 60)
+            }h&nbsp;
+            {
+            ((props.wo.int_duration_mins_solo + props.wo.ext_duration_mins_solo) % 60) > 0 && <span>{(props.wo.int_duration_mins_solo + props.wo.ext_duration_mins_solo) % 60}m</span>
+            }
+          </span>
         </span>
-      </span>
-      <span className="work-order-dates">
-        Needed:
-        <br/>
-        {props.wo.needed_date_display_str}
-      </span>
+        <span className="work-order-dates">
+          Needed:
+          <br/>
+          {props.wo.needed_date_display_str}
+        </span>
+      </div>
     </div>
   </div>);
 }
