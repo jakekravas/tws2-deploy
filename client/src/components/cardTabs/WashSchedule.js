@@ -250,6 +250,10 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     } else {
       setBayTwoS2EndHr(parseInt(bayTwo.shift_two_end.split(":")[0]));
     }
+
+    if (selectedLocation.wash_bays === 1) {
+      setbayTwoOpen(false);
+    }
   }
 
   const getStuff = async () => {
@@ -411,12 +415,12 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     }
                     resources={ selectedLocation.wash_bays === 2 ? [
                       {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
-                        { name: `Bay 1 - S1: team, S2: solo`, id: `${selectedLocation.location_id}1` },
-                        { name: `Bay 2`, id: `${selectedLocation.location_id}2` }
+                        { name: "Bay 1", id: `${selectedLocation.location_id}1` },
+                        { name: "Bay 2", id: `${selectedLocation.location_id}2` }
                       ]}
                     ] : [
                       {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
-                        { name: `Bay 1 - S1: team`, id: `${selectedLocation.location_id}1` },
+                        { name: "Bay 1", id: `${selectedLocation.location_id}1` },
                       ]}
                     ]}
                     events={

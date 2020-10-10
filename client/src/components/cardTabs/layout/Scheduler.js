@@ -9,7 +9,7 @@ class Scheduler extends Component {
     super(props);
     this.state = {
       // timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Hour"}],
-      timeHeaders: [{"groupBy": "Hour"}, {"groupBy": "Hour"}],
+      timeHeaders: [{"groupBy": "Hour"}],
       treeEnabled: true,
       treeAnimation: false,
       cellDuration: 30,
@@ -31,66 +31,6 @@ class Scheduler extends Component {
       unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
-      onBeforeTimeHeaderRender: args => {
-        if (args.header.level === 1) {
-          // If args.header is within bay one shift one
-          if (new Date(args.header.start.value) >= this.props.startHrStrB1S1 && new Date(args.header.end.value) <= this.props.endHrStrB1S1 && this.props.bays === 1 && this.state.cellDuration !== 60) {
-            args.header.html = `${this.props.bayOneS1Type} shift`;
-            // If cell duration is NOT 60
-            if (this.state.cellDuration !== 60) {
-              // If cell duration IS 60
-            } else if (this.state.cellDuration === 60) {
-              args.header.html = "";
-            }
-          // If args.header is within bay one shift two
-          } else if (new Date(args.header.start.value) >= this.props.startHrStrB1S2 && new Date(args.header.end.value) <= this.props.endHrStrB1S2) {
-            // If cell duration is NOT 60
-            if (this.state.cellDuration !== 60) {
-              args.header.html = `${this.props.bayOneS2Type} shift`;
-              // If cell duration IS 60
-            } else if (this.state.cellDuration === 60) {
-              args.header.html = "";
-            }
-          }
-        }
-
-        // If there's two bays
-        if (this.props.bays === 2 && args.header.level === 1) {
-          // If args.header is within bay one shift one
-          if (new Date(args.header.start.value) >= this.props.startHrStrB2S1 && new Date(args.header.end.value) <= this.props.endHrStrB2S1) {
-            // If cell duration is NOT 60
-            if (this.state.cellDuration !== 60) {
-              args.header.html = `${this.props.bayOneS1Type} shift`;
-              // If cell duration IS 60
-            } else if (this.state.cellDuration === 60) {
-              args.header.html = "";
-            }
-          // If args.header is within bay one shift two
-          } else if (new Date(args.header.start.value) >= this.props.startHrStrB1S2 && new Date(args.header.end.value) <= this.props.endHrStrB1S2) {
-            // If cell duration is NOT 60
-            if (this.state.cellDuration !== 60) {
-              args.header.html = `${this.props.bayOneS2Type} shift`;
-              // If cell duration IS 60
-            } else if (this.state.cellDuration === 60) {
-              args.header.html = "";
-            }
-          }
-        }
-
-        // if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration !== 60 && new Date(args.header.start.value) >= this.props.startHrStrB1S1 && new Date(args.header.end.value) <= this.props.endHrStrB1S1) {
-        //   args.header.html = `${this.props.bayOneS1Type} shift`;
-
-        // // If there's one bay and the interval IS set to 60 min
-        // } else if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration === 60) {
-        //   args.header.html = `${this.props.bayOneS1Type}`;
-        // }
-
-        // else if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration === 60) {
-
-        // }
-
-
-      },
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
       },
@@ -232,11 +172,35 @@ class Scheduler extends Component {
           if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
-            // args.cell.backColor = "rgb(212, 212, 212)";
+            // args.cell.backColor = "rgb(225, 225, 225)";
           }
-          // else {
-          //   args.cell.backColor = "rgb(212, 212, 212)";
-          // }
+        }
+
+        // If bay 1 shift 2 is a solo shift, make the cell color grey
+        if (this.props.bayOneS1Type === "solo") {
+          if (new Date(args.cell.start.value) >= this.props.startHrStrB1S1 && new Date(args.cell.end.value) <= this.props.endHrStrB1S1 && args.cell.resource === this.props.resource1) {
+            args.cell.backColor = "rgb(225, 225, 225)";
+          }
+        }
+        // If bay 1 shift 1 is a solo shift, make the cell color grey
+        if (this.props.bayOneS2Type === "solo") {
+          if (new Date(args.cell.start.value) >= this.props.startHrStrB1S2 && new Date(args.cell.end.value) <= this.props.endHrStrB1S2 && args.cell.resource === this.props.resource1) {
+            args.cell.backColor = "rgb(225, 225, 225)";
+          }
+        }
+
+        // If bay 2 shift 1 is a solo shift, make the cell color grey
+        if (this.props.bayTwoS1Type === "solo") {
+          if (new Date(args.cell.start.value) >= this.props.startHrStrB2S1 && new Date(args.cell.end.value) <= this.props.endHrStrB2S1 && args.cell.resource === this.props.resource2) {
+            args.cell.backColor = "rgb(225, 225, 225)";
+          }
+        }
+
+        // If bay 2 shift 2 is a solo shift, make the cell color grey
+        if (this.props.bayTwoS2Type === "solo") {
+          if (new Date(args.cell.start.value) >= this.props.startHrStrB2S2 && new Date(args.cell.end.value) <= this.props.endHrStrB2S2 && args.cell.resource === this.props.resource2) {
+            args.cell.backColor = "rgb(225, 225, 225)";
+          }
         }
 
         // If bay two is open and has a second shift
