@@ -9,7 +9,7 @@ class Scheduler extends Component {
     super(props);
     this.state = {
       // timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Hour"}],
-      timeHeaders: [{"groupBy": "Hour"}],
+      timeHeaders: [{"groupBy": "Hour"}, {"groupBy": "Hour"}],
       treeEnabled: true,
       treeAnimation: false,
       cellDuration: 30,
@@ -31,7 +31,66 @@ class Scheduler extends Component {
       unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
-      // onmousedown: return DayPilotCalendar.dragStart(null, 60*30, "125", this.innerHTML),
+      onBeforeTimeHeaderRender: args => {
+        if (args.header.level === 1) {
+          // If args.header is within bay one shift one
+          if (new Date(args.header.start.value) >= this.props.startHrStrB1S1 && new Date(args.header.end.value) <= this.props.endHrStrB1S1 && this.props.bays === 1 && this.state.cellDuration !== 60) {
+            args.header.html = `${this.props.bayOneS1Type} shift`;
+            // If cell duration is NOT 60
+            if (this.state.cellDuration !== 60) {
+              // If cell duration IS 60
+            } else if (this.state.cellDuration === 60) {
+              args.header.html = "";
+            }
+          // If args.header is within bay one shift two
+          } else if (new Date(args.header.start.value) >= this.props.startHrStrB1S2 && new Date(args.header.end.value) <= this.props.endHrStrB1S2) {
+            // If cell duration is NOT 60
+            if (this.state.cellDuration !== 60) {
+              args.header.html = `${this.props.bayOneS2Type} shift`;
+              // If cell duration IS 60
+            } else if (this.state.cellDuration === 60) {
+              args.header.html = "";
+            }
+          }
+        }
+
+        // If there's two bays
+        if (this.props.bays === 2 && args.header.level === 1) {
+          // If args.header is within bay one shift one
+          if (new Date(args.header.start.value) >= this.props.startHrStrB2S1 && new Date(args.header.end.value) <= this.props.endHrStrB2S1) {
+            // If cell duration is NOT 60
+            if (this.state.cellDuration !== 60) {
+              args.header.html = `${this.props.bayOneS1Type} shift`;
+              // If cell duration IS 60
+            } else if (this.state.cellDuration === 60) {
+              args.header.html = "";
+            }
+          // If args.header is within bay one shift two
+          } else if (new Date(args.header.start.value) >= this.props.startHrStrB1S2 && new Date(args.header.end.value) <= this.props.endHrStrB1S2) {
+            // If cell duration is NOT 60
+            if (this.state.cellDuration !== 60) {
+              args.header.html = `${this.props.bayOneS2Type} shift`;
+              // If cell duration IS 60
+            } else if (this.state.cellDuration === 60) {
+              args.header.html = "";
+            }
+          }
+        }
+
+        // if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration !== 60 && new Date(args.header.start.value) >= this.props.startHrStrB1S1 && new Date(args.header.end.value) <= this.props.endHrStrB1S1) {
+        //   args.header.html = `${this.props.bayOneS1Type} shift`;
+
+        // // If there's one bay and the interval IS set to 60 min
+        // } else if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration === 60) {
+        //   args.header.html = `${this.props.bayOneS1Type}`;
+        // }
+
+        // else if (args.header.level === 1 && this.props.bays === 1 && this.state.cellDuration === 60) {
+
+        // }
+
+
+      },
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
       },
@@ -39,6 +98,20 @@ class Scheduler extends Component {
       onEventResizing: () => this.forceUpdate(),
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
+        // if (this.props.bayOneS1Type === "team" && new Date(args.e.data.start.value) < this.props.endHrStrB1S1) {
+
+        // if args is within shift one, and shift one is a team shift
+        if (args.e.data.resource = this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S1) {
+          console.log("schedule on b1 s1")
+          // this.props.test(
+          //   args.e.data.id,
+          //   args.e.data.resource,
+          //   args.e.data.start.value,
+          //   args.e.data.end.value
+          // );
+        } else if (new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S2) {
+
+        }
 
         // If args starts within a shift range, schedule it
         if ((new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S1) || (new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S2)) {
@@ -48,13 +121,13 @@ class Scheduler extends Component {
             args.e.data.start.value,
             args.e.data.end.value
           );
+        // If args isn't within a shift range, don't schedule it and show alert message
         } else {
           this.props.preventTimeExceed();
         }
-
       },
       timeRangeSelectedHandling: "Enabled",
-      onTimeRangeSelected: args => this.handleScheduleClick(this.calendar, args),
+      onTimeRangeSelected: () => this.calendar.clearSelection(),
       eventDeleteHandling: "Update",
       onEventDelete: args => this.props.onUnschedule(args.e.data.id),
 
@@ -163,7 +236,6 @@ class Scheduler extends Component {
           }
           // else {
           //   args.cell.backColor = "rgb(212, 212, 212)";
-
           // }
         }
 
@@ -177,7 +249,6 @@ class Scheduler extends Component {
         }
       },
     };
-    this.handleScheduleClick = this.handleScheduleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -216,115 +287,6 @@ class Scheduler extends Component {
     //   this.setState({ cellDuration: this.props.cellDuration });
     // }
   }
-
-  handleScheduleClick(dp, args) {
-    // If you're viewing a date in the past, disable ability to schedule work orders
-    if (this.props.disableMove) {
-      this.setState({ currentDP: dp, currentArgs: args, inpDisable: false });
-      this.state.currentDP.clearSelection();
-    } else {
-      // Get start time of clicked timeslot
-      let selectedStartTime = new Date(args.start.value);
-      // Get scheduled work orders that take place after the clicked time slot
-      let scheduledOrders = this.state.events.filter(ev => new Date(ev.start.value) > new Date(args.start.value));
-      let ordersToShow;
-      let disabledOrders;
-      let nextScheduledStartTime;  
-  
-      let closeHrMinuteDifference = (new Date(this.props.endHrStr) - selectedStartTime) / 60000;
-      
-      if (scheduledOrders.length > 0) {
-        // Sort scheduled work orders by start date
-        scheduledOrders.sort((a,b) => (new Date(a.start.value) > new Date(b.start.value)) ? 1 : ((new Date(b.start.value) > new Date(a.start.value)) ? -1 : 0))
-  
-        // Get start time of next scheduled work order
-        nextScheduledStartTime = new Date(scheduledOrders[0].start.value);
-        // Get # of minutes between clicked start time and next scheduled start time
-        let nextSchedMinuteDifference = (nextScheduledStartTime - selectedStartTime) / 60000;
-        
-        // Filter out unscheduled work orders that have a duration exceeding nextSchedMinuteDifference, their needed by date, or closeHrMinuteDifference
-        if (this.props.shiftType === "team") {
-          // Schedulable orders
-          ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.int_duration_mins_team + wo.ext_duration_mins_team) <= nextSchedMinuteDifference
-            && (wo.int_duration_mins_team + wo.ext_duration_mins_team) <= ((new Date(wo.needed_date) - selectedStartTime) / 60000)
-            && wo.int_duration_mins_team + wo.ext_duration_mins_team <= closeHrMinuteDifference
-            );
-          // Unschedulable orders
-          disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.int_duration_mins_team + wo.ext_duration_mins_team) > nextSchedMinuteDifference
-            || (wo.int_duration_mins_team + wo.ext_duration_mins_team) > ((new Date(wo.needed_date) - selectedStartTime) / 60000)
-            || wo.int_duration_mins_team + wo.ext_duration_mins_team > closeHrMinuteDifference
-            );
-          } else {
-          // Schedulable orders
-          ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) <= nextSchedMinuteDifference
-            && (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) <= ((new Date(wo.needed_date) - selectedStartTime) / 60000)
-            && wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= closeHrMinuteDifference
-          );
-          // Unschedulable orders
-          disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) > nextSchedMinuteDifference
-            && (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) > ((new Date(wo.needed_date) - selectedStartTime) / 60000)
-            && wo.int_duration_mins_solo + wo.ext_duration_mins_solo > closeHrMinuteDifference
-          );
-        }
-        
-        // Set state of unscheduledOrders to ordersToShow
-        this.setState({
-          unscheduledOrders: ordersToShow,
-          unscheduledOrdersDisabled: disabledOrders
-        });
-
-      } else {
-        // Set state of unscheduledOrders to passed in unscheduled orders
-  
-        if (this.props.shiftType === "team") {
-          // Schedulable orders
-          ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.int_duration_mins_team + wo.ext_duration_mins_team <= (new Date(wo.needed_date) - selectedStartTime) / 60000 &&
-            wo.int_duration_mins_team + wo.ext_duration_mins_team <= closeHrMinuteDifference
-          );
-          // Unschedulable orders
-          disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.int_duration_mins_team + wo.ext_duration_mins_team > (new Date(wo.needed_date) - selectedStartTime) / 60000 ||
-            wo.int_duration_mins_team + wo.ext_duration_mins_team > closeHrMinuteDifference
-          );
-        } else {
-          // Schedulable orders
-          ordersToShow = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= (new Date(wo.needed_date) - selectedStartTime) / 60000 &&
-            wo.int_duration_mins_solo + wo.ext_duration_mins_solo <= closeHrMinuteDifference
-          );
-          // Unschedulable orders
-          disabledOrders = this.props.unscheduledWorkOrders.filter(wo =>
-            wo.int_duration_mins_solo + wo.ext_duration_mins_solo > (new Date(wo.needed_date) - selectedStartTime) / 60000 ||
-            wo.int_duration_mins_solo + wo.ext_duration_mins_solo > closeHrMinuteDifference
-          );
-        }
-  
-        this.setState({
-          unscheduledOrders: ordersToShow,
-          unscheduledOrdersDisabled: disabledOrders
-        });
-      }
-  
-      this.setState({ currentDP: dp, currentArgs: args, inpDisable: false });
-      this.state.currentDP.clearSelection();
-      this.setState({ modalOpen: true });
-      if (this.props.unscheduledWorkOrders.length > 0) {
-        if (this.props.unscheduledWorkOrders[0].int_duration_mins_team !== this.state.inpDuration) {
-          this.setState({ inpDuration: this.props.unscheduledWorkOrders[0].int_duration_mins_team });
-        }
-      }
-      if (this.props.unscheduledWorkOrders.length > 0) {
-        if (this.props.unscheduledWorkOrders[0].id !== this.state.inpId) {
-          this.setState({ inpId: this.props.unscheduledWorkOrders[0].id });
-        }
-      }
-    }
-  }
   
   handleAdd() {
     this.props.test(
@@ -354,6 +316,11 @@ class Scheduler extends Component {
   }
 
   handleCellDurationChange(e) {
+    // if (e.target.value === 60) {
+    //   this.setState({ timeHeaders: [{"groupBy": "Day"}], cellDuration: parseInt(e.target.value) });
+    // } else {
+    //   this.setState({ timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Day"}], cellDuration: parseInt(e.target.value) });
+    // }
     this.setState({ cellDuration: parseInt(e.target.value) });
   }
 
@@ -364,7 +331,7 @@ class Scheduler extends Component {
       <div className="row mx-auto">
         <div className="col-sm-3 px-0">
           <div id="work-orders-header">
-            <h6 style={{margin: "10px 0"}} className="text-center text-dark">Work Orders</h6>
+            <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
           </div>
           <div className="work-orders-container">
             {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
@@ -374,7 +341,9 @@ class Scheduler extends Component {
                 name={`Trailer ${wo.trailer_id}`}
                 cityState={`${this.props.city}, ${this.props.state}`}
                 text={wo.text}
-                duration={ this.props.shiftType === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                teamDuration={1}
+                soloDuration={2}
               />
             ))}
           </div>
