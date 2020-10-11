@@ -405,6 +405,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     preventSave={preventSave}
                     preventTimeExceed={preventTimeExceed}
                     onUnschedule={onUnschedule}
+                    workOrders={workOrders.workOrders}
                     unscheduledWorkOrders={
                       workOrders.workOrders.filter(wo =>
                         (!wo.is_scheduled

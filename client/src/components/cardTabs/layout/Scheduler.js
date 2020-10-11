@@ -38,32 +38,112 @@ class Scheduler extends Component {
       onEventResizing: () => this.forceUpdate(),
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
-        // if (this.props.bayOneS1Type === "team" && new Date(args.e.data.start.value) < this.props.endHrStrB1S1) {
 
-        // if args is within shift one, and shift one is a team shift
-        if (args.e.data.resource = this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S1) {
-          console.log("schedule on b1 s1")
-          // this.props.test(
-          //   args.e.data.id,
-          //   args.e.data.resource,
-          //   args.e.data.start.value,
-          //   args.e.data.end.value
-          // );
-        } else if (new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S2) {
+        // Find order to update
+        let orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
+        let endTime = new Date(args.e.data.start.value);
+        let duration;
 
+        // if args starts in bay 1 shift 1
+        if (args.e.data.resource === this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.start.value) < this.props.endHrStrB1S1) {
+
+          if (this.props.bayOneS1Type === "team") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+          } else if (this.props.bayOneS1Type === "solo") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+          }
+
+          // Set duration
+          endTime.setMinutes(endTime.getMinutes() + duration);
+
+          // If end time is within bay 1 shift 1
+          if (endTime <= this.props.endHrStrB1S1) {
+            this.props.test(
+              args.e.data.id,
+              args.e.data.resource,
+              args.e.data.start.value,
+              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
+            );
+          } else {
+            this.props.preventTimeExceed();
+          }
         }
+        // if args starts in bay 1 shift 2
+        else if (args.e.data.resource === this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.start.value) < this.props.endHrStrB1S2) {
+          if (this.props.bayOneS2Type === "team") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+          } else if (this.props.bayOneS2Type === "solo") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+          }
 
-        // If args starts within a shift range, schedule it
-        if ((new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S1) || (new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.end.value) <= this.props.endHrStrB1S2)) {
-          this.props.test(
-            args.e.data.id,
-            args.e.data.resource,
-            args.e.data.start.value,
-            args.e.data.end.value
-          );
-        // If args isn't within a shift range, don't schedule it and show alert message
-        } else {
-          this.props.preventTimeExceed();
+          // Set duration
+          endTime.setMinutes(endTime.getMinutes() + duration);
+
+          // If end time is within bay 1 shift 2
+          if (endTime <= this.props.endHrStrB1S2) {
+            this.props.test(
+              args.e.data.id,
+              args.e.data.resource,
+              args.e.data.start.value,
+              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
+            );
+          } else {
+            this.props.preventTimeExceed();
+          }
+        }
+        // if args starts in bay 2 shift 1
+        else if (args.e.data.resource === this.props.resource2 && new Date(args.e.data.start.value) >= this.props.startHrStrB2S1 && new Date(args.e.data.start.value) < this.props.endHrStrB2S1) {
+          if (this.props.bayTwoS1Type === "team") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+          } else if (this.props.bayTwoS1Type === "solo") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+          }
+
+          // Set duration
+          endTime.setMinutes(endTime.getMinutes() + duration);
+
+          // If end time is within bay 1 shift 2
+          if (endTime <= this.props.endHrStrB2S1) {
+            this.props.test(
+              args.e.data.id,
+              args.e.data.resource,
+              args.e.data.start.value,
+              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
+            );
+          } else {
+            this.props.preventTimeExceed();
+          }
+        }
+        // if args starts in bay 2 shift 2
+        else if (args.e.data.resource === this.props.resource2 && new Date(args.e.data.start.value) >= this.props.startHrStrB2S2 && new Date(args.e.data.start.value) < this.props.endHrStrB2S2) {
+          if (this.props.bayTwoS2Type === "team") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+          } else if (this.props.bayTwoS2Type === "solo") {
+            // Calculate duration
+            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+          }
+
+          // Set duration
+          endTime.setMinutes(endTime.getMinutes() + duration);
+
+          // If end time is within bay 1 shift 2
+          if (endTime <= this.props.endHrStrB2S2) {
+            this.props.test(
+              args.e.data.id,
+              args.e.data.resource,
+              args.e.data.start.value,
+              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
+            );
+          } else {
+            this.props.preventTimeExceed();
+          }
         }
       },
       timeRangeSelectedHandling: "Enabled",
@@ -166,23 +246,60 @@ class Scheduler extends Component {
           args.cell.backColor = "#eee";
         }
 
+        // If cell is before the start of shift one for either bay
+        if ((args.cell.resource === this.props.resource1 && new Date(args.cell.start.value) < this.props.startHrStrB1S1) || (args.cell.resource === this.props.resource2 && new Date(args.cell.start.value) < this.props.startHrStrB2S1)) {
+          args.cell.disabled = true;
+          args.cell.backColor = "#eee";
+        }
+        
+        // If B1S2 is open
+        if (this.props.bayOneS2Open) {
+          // If cell is in bay 1 row and is after the end of B1S2
+          if (args.cell.resource === this.props.resource1 && new Date(args.cell.end.value) > this.props.endHrStrB1S2) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        } else {
+          // If cell is in bay 1 row and is after the end of B1S1
+          if (args.cell.resource === this.props.resource1 && new Date(args.cell.end.value) > this.props.endHrStrB1S1) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        }
+
+        // If B2S2 is open
+        if (this.props.bayTwoS2Open) {
+          // If cell is in bay 2 row and is after the end of B2S2
+          if (args.cell.resource === this.props.resource2 && new Date(args.cell.end.value) > this.props.endHrStrB2S2) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        } else {
+          // If cell is in bay 2 row and is after the end of B2S1
+          if (args.cell.resource === this.props.resource2 && new Date(args.cell.end.value) > this.props.endHrStrB2S1) {
+            args.cell.disabled = true;
+            args.cell.backColor = "#eee";
+          }
+        }
+
         // If bay one is open and has a second shift
         if (this.props.bayOneOpen && this.props.bayOneS2Open && this.props.startHrStrB1S2) {
           // Disable cells if they start after shift one and before shift 2
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
+          // if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
             // args.cell.backColor = "rgb(225, 225, 225)";
           }
         }
 
-        // If bay 1 shift 2 is a solo shift, make the cell color grey
+        // If bay 1 shift 1 is a solo shift, make the cell color grey
         if (this.props.bayOneS1Type === "solo") {
           if (new Date(args.cell.start.value) >= this.props.startHrStrB1S1 && new Date(args.cell.end.value) <= this.props.endHrStrB1S1 && args.cell.resource === this.props.resource1) {
             args.cell.backColor = "rgb(225, 225, 225)";
           }
         }
-        // If bay 1 shift 1 is a solo shift, make the cell color grey
+        // If bay 1 shift 2 is a solo shift, make the cell color grey
         if (this.props.bayOneS2Type === "solo") {
           if (new Date(args.cell.start.value) >= this.props.startHrStrB1S2 && new Date(args.cell.end.value) <= this.props.endHrStrB1S2 && args.cell.resource === this.props.resource1) {
             args.cell.backColor = "rgb(225, 225, 225)";
@@ -206,7 +323,8 @@ class Scheduler extends Component {
         // If bay two is open and has a second shift
         if (this.props.bayTwoOpen && this.props.bayTwoS2Open && this.props.startHrStrB2S2) {
           // Disable cells if they start after shift one and before shift 2
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) !== this.props.endHrStrB2S2 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
+          // if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) !== this.props.endHrStrB2S2 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
+          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
           }
