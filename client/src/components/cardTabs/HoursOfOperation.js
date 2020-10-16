@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import { updateLocationHrs, updateWashBayQuantity, getLocationInfo } from "../../actions/location";
 import TimePicker from 'react-time-picker';
+import Modal from "react-modal";
 import DayHoursView from "./layout/DayHoursView";
 
 const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocationInfo, location: { selectedLocation } }) => {
@@ -9,6 +10,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
   const [washBays, setWashBays] = useState();
   const [bayEditHours, setBayEditHours] = useState(1);
   const [saveDisabled, setSaveDisabled] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const [daysOpen, setDaysOpen] = useState({
     mondayOpen: false,
@@ -417,9 +419,20 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
   }
   
   const onBayQuantityChange = e => {
-    console.log("ON BAY CHANGE");
-    const formData = { washBays: e.target.value }
+    if (selectedLocation.wash_bays !== parseInt(e.target.value)) {
+      if (parseInt(e.target.value) === 1) {
+        setModalOpen(true);
+      } else {
+        const formData = { washBays: e.target.value };
+        updateWashBayQuantity(selectedLocation.id, formData);
+      }
+    }
+  }
+
+  const setBayQuantityToOne = () => {
+    const formData = { washBays: 1 };
     updateWashBayQuantity(selectedLocation.id, formData);
+    setModalOpen(false);
   }
 
   const onCancel = () => {
@@ -640,6 +653,32 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
     <section>
       {!editOpen ?
       <div className="col-sm-10 mx-auto py-3 px-0">
+        <Modal
+          // isOpen={this.state.modalOpen}
+          isOpen={modalOpen}
+          className="modall"
+          style = {
+              {
+                content: {
+                  width: "300px",
+                }
+              }
+            }
+          >
+            <div className="card wo-card">
+              <div className="card text-center">
+                <div className="card-body">
+                  <div className="alert alert-danger p-1 my-0 text-center">
+                    Warning: if there are any work orders scheduled for bay 2 of this location, they will be unscheduled. Are you sure you wish to proceed?
+                  </div>
+                  <div className="mt-3">
+                    <button onClick={() => setModalOpen(false)} className="btn cancel-add-btn mr-1">Cancel</button>
+                    <button onClick={setBayQuantityToOne} className="btn submit-btn ml-1">Ok</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal>
         <div className="hours-of-operation-header">
           Weekly Schedule
         </div>
@@ -792,7 +831,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
                   name="mondayOpen"
                 /> Monday
               </th>
-              <td className="text-center">
+              <td className="text-center time-pick-container">
                 <TimePicker
                   clearIcon={null}
                   disableClock={true}
@@ -1274,6 +1313,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
             </tr>
             {/* SUNDAY */}
             <tr>
+              {/* <th> */}
               <th>
                 <input
                   type="checkbox"

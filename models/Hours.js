@@ -1,7 +1,16 @@
 const Sequelize = require('sequelize');
 const db = require('../config/database');
 
-const BayTwoWednesdayHrs = db.define("bay_two_wednesday_hr", {
+const Hours = db.define("hour", {
+  location_id: {
+    type: Sequelize.STRING
+  },
+  day: {
+    type: Sequelize.STRING
+  },
+  bay: {
+    type: Sequelize.INTEGER
+  },
   is_open: {
     type: Sequelize.BOOLEAN
   },
@@ -25,12 +34,7 @@ const BayTwoWednesdayHrs = db.define("bay_two_wednesday_hr", {
   },
   shift_two_type: {
     type: Sequelize.STRING
-  },
-  location_id: {
-    type: Sequelize.STRING
   }
 });
 
-// BayTwoWednesdayHrs.schema("tw_scheduler");
-
-module.exports = BayTwoWednesdayHrs;
+module.exports = Hours;

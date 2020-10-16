@@ -368,7 +368,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
 
             <div className="date-header-middle">
               <i className="fas fa-chevron-left chevron-icon" onClick={getPreviousDay}/>
-              {`${weekdayDisplay}, ${monthDisplay} ${dayVal}, ${yearVal}`}
+              <div className="date-title">
+                {`${weekdayDisplay}, ${monthDisplay} ${dayVal}, ${yearVal}`}
+              </div>
               <i className="fas fa-chevron-right chevron-icon" onClick={getNextDay}/>
             </div>
 

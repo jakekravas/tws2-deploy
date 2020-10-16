@@ -10,7 +10,6 @@ import {
 export const getAllLocations = () => async dispatch => {
   try {
     const res = await axios.get("/api/locations");
-    console.log(res.data);
 
     dispatch({
       type: GET_ALL_LOCATIONS,
@@ -24,10 +23,8 @@ export const getAllLocations = () => async dispatch => {
 };
 
 export const getLocationInfo = id => async dispatch => {
-  console.log(id);
   try {
     const res = await axios.get(`/api/locations/${id}`);
-    console.log(res.data);
 
     let locationInfo = res.data.location;
 

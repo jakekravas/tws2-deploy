@@ -2,20 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const Location = require('../../models/Location');
-const BayOneMondayHrs = require('../../models/BayOneMondayHrs');
-const BayOneTuesdayHrs = require('../../models/BayOneTuesdayHrs');
-const BayOneWednesdayHrs = require('../../models/BayOneWednesdayHrs');
-const BayOneThursdayHrs = require('../../models/BayOneThursdayHrs');
-const BayOneFridayHrs = require('../../models/BayOneFridayHrs');
-const BayOneSaturdayHrs = require('../../models/BayOneSaturdayHrs');
-const BayOneSundayHrs = require('../../models/BayOneSundayHrs');
-const BayTwoMondayHrs = require('../../models/BayTwoMondayHrs');
-const BayTwoTuesdayHrs = require('../../models/BayTwoTuesdayHrs');
-const BayTwoWednesdayHrs = require('../../models/BayTwoWednesdayHrs');
-const BayTwoThursdayHrs = require('../../models/BayTwoThursdayHrs');
-const BayTwoFridayHrs = require('../../models/BayTwoFridayHrs');
-const BayTwoSaturdayHrs = require('../../models/BayTwoSaturdayHrs');
-const BayTwoSundayHrs = require('../../models/BayTwoSundayHrs');
+const WorkOrder = require('../../models/WorkOrder');
+const Hours = require('../../models/Hours');
 
 // @route      GET api/locations
 // @desc       Get all locations
@@ -43,21 +31,120 @@ router.get("/:id", async (req, res) => {
 
     if (!location) return res.json({ msg: "Location data not found" });
     
-    const monday = await BayOneMondayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const tuesday = await BayOneTuesdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const wednesday = await BayOneWednesdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const thursday = await BayOneThursdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const friday = await BayOneFridayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const saturday = await BayOneSaturdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const sunday = await BayOneSundayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
+    const monday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
-    const monday2 = await BayTwoMondayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const tuesday2 = await BayTwoTuesdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const wednesday2 = await BayTwoWednesdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const thursday2 = await BayTwoThursdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const friday2 = await BayTwoFridayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const saturday2 = await BayTwoSaturdayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
-    const sunday2 = await BayTwoSundayHrs.findOne({ where: { location_id: location.dataValues.location_id } });
+    // BAY 2
+    const monday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
     const bayOneHours = {
       monday,
@@ -102,23 +189,138 @@ router.put("/washbays/:id", async (req, res) => {
       { where: { id: req.params.id } }
     );
 
+    if (req.body.washBays === 1) {
+      // Find all orders of this location that are scheduled for bay 2
+      let ordersToUnschedule = await WorkOrder.findAll({
+        where: {wash_location_id: locationToUpdate.location_id, is_scheduled: true, resource: `${locationToUpdate.location_id}2`}
+      });
+
+      if (ordersToUnschedule.length > 0) {
+        // Unscheduling orders that were scheduled on bay 2 of this location
+        for (let i = 0; i < ordersToUnschedule.length; i++) {
+          await ordersToUnschedule[i].update(
+            { is_scheduled: false },
+            { where: { id: ordersToUnschedule[i].id } }
+          )
+        }
+      }
+    }
+
     // Bay one hours
-    const monday = await BayOneMondayHrs.findOne({where:{location_id: location.location_id}});
-    const tuesday = await BayOneTuesdayHrs.findOne({where:{location_id: location.location_id}});
-    const wednesday = await BayOneWednesdayHrs.findOne({where:{location_id: location.location_id}});
-    const thursday = await BayOneThursdayHrs.findOne({where:{location_id: location.location_id}});
-    const friday = await BayOneFridayHrs.findOne({where:{location_id: location.location_id}});
-    const saturday = await BayOneSaturdayHrs.findOne({where:{location_id: location.location_id}});
-    const sunday = await BayOneSundayHrs.findOne({where:{location_id: location.location_id}});
+    const monday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
     // Bay two hours
-    const monday2 = await BayTwoMondayHrs.findOne({where:{location_id: location.location_id}});
-    const tuesday2 = await BayTwoTuesdayHrs.findOne({where:{location_id: location.location_id}});
-    const wednesday2 = await BayTwoWednesdayHrs.findOne({where:{location_id: location.location_id}});
-    const thursday2 = await BayTwoThursdayHrs.findOne({where:{location_id: location.location_id}});
-    const friday2 = await BayTwoFridayHrs.findOne({where:{location_id: location.location_id}});
-    const saturday2 = await BayTwoSaturdayHrs.findOne({where:{location_id: location.location_id}});
-    const sunday2 = await BayTwoSundayHrs.findOne({where:{location_id: location.location_id}});
+    const monday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
     const bayOneHours = {
       monday,
@@ -157,23 +359,122 @@ router.put("/hours/:location_id", async (req, res) => {
     const location = await Location.findOne({ where: { location_id: req.params.location_id }});
 
     // Bay one hours
-    const monday = await BayOneMondayHrs.findOne({where:{location_id: req.params.location_id}});
-    const tuesday = await BayOneTuesdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const wednesday = await BayOneWednesdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const thursday = await BayOneThursdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const friday = await BayOneFridayHrs.findOne({where:{location_id: req.params.location_id}});
-    const saturday = await BayOneSaturdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const sunday = await BayOneSundayHrs.findOne({where:{location_id: req.params.location_id}});
+    const monday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday = await Hours.findOne({
+      where:
+        {
+          bay: 1,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
     // Bay two hours
-    const monday2 = await BayTwoMondayHrs.findOne({where:{location_id: req.params.location_id}});
-    const tuesday2 = await BayTwoTuesdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const wednesday2 = await BayTwoWednesdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const thursday2 = await BayTwoThursdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const friday2 = await BayTwoFridayHrs.findOne({where:{location_id: req.params.location_id}});
-    const saturday2 = await BayTwoSaturdayHrs.findOne({where:{location_id: req.params.location_id}});
-    const sunday2 = await BayTwoSundayHrs.findOne({where:{location_id: req.params.location_id}});
+    const monday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Monday"
+        }
+    });
+    const tuesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Tuesday"
+        }
+    });
+    const wednesday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Wednesday"
+        }
+    });
+    const thursday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Thursday"
+        }
+    });
+    const friday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Friday"
+        }
+    });
+    const saturday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Saturday"
+        }
+    });
+    const sunday2 = await Hours.findOne({
+      where:
+        {
+          bay: 2,
+          location_id: location.dataValues.location_id,
+          day: "Sunday"
+        }
+    });
 
+    // Update
     const monResult = await monday.update(
       {
         is_open: req.body.bayOneHours.monday.isOpen,
@@ -185,7 +486,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.monday.shift2End,
         shift_two_type: req.body.bayOneHours.monday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Monday", bay: 1 } }
     );
 
     const tuesResult = await tuesday.update(
@@ -199,7 +500,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.tuesday.shift2End,
         shift_two_type: req.body.bayOneHours.tuesday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Tuesday", bay: 1 } }
     );
     
     const wedResult = await wednesday.update(
@@ -213,7 +514,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.wednesday.shift2End,
         shift_two_type: req.body.bayOneHours.wednesday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Wednesday", bay: 1 } }
     );
 
     const thursResult = await thursday.update(
@@ -227,7 +528,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.thursday.shift2End,
         shift_two_type: req.body.bayOneHours.thursday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Thursday", bay: 1 } }
     );
     
     const friResult = await friday.update(
@@ -241,7 +542,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.friday.shift2End,
         shift_two_type: req.body.bayOneHours.friday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Friday", bay: 1 } }
     );
       
     const satResult = await saturday.update(
@@ -255,7 +556,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.saturday.shift2End,
         shift_two_type: req.body.bayOneHours.saturday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Saturday", bay: 1 } }
     );
 
     const sunResult = await sunday.update(
@@ -269,7 +570,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayOneHours.sunday.shift2End,
         shift_two_type: req.body.bayOneHours.sunday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Sunday", bay: 1 } }
     );
 
     // Bay 2
@@ -284,7 +585,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.monday.shift2End,
         shift_two_type: req.body.bayTwoHours.monday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Monday", bay: 2 } }
     );
 
     const tuesResult2 = await tuesday2.update(
@@ -298,7 +599,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.tuesday.shift2End,
         shift_two_type: req.body.bayTwoHours.tuesday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Tuesday", bay: 2 } }
     );
     
     const wedResult2 = await wednesday2.update(
@@ -312,7 +613,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.wednesday.shift2End,
         shift_two_type: req.body.bayTwoHours.wednesday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Wednesday", bay: 2 } }
     );
 
     const thursResult2 = await thursday2.update(
@@ -326,7 +627,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.thursday.shift2End,
         shift_two_type: req.body.bayTwoHours.thursday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Thursday", bay: 2 } }
     );
     
     const friResult2 = await friday2.update(
@@ -340,7 +641,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.friday.shift2End,
         shift_two_type: req.body.bayTwoHours.friday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Friday", bay: 2 } }
     );
       
     const satResult2 = await saturday2.update(
@@ -354,7 +655,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.saturday.shift2End,
         shift_two_type: req.body.bayTwoHours.saturday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Saturday", bay: 2 } }
     );
 
     const sunResult2 = await sunday2.update(
@@ -368,7 +669,7 @@ router.put("/hours/:location_id", async (req, res) => {
         shift_two_end: req.body.bayTwoHours.sunday.shift2End,
         shift_two_type: req.body.bayTwoHours.sunday.shift2Type
       },
-      { where: { location_id: req.params.location_id } }
+      { where: { location_id: req.params.location_id, day: "Sunday", bay: 2 } }
     );
 
     const bayOneHours = {

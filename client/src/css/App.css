@@ -37,8 +37,15 @@
   padding: 0 8px;
 }
 
+.work-orders-container-sm {
+  max-height: 150px;
+  overflow-y: scroll;
+  padding: 0 8px;
+}
+
 .work-order-item-container {
-  border: 1px solid #999;
+  /* border: 1px solid #999; */
+  border: 1px solid rgb(192,192,192);
   background-color: #f6f6f6;
   border-radius: 3px;
   margin: 12px 0;
@@ -50,8 +57,9 @@
   font-size: 10px;
 }
 
-#work-orders-header {
-  border-bottom: 1px solid #999;
+.work-orders-header {
+  /* border-bottom: 1px solid #999; */
+  border-bottom: 1px solid rgb(192,192,192);
   /* padding: 12.7px 0; */
   margin-bottom: 0 !important;
 }
@@ -103,6 +111,28 @@
   width: 33.4%;
   text-align: center;
   border-right: 1px solid #dee2e6;
+}
+
+.white-key {
+  border: 1px solid #777;
+  background-color: rgb(249, 249, 249);
+  height: 12px;
+  width: 12px;
+  align-self: center !important;
+}
+
+.grey-key {
+  border: 1px solid #777;
+  background-color:rgb(225, 225, 225);
+  height: 12px;
+  width: 12px;
+  align-self: center !important;
+}
+
+.key-text {
+  font-size: 12px;
+  margin-bottom: 3px;
+  align-self: center !important;
 }
 
 /* Scheduler */
@@ -523,6 +553,11 @@ tr {
   margin-top: -50px;
 }
 
+.day-edit-text {
+  display: flex;
+  justify-content: center;
+}
+
 .ReactModal__Content, .ReactModal__Content--after-open {
   padding: 0 !important;
   border: none !important;
@@ -545,6 +580,21 @@ tr {
     padding: 0;
     width: 47%;
   }
+  .date-header-middle {
+    padding: 0 18px;
+  }
+  
+  .date-title {
+    font-size: 16px;
+  }
+
+  .chevron-icon {
+    font-size: 14px;
+  }
+}
+
+.wo-sm {
+  display: none;
 }
 
 @media screen and (max-width: 575px) {
@@ -558,6 +608,31 @@ tr {
   }
   .aaa {
     font-size: 10px;
+  }
+  .wo-md {
+    display: none;
+  }
+  .wo-sm {
+    display: initial;
+  }
+  .cd-btn-1, .cd-btn-2, .cd-btn-middle {
+    font-size: 10px;
+  }
+  .interval-text {
+    font-size: 14px;
+  }
+  .key-text {
+    margin-bottom: 2.4px;
+  }
+  /* .time-pick-container {
+    padding: 0 !important;
+  } */
+  /* .day-edit-text {
+    font-size: 14px;
+    width: 80px !important;
+  } */
+  #hours-of-operation-card {
+    padding: 20px 0;
   }
 }
 

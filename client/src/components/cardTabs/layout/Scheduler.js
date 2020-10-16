@@ -398,11 +398,6 @@ class Scheduler extends Component {
   }
 
   handleCellDurationChange(e) {
-    // if (e.target.value === 60) {
-    //   this.setState({ timeHeaders: [{"groupBy": "Day"}], cellDuration: parseInt(e.target.value) });
-    // } else {
-    //   this.setState({ timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Day"}], cellDuration: parseInt(e.target.value) });
-    // }
     this.setState({ cellDuration: parseInt(e.target.value) });
   }
 
@@ -411,8 +406,8 @@ class Scheduler extends Component {
 
     return (
       <div className="row mx-auto">
-        <div className="col-sm-3 px-0">
-          <div id="work-orders-header">
+        <div className="col-sm-3 px-0 wo-md">
+          <div className="work-orders-header">
             <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
           </div>
           <div className="work-orders-container">
@@ -431,23 +426,31 @@ class Scheduler extends Component {
           </div>
         </div>
         <div className="col-sm-9 px-0">
-          <div className="scheduler-view-interval-cont text-dark my-2 text-right pr-2">
-            Interval:&nbsp;
-            <button
-              value={60}
-              onClick={this.handleCellDurationChange}
-              className={this.state.cellDuration === 60 ? "cd-btn-1 active-cd-btn" : "cd-btn-1"}>
-                60 min</button>
-            <button
-              value={30}
-              onClick={this.handleCellDurationChange}
-              className={this.state.cellDuration === 30 ? "cd-btn-middle active-cd-btn" : "cd-btn-middle"}>
-                30 min</button>
-            <button
-              value={15}
-              onClick={this.handleCellDurationChange}
-              className={this.state.cellDuration === 15 ? "cd-btn-2 active-cd-btn" : "cd-btn-2"}>
-                15 min</button>
+          {/* <div className="scheduler-view-interval-cont text-dark my-2 text-right pr-2"> */}
+          <div className="d-flex justify-content-between text-dark my-2 px-2">
+            <div className="d-flex">
+              <div className="white-key"></div>&nbsp;<p className="key-text mr-3">- team shift</p>
+              <div className="grey-key"></div>&nbsp;<p className="key-text">- solo shift</p>
+            </div>
+            <div>
+              <span className="interval-text">Interval:</span>&nbsp;
+              <button
+                value={60}
+                onClick={this.handleCellDurationChange}
+                className={this.state.cellDuration === 60 ? "cd-btn-1 active-cd-btn" : "cd-btn-1"}>
+                  {/* 60 min</button> */}
+                  60 min</button>
+              <button
+                value={30}
+                onClick={this.handleCellDurationChange}
+                className={this.state.cellDuration === 30 ? "cd-btn-middle active-cd-btn" : "cd-btn-middle"}>
+                  30 min</button>
+              <button
+                value={15}
+                onClick={this.handleCellDurationChange}
+                className={this.state.cellDuration === 15 ? "cd-btn-2 active-cd-btn" : "cd-btn-2"}>
+                  15 min</button>
+            </div>
           </div>
           <DayPilotScheduler
             {...config}
@@ -456,6 +459,25 @@ class Scheduler extends Component {
               this.calendar = component && component.control;
             }}
           />
+        </div>
+        <div className="col-sm-3 px-0 wo-sm">
+          <div className="work-orders-header">
+            <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
+          </div>
+          <div className="work-orders-container-sm">
+            {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
+              <DraggableOrder
+                wo={wo}
+                id={wo.id}
+                name={`Trailer ${wo.trailer_id}`}
+                cityState={`${this.props.city}, ${this.props.state}`}
+                text={wo.text}
+                duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                teamDuration={1}
+                soloDuration={2}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
