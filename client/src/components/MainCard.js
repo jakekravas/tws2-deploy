@@ -11,7 +11,8 @@ const Card = ({ getAllLocations }) => {
   }, []);
 
   return (
-  <div className="card col-md-9 mx-auto my-4 p-0">
+  // <div className="card col-md-9 mx-auto my-4 p-0">
+  <div className="card col-sm-9 mx-auto my-4 p-0">
     <div className="card-header text-center">
       <ul className="nav nav-tabs card-header-tabs pull-right"  id="myTab" role="tablist">
         <li className="nav-item">

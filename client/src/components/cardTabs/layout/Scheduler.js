@@ -23,7 +23,8 @@ class Scheduler extends Component {
       inpDuration: null,
       inpVal: "",
       inpId: null,
-      unscheduledWorkOrders: null,
+      // unscheduledWorkOrders: null,
+      unscheduledWorkOrders: [],
       modalOpen: false,
       moveDisabled: true,
       durationBarVisible: true,
@@ -31,6 +32,8 @@ class Scheduler extends Component {
       unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
+      sortBy: "location",
+      sortAsc: true,
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
       },
@@ -285,7 +288,6 @@ class Scheduler extends Component {
         // If bay one is open and has a second shift
         if (this.props.bayOneOpen && this.props.bayOneS2Open && this.props.startHrStrB1S2) {
           // Disable cells if they start after shift one and before shift 2
-          // if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) !== this.props.endHrStrB1S2 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
           if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
@@ -323,7 +325,6 @@ class Scheduler extends Component {
         // If bay two is open and has a second shift
         if (this.props.bayTwoOpen && this.props.bayTwoS2Open && this.props.startHrStrB2S2) {
           // Disable cells if they start after shift one and before shift 2
-          // if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) !== this.props.endHrStrB2S2 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
           if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
             args.cell.disabled = true;
             args.cell.backColor = "#eee";
@@ -336,6 +337,9 @@ class Scheduler extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.handleAlert = this.handleAlert.bind(this);
     this.handleCellDurationChange = this.handleCellDurationChange.bind(this);
+    this.handleSortChange = this.handleSortChange.bind(this);
+    this.toggleAsc = this.toggleAsc.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
 
   componentDidMount() {
@@ -343,8 +347,7 @@ class Scheduler extends Component {
     this.setState({
       startDate: this.props.dateStr,
       resources: this.props.resources,
-      events: this.props.events,
-      // cellDuration: this.props.cellDuration
+      events: this.props.events
     });
   }
   
@@ -365,9 +368,9 @@ class Scheduler extends Component {
     if (this.state.resources !== this.props.resources) {
       this.setState({ resources: this.props.resources });
     }
-    // if (this.state.cellDuration !== this.props.cellDuration) {
-    //   this.setState({ cellDuration: this.props.cellDuration });
-    // }
+    if (this.state.unscheduledWorkOrders !== this.props.unscheduledWorkOrders) {
+      this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders });
+    }
   }
   
   handleAdd() {
@@ -401,6 +404,49 @@ class Scheduler extends Component {
     this.setState({ cellDuration: parseInt(e.target.value) });
   }
 
+  handleSort(sortBy, asc) {
+
+    // sort by needed date in ascending order
+    if (sortBy === "needed date" && asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1) });
+    // sort by needed date in descending order
+    } else if (sortBy === "needed date" && !asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
+    }
+
+    // sort by needed date in ascending order
+    if (sortBy === "team duration" && asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+    // sort by needed date in descending order
+    } else if (sortBy === "team duration" && !asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team < b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+    }
+
+    // sort by needed date in ascending order
+    if (sortBy === "solo duration" && asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo > b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+    // sort by needed date in descending order
+    } else if (sortBy === "solo duration" && !asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+    }
+    
+  }
+
+  handleSortChange(e) {
+    this.setState({ sortBy: e.target.value });
+    this.handleSort(e.target.value, this.state.sortAsc); 
+  }
+
+  toggleAsc() {
+    if (this.state.sortAsc) {
+      this.setState({ sortAsc: false });
+      this.handleSort(this.state.sortBy, false);
+    } else {
+      this.setState({ sortAsc: true });
+      this.handleSort(this.state.sortBy, true);
+    }
+  }
+
   render() {
     var {...config} = this.state;
 
@@ -408,10 +454,33 @@ class Scheduler extends Component {
       <div className="row mx-auto">
         <div className="col-sm-3 px-0 wo-md">
           <div className="work-orders-header">
-            <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
+            <div className="work-orders-header-top">
+              <i className="fas fa-bars bars-menu"/>
+              <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
+              <i className="fas fa-bars bars-hidden"/>
+            </div>
+            <div className="wo-filter-container">
+              <input className="wo-filter" type="text" placeholder="filter by trailer #"/>
+            </div>
+            <div className="sort-container">
+              {/* <input type="checkbox" name="" id=""/> */}
+              <p className="sort-by-text">Sort by: </p>
+              <select onChange={this.handleSortChange} className="sort-menu">
+                <option className="sort-menu" value="location">Location</option>
+                <option className="sort-menu" value="needed date">Needed date</option>
+                <option className="sort-menu" value="team duration">Team duration</option>
+                <option className="sort-menu" value="solo duration">Solo duration</option>
+              </select>
+              {
+                this.state.sortAsc ?
+                <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
+                :
+                <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
+              }
+            </div>
           </div>
           <div className="work-orders-container">
-            {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
+            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
               <DraggableOrder
                 wo={wo}
                 id={wo.id}
@@ -465,7 +534,7 @@ class Scheduler extends Component {
             <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
           </div>
           <div className="work-orders-container-sm">
-            {this.props.unscheduledWorkOrders.length > 0 && this.props.unscheduledWorkOrders.map(wo => (
+            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
               <DraggableOrder
                 wo={wo}
                 id={wo.id}

@@ -58,10 +58,67 @@
 }
 
 .work-orders-header {
-  /* border-bottom: 1px solid #999; */
+  border-bottom: 1px solid rgb(192,192,192);
+
+}
+
+.work-orders-header-top {
   border-bottom: 1px solid rgb(192,192,192);
   /* padding: 12.7px 0; */
   margin-bottom: 0 !important;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  align-items: center;
+}
+
+.bars-menu {
+  cursor: pointer;
+}
+
+.bars-hidden {
+  visibility: hidden;
+}
+
+.wo-filter-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.wo-filter {
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+  width: 100%;
+  margin: 0 10px;
+}
+
+.sort-container {
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.sort-asc {
+  margin-bottom: -6px;
+  cursor: pointer;
+}
+
+.sort-desc {
+  margin-top: -6px;
+  cursor: pointer;
+}
+
+.sort-by-text {
+  color: #343a40;
+  font-size: 12px;
+  margin: 0;
+}
+
+.sort-menu {
+  font-size: 12px;
 }
 
 .work-order-content {
@@ -558,6 +615,8 @@ tr {
   justify-content: center;
 }
 
+
+
 .ReactModal__Content, .ReactModal__Content--after-open {
   padding: 0 !important;
   border: none !important;
@@ -575,7 +634,25 @@ tr {
   line-height: 1.125em;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
+  #wt-table {
+    max-height: 800px !important;
+    zoom: 70%;
+  }
+  #hours-of-operation-card {
+    padding: 20px 0;
+  }
+  .hours-of-operation-view {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  #wash-types-container {
+    padding: 20px 0;
+  }
+  .time-pick-container {
+    /* font-size: 12px !important; */
+    /* padding: 0 !important; */
+  }
   .scheduler-bay-btn-1, .scheduler-bay-btn-2 {
     padding: 0;
     width: 47%;
