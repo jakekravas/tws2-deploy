@@ -32,8 +32,10 @@ class Scheduler extends Component {
       unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
+      editOpen: false,
       sortBy: "location",
       sortAsc: true,
+      filterText: "",
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
       },
@@ -340,6 +342,8 @@ class Scheduler extends Component {
     this.handleSortChange = this.handleSortChange.bind(this);
     this.toggleAsc = this.toggleAsc.bind(this);
     this.handleSort = this.handleSort.bind(this);
+    this.setFilterText = this.setFilterText.bind(this);
+    this.setEditOpen = this.setEditOpen.bind(this);
   }
 
   componentDidMount() {
@@ -447,6 +451,14 @@ class Scheduler extends Component {
     }
   }
 
+  setFilterText(e){
+    this.setState({ filterText: e.target.value });
+  }
+
+  setEditOpen() {
+    this.setState({ editOpen: !this.state.editOpen });
+  }
+
   render() {
     var {...config} = this.state;
 
@@ -454,33 +466,38 @@ class Scheduler extends Component {
       <div className="row mx-auto">
         <div className="col-sm-3 px-0 wo-md">
           <div className="work-orders-header">
+          {/* <div className="work-orders-header" style={{borderBottom: this.state.editOpen ? "1px solid rgb(192,192,192)" : "none"}}> */}
             <div className="work-orders-header-top">
-              <i className="fas fa-bars bars-menu"/>
+              <i className="fas fa-bars bars-menu" onClick={this.setEditOpen}/>
               <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
               <i className="fas fa-bars bars-hidden"/>
             </div>
-            <div className="wo-filter-container">
-              <input className="wo-filter" type="text" placeholder="filter by trailer #"/>
-            </div>
-            <div className="sort-container">
-              {/* <input type="checkbox" name="" id=""/> */}
-              <p className="sort-by-text">Sort by: </p>
-              <select onChange={this.handleSortChange} className="sort-menu">
-                <option className="sort-menu" value="location">Location</option>
-                <option className="sort-menu" value="needed date">Needed date</option>
-                <option className="sort-menu" value="team duration">Team duration</option>
-                <option className="sort-menu" value="solo duration">Solo duration</option>
-              </select>
-              {
-                this.state.sortAsc ?
-                <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
-                :
-                <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
-              }
-            </div>
+            {this.state.editOpen &&
+              <div>
+                <div className="wo-filter-container">
+                  <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
+                </div>
+                <div className="sort-container">
+                  {/* <input type="checkbox" name="" id=""/> */}
+                  <p className="sort-by-text">Sort by: </p>
+                  <select onChange={this.handleSortChange} className="sort-menu">
+                    <option className="sort-menu" value="location">Location</option>
+                    <option className="sort-menu" value="needed date">Needed date</option>
+                    <option className="sort-menu" value="team duration">Team duration</option>
+                    <option className="sort-menu" value="solo duration">Solo duration</option>
+                  </select>
+                  {
+                    this.state.sortAsc ?
+                    <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
+                    :
+                    <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
+                  }
+                </div>
+              </div>
+            }
           </div>
           <div className="work-orders-container">
-            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
+            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => (
               <DraggableOrder
                 wo={wo}
                 id={wo.id}

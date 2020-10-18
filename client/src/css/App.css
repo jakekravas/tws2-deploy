@@ -59,11 +59,11 @@
 
 .work-orders-header {
   border-bottom: 1px solid rgb(192,192,192);
-
+  /* display: none !important; */
 }
 
 .work-orders-header-top {
-  border-bottom: 1px solid rgb(192,192,192);
+  /* border-bottom: 1px solid rgb(192,192,192); */
   /* padding: 12.7px 0; */
   margin-bottom: 0 !important;
   display: flex;
@@ -597,7 +597,7 @@ tr {
 }
 
 .aa {
-  height: 400px;
+  height: 410px;
   overflow-y: scroll;
 }
 
@@ -643,8 +643,8 @@ tr {
     padding: 20px 0;
   }
   .hours-of-operation-view {
-    margin-right: 0 !important;
-    margin-left: 0 !important;
+    /* margin-right: 0 !important;
+    margin-left: 0 !important; */
   }
   #wash-types-container {
     padding: 20px 0;
@@ -655,7 +655,8 @@ tr {
   }
   .scheduler-bay-btn-1, .scheduler-bay-btn-2 {
     padding: 0;
-    width: 47%;
+    /* width: 47%; */
+    width: 32%;
   }
   .date-header-middle {
     padding: 0 18px;
@@ -678,6 +679,9 @@ tr {
   #wt-table {
     max-height: 600px !important;
     zoom: 68%;
+  }
+  .scheduler-bay-btn-1, .scheduler-bay-btn-2 {
+    width: 45%;
   }
   .schedule-time-text {
     font-size: 10px;
