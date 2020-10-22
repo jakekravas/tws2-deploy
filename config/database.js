@@ -1,17 +1,21 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = new Sequelize(
-  "bulkmatic", // database
-  // "d8gvbh0ij9qecq", // database
-  "bmtDbAdmin187", // user
-  // "swuuenwwpcogjh", // user
-  "39qsYf73IJbakP3Ql5Oc", // password
-  // "f7782b6c2576db4e7273dbde1b413bac234046f9170a3fe2ba3cb09642a4690c", // password
+  // "bulkmatic", // database
+  "BtcTws", // database
+  // "bmtDbAdmin187", // user
+  "TwsApp", // user
+  // "39qsYf73IJbakP3Ql5Oc", // password
+  "T@nkw@sh!", // password
   {
-    host: "bulkmatic-postgres-dev.chsi0luwnscx.us-east-2.rds.amazonaws.com",
-    // host: "ec2-3-210-255-177.compute-1.amazonaws.com",
-    dialect: "postgres",
-    schema: "tw_scheduler",
+    // host: "bulkmatic-postgres-dev.chsi0luwnscx.us-east-2.rds.amazonaws.com",
+    // host: "localhost",
+    // host: "SQL_DB_Listener_DEV",
+    // port: "5000",
+    host: "SQL_DB_Listener_DEV",
+    // dialect: "postgres",
+    dialect: "mssql",
+    // schema: "tw_scheduler",
     operatorsAliases: false,
 
     pool: {

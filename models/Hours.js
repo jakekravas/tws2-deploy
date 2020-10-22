@@ -12,7 +12,8 @@ const Hours = db.define("hour", {
     type: Sequelize.INTEGER
   },
   is_open: {
-    type: Sequelize.BOOLEAN
+    // type: Sequelize.BOOLEAN
+    type: Sequelize.INTEGER
   },
   shift_one_start: {
     type: Sequelize.STRING
@@ -24,7 +25,8 @@ const Hours = db.define("hour", {
     type: Sequelize.STRING
   },
   shift_two_open: {
-    type: Sequelize.BOOLEAN
+    // type: Sequelize.BOOLEAN
+    type: Sequelize.INTEGER
   },
   shift_two_start: {
     type: Sequelize.STRING

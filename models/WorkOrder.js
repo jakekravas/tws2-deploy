@@ -3,7 +3,8 @@ const db = require('../config/database');
 
 const WorkOrder = db.define("work_order", {
   is_scheduled: {
-    type: Sequelize.BOOLEAN
+    // type: Sequelize.BOOLEAN
+    type: Sequelize.INTEGER
   },
   main_id: {
     type: Sequelize.STRING

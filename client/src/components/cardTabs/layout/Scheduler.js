@@ -466,7 +466,6 @@ class Scheduler extends Component {
       <div className="row mx-auto">
         <div className="col-sm-3 px-0 wo-md">
           <div className="work-orders-header">
-          {/* <div className="work-orders-header" style={{borderBottom: this.state.editOpen ? "1px solid rgb(192,192,192)" : "none"}}> */}
             <div className="work-orders-header-top">
               <i className="fas fa-bars bars-menu" onClick={this.setEditOpen}/>
               <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
@@ -519,7 +518,7 @@ class Scheduler extends Component {
               <div className="grey-key"></div>&nbsp;<p className="key-text">- solo shift</p>
             </div>
             <div>
-              <span className="interval-text">Interval:</span>&nbsp;
+              <span className="scale-text">Scale:</span>&nbsp;
               <button
                 value={60}
                 onClick={this.handleCellDurationChange}
@@ -548,21 +547,48 @@ class Scheduler extends Component {
         </div>
         <div className="col-sm-3 px-0 wo-sm">
           <div className="work-orders-header">
-            <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
-          </div>
-          <div className="work-orders-container-sm">
-            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
-              <DraggableOrder
-                wo={wo}
-                id={wo.id}
-                name={`Trailer ${wo.trailer_id}`}
-                cityState={`${this.props.city}, ${this.props.state}`}
-                text={wo.text}
-                duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
-                teamDuration={1}
-                soloDuration={2}
-              />
-            ))}
+            <div className="work-orders-header-top">
+              <i className="fas fa-bars bars-menu" onClick={this.setEditOpen}/>
+              <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
+              <i className="fas fa-bars bars-hidden"/>
+            </div>
+            {this.state.editOpen &&
+              <div>
+                <div className="wo-filter-container">
+                  <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
+                </div>
+                <div className="sort-container">
+                  {/* <input type="checkbox" name="" id=""/> */}
+                  <p className="sort-by-text">Sort by: </p>
+                  <select onChange={this.handleSortChange} className="sort-menu">
+                    <option className="sort-menu" value="location">Location</option>
+                    <option className="sort-menu" value="needed date">Needed date</option>
+                    <option className="sort-menu" value="team duration">Team duration</option>
+                    <option className="sort-menu" value="solo duration">Solo duration</option>
+                  </select>
+                  {
+                    this.state.sortAsc ?
+                    <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
+                    :
+                    <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
+                  }
+                </div>
+              </div>
+            }
+            <div className="work-orders-container-sm">
+              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
+                <DraggableOrder
+                  wo={wo}
+                  id={wo.id}
+                  name={`Trailer ${wo.trailer_id}`}
+                  cityState={`${this.props.city}, ${this.props.state}`}
+                  text={wo.text}
+                  duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                  teamDuration={1}
+                  soloDuration={2}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
