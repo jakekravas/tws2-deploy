@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/jakekravas/tws2-deploy#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "config": "^3.3.2",
     "express": "^4.17.1",
     "moment": "^2.29.1",
     "mssql": "^6.2.3",
+    "open": "^7.3.0",
     "pg": "^8.4.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5"

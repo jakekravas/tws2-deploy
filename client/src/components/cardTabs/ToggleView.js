@@ -4,26 +4,35 @@ import WashSchedule from "./WashSchedule";
 import WashScheduleBU from "./WashScheduleBU";
 import HoursOfOperation from "./HoursOfOperation";
 import { getAllLocations, getLocationInfo } from "../../actions/location";
+import { getUser } from "../../actions/user";
 
-const ToggleView = ({ getLocationInfo, location: { locations, selectedLocation, loading } }) => {
+const ToggleView = ({ getUser, currentUser, getLocationInfo, location: { locations, selectedLocation, loading }, user: { terminals } }) => {
 
   const [view, setView] = useState("schedule");
 
+  const test = () => {
+    setView("schedule");
+    getUser(currentUser);
+  }
+
   return (
     <div>
+
       <div className="text-center">
-        <label className="mb-0 text-dark" htmlFor="location">Location:</label>&nbsp;&nbsp;&nbsp;
-        <select onChange={e => getLocationInfo(e.target.value)} className="text-center mt-3 mr-3" name="location" id="">
-          {!selectedLocation && <option value="">--</option>}
-          {!loading && locations && 
-            locations.map(loc => (
-            <option value={loc.id} key={loc.id}>{loc.city}, {loc.state}</option>
-          ))}
-        </select>
+        <label style={{visibility: view === "schedule" ? "hidden" : "initial"}} className="mb-0 text-dark" htmlFor="location">Location:</label>&nbsp;&nbsp;&nbsp;
+          <select style={{visibility: view === "schedule" ? "hidden" : "initial"}} onChange={e => getLocationInfo(e.target.value)} className="text-center mt-3 mr-3" name="location" id="">
+            {!selectedLocation && <option value="">--</option>}
+            {!loading && terminals &&
+              terminals.map(loc => (
+              <option value={loc.id} key={loc.id}>{loc.city}, {loc.state}</option>
+            ))}
+          </select>
       </div>
+
       <div className="text-center my-4">
         <button
-          onClick={() => setView("schedule")}
+          // onClick={() => setView("schedule")}
+          onClick={test}
           className={view === "schedule" ? "scheduler-bay-btn-1 active-sched" : "scheduler-bay-btn-1"}
         >
           Scheduler
@@ -39,16 +48,16 @@ const ToggleView = ({ getLocationInfo, location: { locations, selectedLocation, 
       {
         view === "schedule" ?
         <WashSchedule/>
-        // <WashScheduleBU/>
         :
-        <HoursOfOperation/>
+        <HoursOfOperation currentUser={currentUser} />
       }
     </div>
   )
 }
 
 const mapStateToProps = state => ({
-  location: state.location
+  location: state.location,
+  user: state.user
 });
 
-export default connect(mapStateToProps, { getAllLocations, getLocationInfo })(ToggleView)
+export default connect(mapStateToProps, { getUser, getAllLocations, getLocationInfo })(ToggleView)

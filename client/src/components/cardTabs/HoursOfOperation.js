@@ -5,7 +5,7 @@ import TimePicker from 'react-time-picker';
 import Modal from "react-modal";
 import DayHoursView from "./layout/DayHoursView";
 
-const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocationInfo, location: { selectedLocation } }) => {
+const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantity, getLocationInfo, location: { selectedLocation } }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [washBays, setWashBays] = useState();
   const [bayEditHours, setBayEditHours] = useState(1);
@@ -48,7 +48,6 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, getLocatio
   const [bayTwoShift2Sun, setBayTwoShift2Sun] = useState();
 
   // Bay 1 Shift 2 Type
-
   const [shiftType, setShiftType] = useState({
     bayOneShift1MonType: "team",
     bayOneShift1TuesType: "team",

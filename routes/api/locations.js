@@ -355,6 +355,7 @@ router.put("/washbays/:id", async (req, res) => {
 // @access     Public
 router.put("/hours/:location_id", async (req, res) => {
   try {
+
     // Get location
     const location = await Location.findOne({ where: { location_id: req.params.location_id }});
 

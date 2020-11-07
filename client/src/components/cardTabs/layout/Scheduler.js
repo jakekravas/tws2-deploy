@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import Modal from "react-modal";
-import {DayPilot, DayPilotCalendar, DayPilotScheduler, DayPilotNavigator} from "daypilot-pro-react";
+import React, { Component } from 'react';
+import { DayPilotScheduler } from "daypilot-pro-react";
 import DraggableOrder from "../layout/DraggableOrder"
 
 class Scheduler extends Component {
@@ -44,110 +43,82 @@ class Scheduler extends Component {
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
 
+        // Location code
+        const loc = args.e.data.resource.slice(0, -1);
+
+        // Bay
+        const bay = parseInt(args.e.data.resource[args.e.data.resource.length-1]);
+
         // Find order to update
-        let orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
-        let endTime = new Date(args.e.data.start.value);
+        const orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
+        const endTime = new Date(args.e.data.start.value);
         let duration;
 
-        // if args starts in bay 1 shift 1
-        if (args.e.data.resource === this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S1 && new Date(args.e.data.start.value) < this.props.endHrStrB1S1) {
+        // So we know what start and end times to look at
+        const timesToLookAt = this.props.hoursArr.filter(h => h.location_id === loc && h.bay === bay);
 
-          if (this.props.bayOneS1Type === "team") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
-          } else if (this.props.bayOneS1Type === "solo") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
-          }
+        const argStart = new Date(args.e.data.start.value);
 
-          // Set duration
-          endTime.setMinutes(endTime.getMinutes() + duration);
+        const s1Start = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_one_start}`);
+        const s1End = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_one_end}`);
+        const s1Type = timesToLookAt[0].shift_one_type;
 
-          // If end time is within bay 1 shift 1
-          if (endTime <= this.props.endHrStrB1S1) {
-            this.props.test(
-              args.e.data.id,
-              args.e.data.resource,
-              args.e.data.start.value,
-              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
-            );
-          } else {
-            this.props.preventTimeExceed();
-          }
-        }
-        // if args starts in bay 1 shift 2
-        else if (args.e.data.resource === this.props.resource1 && new Date(args.e.data.start.value) >= this.props.startHrStrB1S2 && new Date(args.e.data.start.value) < this.props.endHrStrB1S2) {
-          if (this.props.bayOneS2Type === "team") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
-          } else if (this.props.bayOneS2Type === "solo") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
-          }
+        const s2Open = timesToLookAt[0].shift_two_open;
+        const s2Start = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_two_start}`);
+        const s2End = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_two_end}`);
+        const s2Type = timesToLookAt[0].shift_two_type;
 
-          // Set duration
-          endTime.setMinutes(endTime.getMinutes() + duration);
+        // If a work order is dragged into the wrong location
+        if (loc !== orderToUpdate.wash_location_id) {
+          this.props.preventTimeExceed("loc");
+        } else {
+          if (argStart < s1Start) {
+            this.props.preventTimeExceed("start");
+          } else if (argStart >= s1Start && argStart < s1End) {
+  
+            if (s1Type === "team") {
+              duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+            } else {
+              duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+            }
+  
+            // Set duration
+            endTime.setMinutes(endTime.getMinutes() + duration);
+  
+            // If end time is within shift 1
+            if (endTime <= s1End) {
+              this.props.test(
+                args.e.data.id,
+                args.e.data.resource,
+                args.e.data.start.value,
+                new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              );
+            } else {
+              this.props.preventTimeExceed("end");
+            }
+          // If shift 2 is open and the start of args is withing shift 2 range
+          } else if (s2Open === true && argStart >= s2Start && argStart < s2End) {
 
-          // If end time is within bay 1 shift 2
-          if (endTime <= this.props.endHrStrB1S2) {
-            this.props.test(
-              args.e.data.id,
-              args.e.data.resource,
-              args.e.data.start.value,
-              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
-            );
-          } else {
-            this.props.preventTimeExceed();
-          }
-        }
-        // if args starts in bay 2 shift 1
-        else if (args.e.data.resource === this.props.resource2 && new Date(args.e.data.start.value) >= this.props.startHrStrB2S1 && new Date(args.e.data.start.value) < this.props.endHrStrB2S1) {
-          if (this.props.bayTwoS1Type === "team") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
-          } else if (this.props.bayTwoS1Type === "solo") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
-          }
-
-          // Set duration
-          endTime.setMinutes(endTime.getMinutes() + duration);
-
-          // If end time is within bay 1 shift 2
-          if (endTime <= this.props.endHrStrB2S1) {
-            this.props.test(
-              args.e.data.id,
-              args.e.data.resource,
-              args.e.data.start.value,
-              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
-            );
-          } else {
-            this.props.preventTimeExceed();
-          }
-        }
-        // if args starts in bay 2 shift 2
-        else if (args.e.data.resource === this.props.resource2 && new Date(args.e.data.start.value) >= this.props.startHrStrB2S2 && new Date(args.e.data.start.value) < this.props.endHrStrB2S2) {
-          if (this.props.bayTwoS2Type === "team") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
-          } else if (this.props.bayTwoS2Type === "solo") {
-            // Calculate duration
-            duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
-          }
-
-          // Set duration
-          endTime.setMinutes(endTime.getMinutes() + duration);
-
-          // If end time is within bay 1 shift 2
-          if (endTime <= this.props.endHrStrB2S2) {
-            this.props.test(
-              args.e.data.id,
-              args.e.data.resource,
-              args.e.data.start.value,
-              new Date(endTime.toString().split('GMT')[0]+' UTC').toISOString().split(".")[0]
-            );
-          } else {
-            this.props.preventTimeExceed();
+            if (s2Type === "team") {
+              duration = orderToUpdate.int_duration_mins_team + orderToUpdate.ext_duration_mins_team;
+            } else {
+              duration = orderToUpdate.int_duration_mins_solo + orderToUpdate.ext_duration_mins_solo;
+            }
+  
+            // Set duration
+            endTime.setMinutes(endTime.getMinutes() + duration);
+  
+            // If end time is within shift 2
+            if (endTime <= s2End) {
+              this.props.test(
+                args.e.data.id,
+                args.e.data.resource,
+                args.e.data.start.value,
+                new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              );
+            } else {
+              this.props.preventTimeExceed("end");
+            }
           }
         }
       },
@@ -159,183 +130,68 @@ class Scheduler extends Component {
       // HIDING CELLS
       onIncludeTimeCell: args => {
 
-        // If both bays are open
-        if (this.props.bayOneOpen && this.props.bayTwoOpen) {
-          if (this.props.startHrStrB1S1 < this.props.startHrStrB2S1) {
-            if (new Date(args.cell.end.value) <= this.props.startHrStrB1S1) {
-              args.cell.visible = false;
-            }
-          } else {
-            if (new Date(args.cell.end.value) <= this.props.startHrStrB2S1) {
-              args.cell.visible = false;
-            }
-          }
-
-          // If both bays have 2nd shifts
-          if (this.props.bayOneS2Open && this.props.bayTwoS2Open) {
-            // If the 2nd shift of bay one ends after the second shift of bay 2
-            if (this.props.endHrStrB1S2 > this.props.endHrStrB2S2) {
-              if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
-                args.cell.visible = false;
-              }
-            } else {
-              if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
-                args.cell.visible = false;
-              }
-            }
-          // If bay 1 has a 2nd shift and bay 2 doesn't
-          } else if (this.props.bayOneS2Open && !this.props.bayTwoS2Open) {
-            if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
-              args.cell.visible = false;
-            }
-          // If bay 2 has a 2nd shift and bay 1 doesn't
-          } else if (!this.props.bayOneS2Open && this.props.bayTwoS2Open) {
-            if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
-              args.cell.visible = false;
-            }
-          // If neither bay has a 2nd shift
-          } else {
-            // If the first shift of bay 1 ends after the first shift of bay 2
-            if (this.props.endHrStrB1S1 > this.props.endHrStrB2S1) {
-              if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1) {
-                args.cell.visible = false;
-              }
-            } else {
-              if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1) {
-                args.cell.visible = false;
-              }
-            }
-          }
-
-      // If bay 1 is open and bay 2 isn't
-      } else if (this.props.bayOneOpen && !this.props.bayTwoOpen) {
-        // Hide every cell with an end time <= to the start time
-        if (new Date(args.cell.end.value) <= this.props.startHrStrB1S1) {
+        // If cell is before start time
+        if (new Date(args.cell.end.value) <= this.props.startTime) {
           args.cell.visible = false;
         }
-        // If there is a second shift
-        if (this.props.bayOneS2Open) {
-          // Hide every cell with a start time >= to the end time
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S2) {
-            args.cell.visible = false;
-          }
-        } else {
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1) {
-            args.cell.visible = false;
-          }
-        }
-      // If bay 2 is open and bay 1 isn't
-      } else if (!this.props.bayOneOpen && this.props.bayTwoOpen) {
-        // Hide every cell with an end time <= to the start time
-        if (new Date(args.cell.end.value) <= this.props.startHrStrB2S1) {
+        
+        // If cell is after end time
+        if (new Date(args.cell.start.value) >= this.props.endTime) {
           args.cell.visible = false;
         }
-        // If there is a second shift
-        if (this.props.bayTwoS2Open) {
-          // Hide every cell with a start time >= to the end time
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S2) {
-            args.cell.visible = false;
-          }
-        } else {
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1) {
-            args.cell.visible = false;
-          }
-        }
-      }
       },
+
       // DISABLING CELLS
       onBeforeCellRender: args => {
+        
         // Disable cells of location title row
         if (typeof args.cell.resource === "number") {
           args.cell.disabled = true;
           args.cell.backColor = "#eee";
         }
 
-        // If cell is before the start of shift one for either bay
-        if ((args.cell.resource === this.props.resource1 && new Date(args.cell.start.value) < this.props.startHrStrB1S1) || (args.cell.resource === this.props.resource2 && new Date(args.cell.start.value) < this.props.startHrStrB2S1)) {
-          args.cell.disabled = true;
-          args.cell.backColor = "#eee";
-        }
-        
-        // If B1S2 is open
-        if (this.props.bayOneS2Open) {
-          // If cell is in bay 1 row and is after the end of B1S2
-          if (args.cell.resource === this.props.resource1 && new Date(args.cell.end.value) > this.props.endHrStrB1S2) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
-          }
-        } else {
-          // If cell is in bay 1 row and is after the end of B1S1
-          if (args.cell.resource === this.props.resource1 && new Date(args.cell.end.value) > this.props.endHrStrB1S1) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
-          }
-        }
+        for (let i = 0; i < this.props.hoursArr.length; i++) {
+          
+          if (args.cell.resource === `${this.props.hoursArr[i].location_id}${this.props.hoursArr[i].bay}`) {
 
-        // If B2S2 is open
-        if (this.props.bayTwoS2Open) {
-          // If cell is in bay 2 row and is after the end of B2S2
-          if (args.cell.resource === this.props.resource2 && new Date(args.cell.end.value) > this.props.endHrStrB2S2) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
-          }
-        } else {
-          // If cell is in bay 2 row and is after the end of B2S1
-          if (args.cell.resource === this.props.resource2 && new Date(args.cell.end.value) > this.props.endHrStrB2S1) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
-          }
-        }
+            // Disable cells that start before the start of shift 1
+            if (new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`)) {
+              args.cell.disabled = true;
+              args.cell.backColor = "#eee";
 
-        // If bay one is open and has a second shift
-        if (this.props.bayOneOpen && this.props.bayOneS2Open && this.props.startHrStrB1S2) {
-          // Disable cells if they start after shift one and before shift 2
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB1S1 && new Date(args.cell.start.value) < this.props.startHrStrB1S2 && args.cell.resource === this.props.resource1) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
-            // args.cell.backColor = "rgb(225, 225, 225)";
-          }
-        }
+            // Color code shift 1 if it's a solo shift
+            } else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && this.props.hoursArr[i].shift_one_type === "solo") {
+              args.cell.backColor = "rgb(225, 225, 225)";
+            }
 
-        // If bay 1 shift 1 is a solo shift, make the cell color grey
-        if (this.props.bayOneS1Type === "solo") {
-          if (new Date(args.cell.start.value) >= this.props.startHrStrB1S1 && new Date(args.cell.end.value) <= this.props.endHrStrB1S1 && args.cell.resource === this.props.resource1) {
-            args.cell.backColor = "rgb(225, 225, 225)";
-          }
-        }
-        // If bay 1 shift 2 is a solo shift, make the cell color grey
-        if (this.props.bayOneS2Type === "solo") {
-          if (new Date(args.cell.start.value) >= this.props.startHrStrB1S2 && new Date(args.cell.end.value) <= this.props.endHrStrB1S2 && args.cell.resource === this.props.resource1) {
-            args.cell.backColor = "rgb(225, 225, 225)";
-          }
-        }
+            // If there's a shift 2
+            if (this.props.hoursArr[i].shift_two_open) {
+              
+              // Disable cells that start after the end of shift 1 and before the start of shift 2
+              if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`)) {
+                args.cell.disabled = true;
+                args.cell.backColor = "#eee";
+              }
 
-        // If bay 2 shift 1 is a solo shift, make the cell color grey
-        if (this.props.bayTwoS1Type === "solo") {
-          if (new Date(args.cell.start.value) >= this.props.startHrStrB2S1 && new Date(args.cell.end.value) <= this.props.endHrStrB2S1 && args.cell.resource === this.props.resource2) {
-            args.cell.backColor = "rgb(225, 225, 225)";
-          }
-        }
+              // Color code shift 2 if it's a solo shift
+              else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
+                args.cell.backColor = "rgb(225, 225, 225)";
+              }
 
-        // If bay 2 shift 2 is a solo shift, make the cell color grey
-        if (this.props.bayTwoS2Type === "solo") {
-          if (new Date(args.cell.start.value) >= this.props.startHrStrB2S2 && new Date(args.cell.end.value) <= this.props.endHrStrB2S2 && args.cell.resource === this.props.resource2) {
-            args.cell.backColor = "rgb(225, 225, 225)";
-          }
-        }
+            } else {
 
-        // If bay two is open and has a second shift
-        if (this.props.bayTwoOpen && this.props.bayTwoS2Open && this.props.startHrStrB2S2) {
-          // Disable cells if they start after shift one and before shift 2
-          if (new Date(args.cell.start.value) >= this.props.endHrStrB2S1 && new Date(args.cell.start.value) < this.props.startHrStrB2S2 && args.cell.resource === this.props.resource2) {
-            args.cell.disabled = true;
-            args.cell.backColor = "#eee";
+              // Disable cells that start after the end of shift 1
+              if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
+                args.cell.disabled = true;
+                args.cell.backColor = "#eee";
+              }
+            } 
           }
         }
       },
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
+    // this.handleAdd = this.handleAdd.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleAlert = this.handleAlert.bind(this);
     this.handleCellDurationChange = this.handleCellDurationChange.bind(this);
@@ -360,12 +216,12 @@ class Scheduler extends Component {
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
-    if (this.state.dayBeginsHour !== this.props.startHr) {
-      this.setState({ dayBeginsHour: this.props.startHr });
-    }
-    if (this.state.dayEndsHour !== this.props.endHr) {
-      this.setState({ dayEndsHour: this.props.endHr });
-    }
+    // if (this.state.dayBeginsHour !== this.props.startHr) {
+    //   this.setState({ dayBeginsHour: this.props.startHr });
+    // }
+    // if (this.state.dayEndsHour !== this.props.endHr) {
+    //   this.setState({ dayEndsHour: this.props.endHr });
+    // }
     if (this.state.events !== this.props.events) {
       this.setState({ events: this.props.events });
     }
@@ -377,17 +233,17 @@ class Scheduler extends Component {
     }
   }
   
-  handleAdd() {
-    this.props.test(
-      this.state.inpId,
-      this.props.bay,
-      this.state.currentArgs.start.value,
-      this.state.currentArgs.start.value,
-      parseInt(this.state.inpDuration)
-    );
+  // handleAdd() {
+  //   this.props.test(
+  //     this.state.inpId,
+  //     this.props.bay,
+  //     this.state.currentArgs.start.value,
+  //     this.state.currentArgs.start.value,
+  //     parseInt(this.state.inpDuration)
+  //   );
 
-    this.setState({ modalOpen: false });
-  }
+  //   this.setState({ modalOpen: false });
+  // }
 
   handleAlert() {
     this.setState({ alertDisplay: "block" });
@@ -452,6 +308,7 @@ class Scheduler extends Component {
   }
 
   setFilterText(e){
+    console.log(e.target.value);
     this.setState({ filterText: e.target.value });
   }
 
@@ -463,7 +320,8 @@ class Scheduler extends Component {
     var {...config} = this.state;
 
     return (
-      <div className="row mx-auto">
+      // <div className="row mx-auto">
+      <div>
         <div className="col-sm-3 px-0 wo-md">
           <div className="work-orders-header">
             <div className="work-orders-header-top">
@@ -501,16 +359,18 @@ class Scheduler extends Component {
                 wo={wo}
                 id={wo.id}
                 name={`Trailer ${wo.trailer_id}`}
-                cityState={`${this.props.city}, ${this.props.state}`}
+                // cityState={`${this.props.city}, ${this.props.state}`}
                 text={wo.text}
-                duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                // duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
                 teamDuration={1}
                 soloDuration={2}
               />
             ))}
           </div>
         </div>
-        <div className="col-sm-9 px-0">
+        {/* <div className="col-sm-9 px-0"> */}
+        <div className="col-12 px-0">
           {/* <div className="scheduler-view-interval-cont text-dark my-2 text-right pr-2"> */}
           <div className="d-flex justify-content-between text-dark my-2 px-2">
             <div className="d-flex">
@@ -545,7 +405,8 @@ class Scheduler extends Component {
             }}
           />
         </div>
-        <div className="col-sm-3 px-0 wo-sm">
+        {/* <div className="col-sm-3 px-0 wo-sm"> */}
+        <div className="col-12 px-0 wo-sm">
           <div className="work-orders-header">
             <div className="work-orders-header-top">
               <i className="fas fa-bars bars-menu" onClick={this.setEditOpen}/>
@@ -553,10 +414,8 @@ class Scheduler extends Component {
               <i className="fas fa-bars bars-hidden"/>
             </div>
             {this.state.editOpen &&
-              <div>
-                <div className="wo-filter-container">
-                  <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
-                </div>
+              <div className="work-orders-header-top">
+                <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
                 <div className="sort-container">
                   {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
@@ -575,15 +434,24 @@ class Scheduler extends Component {
                 </div>
               </div>
             }
+            {this.state.editOpen &&
+              <div>
+                <div className="wo-filter-container">
+                </div>
+              </div>
+            }
             <div className="work-orders-container-sm">
-              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => (
+              {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => ( */}
+              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => (
                 <DraggableOrder
                   wo={wo}
                   id={wo.id}
                   name={`Trailer ${wo.trailer_id}`}
-                  cityState={`${this.props.city}, ${this.props.state}`}
+                  // cityState={`${this.props.city}, ${this.props.state}`}
+                  cityState={`${wo.wash_location_id}`}
                   text={wo.text}
-                  duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                  // duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
+                  duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
                   teamDuration={1}
                   soloDuration={2}
                 />

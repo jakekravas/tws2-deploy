@@ -1,12 +1,12 @@
 import {
-  GET_WORK_ORDERS_OF_LOCATION,
-  UPDATE_WORK_ORDER,
-  WORK_ORDER_ERROR
+  GET_USER
 } from "../actions/types";
 
 const initialState = {
-  workOrders: null,
-  wo_resources: null,
+  user: null,
+  role: null,
+  terminals: null,
+  hours: null,
   loading: true,
   error: null
 }
@@ -15,20 +15,15 @@ export default (state = initialState, dispatch) => {
   const { type, payload } = dispatch;
 
   switch (type) {
-    case GET_WORK_ORDERS_OF_LOCATION:
+    case GET_USER:
       return {
         ...state,
-        workOrders: payload,
+        user: payload.user,
+        role: payload.role,
+        terminals: payload.terminals,
+        hours: payload.hours,
         loading: false
       }
-
-    case WORK_ORDER_ERROR: {
-      return {
-        ...state,
-        loading: false,
-        error: payload
-      }
-    }
 
     default:
       return state;

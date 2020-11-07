@@ -44,7 +44,7 @@ export const getLocationInfo = id => async dispatch => {
 
 export const updateLocationHrs = (id, formData) => async dispatch => {
   try {
-    const res = await axios.put(`api/locations/hours/${id}`, formData);
+    const res = await axios.put(`/api/locations/hours/${id}`, formData);
     let locationInfo = res.data.location;
 
     locationInfo.bayOneHours = res.data.bayOneHours;
@@ -63,7 +63,7 @@ export const updateLocationHrs = (id, formData) => async dispatch => {
 
 export const updateWashBayQuantity = (id, formData) => async dispatch => {
   try {
-    const res = await axios.put(`api/locations/washbays/${id}`, formData);
+    const res = await axios.put(`/api/locations/washbays/${id}`, formData);
     let locationInfo = res.data.location;
 
     locationInfo.bayOneHours = res.data.bayOneHours;

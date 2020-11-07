@@ -1,10 +1,11 @@
 const Sequelize = require('sequelize');
 const db = require('../config/database');
+// const db = require('../config/db_sql_server');
 
 const WorkOrder = db.define("work_order", {
   is_scheduled: {
-    // type: Sequelize.BOOLEAN
-    type: Sequelize.INTEGER
+    type: Sequelize.BOOLEAN
+    // type: Sequelize.INTEGER
   },
   main_id: {
     type: Sequelize.STRING

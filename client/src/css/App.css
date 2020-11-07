@@ -38,7 +38,10 @@
 }
 
 .work-orders-container-sm {
-  max-height: 150px;
+  /* max-height: 150px; */
+  /* max-height: 500px; */
+  max-height: 250px;
+  /* max-height: 100%; */
   overflow-y: scroll;
   padding: 0 8px;
 }
@@ -90,7 +93,7 @@
   display: flex;
   justify-content: center;
   font-size: 14px;
-  width: 100%;
+  /* width: 100%; */
   margin: 0 10px;
 }
 
@@ -114,11 +117,13 @@
 .sort-by-text {
   color: #343a40;
   font-size: 12px;
-  margin: 0;
+  /* margin: 0; */
+  margin: 0 8px 0 0;
 }
 
 .sort-menu {
   font-size: 12px;
+  margin-right: 8px;
 }
 
 .work-order-content {
@@ -597,7 +602,8 @@ tr {
 }
 
 .aa {
-  height: 410px;
+  height: 100%;
+  /* height: 710px; */
   overflow-y: scroll;
 }
 
@@ -672,6 +678,10 @@ tr {
 }
 
 .wo-sm {
+  /* display: none; */
+}
+
+.wo-md {
   display: none;
 }
 

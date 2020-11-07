@@ -4,7 +4,7 @@ const router = express.Router();
 const WorkOrder = require('../../models/WorkOrder');
 const WashType = require('../../models/WashType');
 
-// @route      GET api/washtypes/:id
+// @route      GET api/workorders/:code
 // @desc       Get all work orders of a specific location
 // @access     Public
 router.get("/:code", async (req, res) => {
@@ -18,11 +18,41 @@ router.get("/:code", async (req, res) => {
   }
 });
 
+// @route      GET api/workorders/user/:code
+// @desc       Get all work orders of a specific location
+// @access     Public
+router.get("/user/:locations", async (req, res) => {
+  try {
+
+    const locationsArr = req.params.locations.split(",");
+    const workOrders = [];
+    
+    for (let i = 0; i < locationsArr.length; i++) {
+      let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
+      if (workOrdersOfLoc) {
+        for (let i = 0; i < workOrdersOfLoc.length; i++) {
+          workOrders.push(workOrdersOfLoc[i]);
+        }
+      }
+    }
+    
+    res.json({ workOrders });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // @route      PUT api/workorders/:id
 // @desc       Update status of work order
 // @access     Public
 router.put("/:id", async (req, res) => {
   try {
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log(req.params.id);
     await WorkOrder.update(
       {
         resource: req.body.resource,
@@ -34,9 +64,21 @@ router.put("/:id", async (req, res) => {
       {where: { id: req.params.id }}
     )
 
-    const workOrders = await WorkOrder.findAll(
-      { where: { wash_location_id: req.body.washLocationId } }
-    );
+    const locationsArr = req.body.locations.split(",");
+    const workOrders = [];
+    
+    for (let i = 0; i < locationsArr.length; i++) {
+      let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
+      if (workOrdersOfLoc) {
+        for (let i = 0; i < workOrdersOfLoc.length; i++) {
+          workOrders.push(workOrdersOfLoc[i]);
+        }
+      }
+    }
+
+    // const workOrders = await WorkOrder.findAll(
+    //   { where: { wash_location_id: req.body.washLocationId } }
+    // );
     
     res.json({ workOrders });
   } catch (err) {
@@ -50,6 +92,12 @@ router.put("/:id", async (req, res) => {
 // @access     Public
 router.put("/unschedule/:id", async (req, res) => {
   try {
+
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log("AAAAAAAAAAA");
+    console.log(req.params.id);
 
     const workOrder = await WorkOrder.findOne({where: {id: req.params.id}});
     const intWash = await WashType.findOne({ where: { wash_code: workOrder.int_wash_code }});
@@ -68,7 +116,19 @@ router.put("/unschedule/:id", async (req, res) => {
     );
 
     // Get all work orders of current location
-    const workOrders = await WorkOrder.findAll({where: { wash_location_id: req.body.washLocationId }});
+    // const workOrders = await WorkOrder.findAll({where: { wash_location_id: req.body.washLocationId }});
+
+    const locationsArr = req.body.locations.split(",");
+    const workOrders = [];
+    
+    for (let i = 0; i < locationsArr.length; i++) {
+      let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
+      if (workOrdersOfLoc) {
+        for (let i = 0; i < workOrdersOfLoc.length; i++) {
+          workOrders.push(workOrdersOfLoc[i]);
+        }
+      }
+    }
     
     res.json({ workOrders });
   } catch (err) {

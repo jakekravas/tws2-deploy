@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../config/database');
+// const db = require('../config/db_sql_server');
 
 const WashType = db.define("wash_type", {
   wash_code: {

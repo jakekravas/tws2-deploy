@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../config/database');
+// const db = require('../config/db_sql_server');
 
 const Location = db.define("location", {
   location_id: {

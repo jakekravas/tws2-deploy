@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import { getAllWashTypes, updateWashType } from "../../actions/washTypes";
-import { getWorkOrdersOfLocation } from "../../actions/workOrders";
 
 const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, loading }, location }) => {
 
@@ -202,4 +201,4 @@ const mapStateToProps = state => ({
   location: state.location
 });
 
-export default connect(mapStateToProps, { getAllWashTypes, updateWashType, getWorkOrdersOfLocation })(WashTypes)
+export default connect(mapStateToProps, { getAllWashTypes, updateWashType })(WashTypes)

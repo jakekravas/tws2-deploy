@@ -3,10 +3,11 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { connect } from "react-redux";
 import '../../css/syncfusion.css';
-import SchedulerBU from "./layout/SchedulerBU";
-import { getWorkOrdersOfLocation, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
+import Scheduler from "./layout/Scheduler";
+import DraggableOrder from "./layout/DraggableOrder";
+import { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
 
-const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrdersOfLocation, location: { selectedLocation }, workOrders, washTypes }) => {
+const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrdersOfLocation, getWorkOrders, location: { selectedLocation }, workOrders, washTypes, user: { terminals } }) => {
   const [displayCal, setDisplayCal] = useState(true);
   const [date, setDate] = useState(new Date());
   const [dateZeroed, setDateZeroed] = useState(new Date());
@@ -26,6 +27,16 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
   const [bayTwoStartHr, setBayTwoStartHr] = useState();
   const [bayOneS2StartHr, setBayOneS2StartHr] = useState();
   const [bayTwoS2StartHr, setBayTwoS2StartHr] = useState();
+  const [startHrStr, setStartHrStr] = useState();
+  const [endHrStr, setEndHrStr] = useState();
+  const [startHrStrB1S1, setStartHrStrB1S1] = useState();
+  const [endHrStrB1S1, setEndHrStrB1S1] = useState();
+  const [startHrStrB1S2, setStartHrStrB1S2] = useState();
+  const [endHrStrB1S2, setEndHrStrB1S2] = useState();
+  const [startHrStrB2S1, setStartHrStrB2S1] = useState();
+  const [endHrStrB2S1, setEndHrStrB2S1] = useState();
+  const [startHrStrB2S2, setStartHrStrB2S2] = useState();
+  const [endHrStrB2S2, setEndHrStrB2S2] = useState();
   const [bayOneEndHr, setBayOneEndHr] = useState();
   const [bayTwoEndHr, setBayTwoEndHr] = useState();
   const [bayOneS2EndHr, setBayOneS2EndHr] = useState();
@@ -46,6 +57,7 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
 
   const [disableMove, setDisableMove] = useState(false);
   const [todaysDate, setTodaysDate] = useState(new Date());
+  const [woResources, setWoResources] = useState();
 
   const configureOpen = date => {
     setDayVal(date.toString().split(" ")[2]);
@@ -144,47 +156,78 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
       setWeekdayDisplay("Sunday");
     }
 
+    let startStr;
+    let endStr;
+    
     // If there's one bay and it's closed, or if there are two bays and they're both closed, set isOpen to false
     if ((selectedLocation.wash_bays === 1 && !bayOne.is_open) || (selectedLocation.wash_bays === 2 && !bayOne.is_open && !bayTwo.is_open)) { 
       setIsOpen(false);
     } else {
       setIsOpen(true);
     }
+
+    // // Set bay one start and end hrs
+    // setStartHrStrB1S1(bayOne.shift_one_start);
+    // setEndHrStrB1S1(bayOne.shift_one_end);
+
+    // if (bayOne.shift_two_open) {
+    //   setStartHrStrB1S2(bayOne.shift_two_start);
+    //   setEndHrStrB1S2(bayOne.shift_two_end);
+    // }
+
+    // // Set bay two start and end hrs
+    // setStartHrStrB2S1(bayOne.shift_one_start);
+    // setEndHrStrB2S1(bayOne.shift_one_end);
+
+    // if (bayTwo.shift_two_open) {
+    //   setStartHrStrB2S2(bayTwo.shift_two_start);
+    //   setEndHrStrB2S2(bayTwo.shift_two_end);
+    // }
+
     if (bayOne.is_open) {
-      setbayOneOpen(true)
+      setbayOneOpen(true);
+      setStartHrStrB1S1(bayOne.shift_one_start);
+      setEndHrStrB1S1(bayOne.shift_one_end);
     } else {
       setbayOneOpen(false)
     }
     if (bayOne.shift_two_open) {
       setbayOneS2Open(true);
+      setStartHrStrB1S2(bayOne.shift_two_start);
+      setEndHrStrB1S2(bayOne.shift_two_end);
     } else {
       setbayOneS2Open(false);
     }
     if (bayTwo.is_open) {
-      setbayTwoOpen(true)
+      setbayTwoOpen(true);
+      setStartHrStrB2S1(bayTwo.shift_one_start);
+      setEndHrStrB2S1(bayTwo.shift_one_end);
     } else {
       setbayTwoOpen(false)
     }
     if (bayTwo.shift_two_open) {
       setbayTwoS2Open(true);
+      setStartHrStrB2S2(bayTwo.shift_two_start);
+      setEndHrStrB2S2(bayTwo.shift_two_end);
     } else {
       setbayTwoS2Open(false);
     }
 
-    // Setting types
+    // Set types
     setBayOneS1Type(bayOne.shift_one_type);
     setBayTwoS1Type(bayTwo.shift_one_type);
     setBayOneS2Type(bayOne.shift_two_type);
     setBayTwoS2Type(bayTwo.shift_two_type);
 
-    // Setting start hours for both shifts
+    // Set start hours for both shifts
     setBayOneStartHr(parseInt(bayOne.shift_one_start.split(":")[0]));
     setBayTwoStartHr(parseInt(bayTwo.shift_one_start.split(":")[0]));
     setBayOneS2StartHr(parseInt(bayOne.shift_two_start.split(":")[0]));
     setBayTwoS2StartHr(parseInt(bayTwo.shift_two_start.split(":")[0]));
     
-    // Setting end hours for both shifts
+    // Set end hours for both shifts
     // if it ends beyond the hour on the dot, set it to the next hour
+
     if (parseInt(bayOne.shift_one_end.split(":")[1]) > 0) {
       setBayOneEndHr(parseInt(bayOne.shift_one_end.split(":")[0]) + 1);
     } else {
@@ -208,16 +251,51 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
     } else {
       setBayTwoS2EndHr(parseInt(bayTwo.shift_two_end.split(":")[0]));
     }
+
+    if (selectedLocation.wash_bays === 1) {
+      setbayTwoOpen(false);
+    }
   }
 
   const getStuff = async () => {
     if (selectedLocation) {
-      await getWorkOrdersOfLocation(selectedLocation.location_id);
+      // await getWorkOrdersOfLocation(selectedLocation.location_id);
+      await getWorkOrders(terminals);
       configureOpen(date);
     }
   }
 
   useEffect(() => {
+    
+    if (terminals) {
+      let resources = [];
+      for (let i = 0; i < terminals.length; i++) {
+        if (terminals[i].wash_bays === 2) {
+          resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+            { name: "Bay 1", id: `${terminals[i].location_id}1` },
+            { name: "Bay 2", id: `${terminals[i].location_id}2` }
+          ]});
+        } else {
+          resources.push( {name: `${terminals[i].city}, ${terminals[i].state}`, id: `${terminals[i].location_id}1`, expanded: true, children: [
+            { name: "Bay 1", id: `${terminals[i].location_id}1` }
+          ]});
+        }
+      }
+      setWoResources(resources);
+    }
+
+
+    // resources={ selectedLocation.wash_bays === 2 ? [
+    //   {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
+    //     { name: "Bay 1", id: `${selectedLocation.location_id}1` },
+    //     { name: "Bay 2", id: `${selectedLocation.location_id}2` }
+    //   ]}
+    // ] : [
+    //   {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
+    //     { name: "Bay 1", id: `${selectedLocation.location_id}1` },
+    //   ]}
+    // ]}
+    
     let today = new Date();
     today.setHours(0, 0, 0, 0);
     setTodaysDate(today);
@@ -245,14 +323,12 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
     setDisplayCal(false);
   }
 
-  const onUnschedule = id => {
-    let isScheduled = false;
-    unscheduleWorkOrder(id, isScheduled, selectedLocation.location_id);
-  }
+  const onUnschedule = id => unscheduleWorkOrder(id, selectedLocation.location_id, terminals);
 
   const preventSave = (neededDateStr) => {
-    getWorkOrdersOfLocation(selectedLocation.location_id);
-
+    // getWorkOrdersOfLocation(selectedLocation.location_id);
+    getWorkOrders(terminals);
+    
     // Display alert to let user know that order can't be scheduled at this time
     setNeededDateAlert(neededDateStr);
     setAlertDisplay("block");
@@ -260,36 +336,20 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
       setAlertDisplay("none");
     }, 5000);
   }
+  
+  const preventTimeExceed = () => {
+    // getWorkOrdersOfLocation(selectedLocation.location_id);
+    getWorkOrders(terminals);
+    
+    // setNeededDateAlert(neededDateStr);
+    setAlertDisplay("block");
+    setTimeout(() => {
+      setAlertDisplay("none");
+    }, 5000);
+  }
 
-  const test = (id, bay, start, end, duration) => {
-    let startDate = new Date(start);
-    let endDate = new Date(end);
-
-    endDate.setMinutes( endDate.getMinutes() + duration );
-
-    let startDateArr = startDate.toString().split(" ");
-    let endDateArr = endDate.toString().split(" ");
-    let month;
-
-    if (startDateArr[1] === "Jan") month = "01";
-    if (startDateArr[1] === "Feb") month = "02";
-    if (startDateArr[1] === "Mar") month = "03";
-    if (startDateArr[1] === "Apr") month = "04";
-    if (startDateArr[1] === "May") month = "05";
-    if (startDateArr[1] === "Jun") month = "06";
-    if (startDateArr[1] === "Jul") month = "07";
-    if (startDateArr[1] === "Aug") month = "08";
-    if (startDateArr[1] === "Sep") month = "09";
-    if (startDateArr[1] === "Oct") month = "10";
-    if (startDateArr[1] === "Nov") month = "11";
-    if (startDateArr[1] === "Dec") month = "12";
-
-    let startStr = `${startDateArr[3]}-${month}-${startDateArr[2]}T${startDateArr[4]}`;
-    let endStr = `${endDateArr[3]}-${month}-${endDateArr[2]}T${endDateArr[4]}`;
-
-    let isScheduled = true;
-
-    updateWorkOrderStatus(id, bay, startStr, endStr, isScheduled, selectedLocation.location_id);
+  const test = (id, resource, start, end) => {
+    updateWorkOrderStatus(id, resource, start, end, selectedLocation.location_id, terminals);
   }
 
   const getPreviousDay = () => {
@@ -297,19 +357,13 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
     prevDate.setDate(prevDate.getDate() - 1);
     configureOpen(prevDate);
     setDate(prevDate);
-    // getWorkOrdersOfLocation(selectedLocation._id);
   }
   
   const getNextDay = () => {
-    let prevDate = date;
-    prevDate.setDate(prevDate.getDate() + 1);
-    configureOpen(prevDate);
-    setDate(prevDate);
-    // getWorkOrdersOfLocation(selectedLocation._id);
-  }
-
-  const testt = () => {
-    console.log(workOrders);
+    let nextDate = date;
+    nextDate.setDate(nextDate.getDate() + 1);
+    configureOpen(nextDate);
+    setDate(nextDate);
   }
 
   return (
@@ -341,30 +395,37 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
           </div>
         </section>
         :
-        <section onClick={testt}>
+        <section>
           <div className="date-header">
             <i className="fas fa-arrow-circle-left back-icon" onClick={() => setDisplayCal(true)}/>
 
             <div className="date-header-middle">
               <i className="fas fa-chevron-left chevron-icon" onClick={getPreviousDay}/>
-              {`${weekdayDisplay}, ${monthDisplay} ${dayVal}, ${yearVal}`}
+              <div className="date-title">
+                {`${weekdayDisplay}, ${monthDisplay} ${dayVal}, ${yearVal}`}
+              </div>
               <i className="fas fa-chevron-right chevron-icon" onClick={getNextDay}/>
             </div>
 
+            {/* Ghost element used for spacing purposes */}
             <span></span>
           </div>
           <div style={{display: alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
-            This wash must be completed no later than {neededDateAlert}
+            {/* This wash must be completed no later than {neededDateAlert} */}
+          The end of a wash cannot exceed the end of a shift
           </div>
           {/* 2 BAYS AND BOTH OPEN */}
-            {selectedLocation.wash_bays === 2 && bayOneOpen && bayTwoOpen ?
+            {/* {selectedLocation.wash_bays === 2 && bayOneOpen && bayTwoOpen ? */}
+            {bayOneOpen || bayTwoOpen ?
             <div>
-              <div className="row mx-auto">
-                <div className="col-sm-6 px-0 aa">
-                  <h6 className="text-center my-1">Bay 1, Shift 1 - {bayOneS1Type}</h6>
-                  <SchedulerBU
+              <div>
+                <div className="col-12 px-0 aa">
+                  <Scheduler
                     key={1}
-                    shiftType={bayOneS1Type}
+                    bayOneS1Type={bayOneS1Type}
+                    bayOneS2Type={bayOneS2Type}
+                    bayTwoS1Type={bayTwoS1Type}
+                    bayTwoS2Type={bayTwoS2Type}
                     dateStr={dateStr}
                     bay={1}
                     disableMove={disableMove}
@@ -377,303 +438,56 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
                     }
                     test={test}
                     preventSave={preventSave}
+                    preventTimeExceed={preventTimeExceed}
                     onUnschedule={onUnschedule}
+                    workOrders={workOrders.workOrders}
                     unscheduledWorkOrders={
                       workOrders.workOrders.filter(wo =>
+                        // (!wo.is_scheduled
                         (!wo.is_scheduled
-                          && wo.wash_location_id === selectedLocation.location_id
-                          && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
+                          // && wo.wash_location_id === selectedLocation.location_id
+                          // && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
                         )
                       )
                     }
+                    resources={ woResources }
+                    // resources={ selectedLocation.wash_bays === 2 ? [
+                    //   {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
+                    //     { name: "Bay 1", id: `${selectedLocation.location_id}1` },
+                    //     { name: "Bay 2", id: `${selectedLocation.location_id}2` }
+                    //   ]}
+                    // ] : [
+                    //   {name: `${selectedLocation.city}, ${selectedLocation.state}`, id: selectedLocation.id, expanded: true, children: [
+                    //     { name: "Bay 1", id: `${selectedLocation.location_id}1` },
+                    //   ]}
+                    // ]}
                     events={
                       workOrders.workOrders.filter(wo =>
-                      (wo.is_scheduled && wo.bay === 1)
+                      (wo.is_scheduled)
                     )}
+                    city={selectedLocation.city}
+                    state={selectedLocation.state}
+                    resource1={`${selectedLocation.location_id}1`}
+                    resource2={`${selectedLocation.location_id}2`}
+                    bays={selectedLocation.wash_bays}
+                    bayOneOpen={bayOneOpen}
+                    bayTwoOpen={bayTwoOpen}
+                    bayOneS2Open={bayOneS2Open}
+                    bayTwoS2Open={bayTwoS2Open}
+                    startHrStrB1S1 = {new Date(`${dateStr}T${startHrStrB1S1}`)}
+                    startHrStrB1S2 = {startHrStrB1S2 && new Date(`${dateStr}T${startHrStrB1S2}`)}
+                    startHrStrB2S1 = {new Date(`${dateStr}T${startHrStrB2S1}`)}
+                    startHrStrB2S2 = {startHrStrB2S2 && new Date(`${dateStr}T${startHrStrB2S2}`)}
+                    endHrStrB1S1 = {new Date(`${dateStr}T${endHrStrB1S1}`)}
+                    endHrStrB1S2 = {endHrStrB1S2 && new Date(`${dateStr}T${endHrStrB1S2}`)}
+                    endHrStrB2S1 = {new Date(`${dateStr}T${endHrStrB2S1}`)}
+                    endHrStrB2S2 = {endHrStrB2S2 && new Date(`${dateStr}T${endHrStrB2S2}`)}
                   />
-                  {bayOneS2Open &&
-                  <div>
-                    <h6 className="text-center my-1">Bay 1, Shift 2 - {bayOneS2Type}</h6>
-                    <SchedulerBU
-                      key={2}
-                      shiftType={bayOneS2Type}
-                      dateStr={dateStr}
-                      bay={1}
-                      disableMove={disableMove}
-                      startHr={bayOneS2StartHr}
-                      endHr={bayOneS2EndHr}
-                      endHrStr={
-                        bayOneEndHr.toString().length === 1 ?
-                        `${dateStr}T0${bayOneS2EndHr}:00:00` :
-                        `${dateStr}T${bayOneS2EndHr}:00:00`
-                      }
-                      test={test}
-                      preventSave={preventSave}
-                      onUnschedule={onUnschedule}
-                      unscheduledWorkOrders={
-                        workOrders.workOrders.filter(wo =>
-                          (!wo.is_scheduled
-                            && wo.wash_location_id === selectedLocation.location_id
-                            && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                          )
-                        )
-                      }
-                      events={
-                        workOrders.workOrders.filter(wo =>
-                        (wo.is_scheduled && wo.bay === 1)
-                      )}
-                    />
-                  </div>
-                  }
-                </div>
-                <div className="col-sm-6 px-0 aa">
-                  <h6 className="text-center my-1">Bay 2, Shift 1 - {bayTwoS1Type}</h6>
-                  <SchedulerBU
-                    key={3}
-                    shiftType={bayTwoS1Type}
-                    dateStr={dateStr}
-                    bay={2}
-                    disableMove={disableMove}
-                    startHr={bayTwoStartHr}
-                    endHr={bayTwoEndHr}
-                    endHrStr={
-                      bayTwoEndHr.toString().length === 1 ?
-                      `${dateStr}T0${bayTwoEndHr}:00:00` :
-                      `${dateStr}T${bayTwoEndHr}:00:00`
-                    }
-                    test={test}
-                    preventSave={preventSave}
-                    onUnschedule={onUnschedule}
-                    unscheduledWorkOrders={
-                      workOrders.workOrders.filter(wo =>
-                        (!wo.is_scheduled
-                          && wo.wash_location_id === selectedLocation.location_id
-                          && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                        )
-                      )
-                    }
-                    events={
-                      workOrders.workOrders.filter(wo =>
-                        (wo.is_scheduled && wo.bay === 2)
-                      )
-                    }
-                  />
-                  {bayTwoS2Open &&
-                    <div>
-                      <h6 className="text-center my-1">Bay 2, Shift 2 - {bayTwoS2Type}</h6>
-                      <SchedulerBU
-                        key={4}
-                        shiftType={bayTwoS2Type}
-                        dateStr={dateStr}
-                        bay={2}
-                        disableMove={disableMove}
-                        startHr={bayTwoS2StartHr}
-                        endHr={bayTwoS2EndHr}
-                        endHrStr={
-                          bayTwoS2EndHr.toString().length === 1 ?
-                          `${dateStr}T0${bayTwoS2EndHr}:00:00` :
-                          `${dateStr}T${bayTwoS2EndHr}:00:00`
-                        }
-                        test={test}
-                        preventSave={preventSave}
-                        onUnschedule={onUnschedule}
-                        unscheduledWorkOrders={
-                          workOrders.workOrders.filter(wo =>
-                            (!wo.is_scheduled
-                              && wo.wash_location_id === selectedLocation.location_id
-                              && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                            )
-                          )
-                        }
-                        events={
-                          workOrders.workOrders.filter(wo =>
-                            (wo.is_scheduled && wo.bay === 2)
-                          )
-                        }
-                      />
-                    </div>
-                  }
                 </div>
               </div>
             </div>
-              :
-            <span style={{display: "none"}}></span>
-            }
-            {/* 2 BAYS AND ONLY BAY 1 OPEN */}
-            {selectedLocation.wash_bays === 2 && bayOneOpen && !bayTwoOpen &&
-            <div className="aa">
-              <h6 className="text-center my-1">Bay 1, Shift 1 - {bayOneS1Type}</h6>
-              <SchedulerBU
-                key={5}
-                shiftType={bayOneS1Type}
-                dateStr={dateStr}
-                bay={1}
-                disableMove={disableMove}
-                startHr={bayOneStartHr}
-                endHr={bayOneEndHr}
-                endHrStr={
-                  bayOneEndHr.toString().length === 1 ?
-                  `${dateStr}T0${bayOneEndHr}:00:00` :
-                  `${dateStr}T${bayOneEndHr}:00:00`
-                }
-                test={test}
-                preventSave={preventSave}
-                onUnschedule={onUnschedule}
-                unscheduledWorkOrders={
-                  workOrders.workOrders.filter(wo =>
-                    (!wo.is_scheduled
-                      && wo.wash_location_id === selectedLocation.location_id
-                      && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                    )
-                  )
-                }
-                events={
-                  workOrders.workOrders.filter(wo =>
-                  (wo.is_scheduled && wo.bay === 1)
-                )}
-              />
-              {bayOneS2Open &&
-                <div>
-                  <h6 className="text-center my-1">Bay 1, Shift 2 - {bayOneS2Type}</h6>
-                  <SchedulerBU
-                    key={6}
-                    shiftType={bayOneS2Type}
-                    dateStr={dateStr}
-                    bay={1}
-                    disableMove={disableMove}
-                    startHr={bayOneS2StartHr}
-                    endHr={bayOneS2EndHr}
-                    endHrStr={
-                      bayOneS2EndHr.toString().length === 1 ?
-                      `${dateStr}T0${bayOneS2EndHr}:00:00` :
-                      `${dateStr}T${bayOneS2EndHr}:00:00`
-                    }
-                    test={test}
-                    preventSave={preventSave}
-                    onUnschedule={onUnschedule}
-                    unscheduledWorkOrders={
-                      workOrders.workOrders.filter(wo =>
-                        (!wo.is_scheduled
-                          && wo.wash_location_id === selectedLocation.location_id
-                          && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                        )
-                      )
-                    }
-                    events={
-                      workOrders.workOrders.filter(wo =>
-                      (wo.is_scheduled && wo.bay === 1)
-                    )}
-                  />
-                </div>
-              }
-            </div>
-            }
-            {/* 2 BAYS AND ONLY BAY 2 OPEN */}
-            {selectedLocation.wash_bays === 2 && !bayOneOpen && bayTwoOpen &&
-            <div>
-              <h6 className="text-center my-1">Bay 2, Shift 1 - {bayTwoS1Type}</h6>
-              <SchedulerBU
-                key={7}
-                shiftType={bayTwoS1Type}
-                dateStr={dateStr}
-                bay={2}
-                disableMove={disableMove}
-                startHr={bayTwoStartHr}
-                endHr={bayTwoEndHr}
-                endHrStr={
-                  bayTwoEndHr.toString().length === 1 ?
-                  `${dateStr}T0${bayTwoEndHr}:00:00` :
-                  `${dateStr}T${bayTwoEndHr}:00:00`
-                }
-                test={test}
-                preventSave={preventSave}
-                onUnschedule={onUnschedule}
-                unscheduledWorkOrders={
-                  workOrders.workOrders.filter(wo =>
-                    (!wo.is_scheduled
-                      && wo.wash_location_id === selectedLocation.location_id
-                      && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                    )
-                  )
-                }
-                events={
-                  workOrders.workOrders.filter(wo =>
-                    (wo.is_scheduled && wo.bay === 2)
-                  )
-                }
-              />
-              {bayTwoS2Open &&
-                <div>
-                  <h6 className="text-center my-1">Bay 2, Shift 2 - {bayTwoS2Type}</h6>
-                  <SchedulerBU
-                    key={8}
-                    shiftType={bayTwoS2Type}
-                    dateStr={dateStr}
-                    bay={2}
-                    disableMove={disableMove}
-                    startHr={bayTwoS2StartHr}
-                    endHr={bayTwoS2EndHr}
-                    endHrStr={
-                      bayTwoS2EndHr.toString().length === 1 ?
-                      `${dateStr}T0${bayTwoS2EndHr}:00:00` :
-                      `${dateStr}T${bayTwoS2EndHr}:00:00`
-                    }
-                    test={test}
-                    preventSave={preventSave}
-                    onUnschedule={onUnschedule}
-                    unscheduledWorkOrders={
-                      workOrders.workOrders.filter(wo =>
-                        (!wo.is_scheduled
-                          && wo.wash_location_id === selectedLocation.location_id
-                          && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                        )
-                      )
-                    }
-                    events={
-                      workOrders.workOrders.filter(wo =>
-                        // (wo.isScheduled && wo.bay == 2)
-                        (wo.is_scheduled && wo.bay === 2)
-                      )
-                    }
-                  />
-                </div>
-              }
-            </div>
-            }
-            {/* 1 BAY */}
-            {selectedLocation.wash_bays === 1 && bayOneOpen &&
-            <div>
-              <h6 className="text-center my-1">Bay 1, Shift 1 - {bayOneS1Type}</h6>
-              <SchedulerBU
-                key={9}
-                shiftType={bayOneS1Type}
-                dateStr={dateStr}
-                bay={1}
-                disableMove={disableMove}
-                startHr={bayOneStartHr}
-                endHr={bayOneEndHr}
-                endHrStr={
-                  bayOneEndHr.toString().length === 1 ?
-                  `${dateStr}T0${bayOneEndHr}:00:00` :
-                  `${dateStr}T${bayOneEndHr}:00:00`
-                }
-                test={test}
-                preventSave={preventSave}
-                onUnschedule={onUnschedule}
-                unscheduledWorkOrders={
-                  workOrders.workOrders.filter(wo =>
-                    (!wo.is_scheduled
-                      && wo.wash_location_id === selectedLocation.location_id
-                      && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                    )
-                  )
-                }
-                events={
-                  workOrders.workOrders.filter(wo =>
-                  (wo.is_scheduled && wo.bay === 1)
-                )}
-              />
-            </div>
+            :
+            <span></span>
             }
             {!bayOneOpen && !bayTwoOpen &&
             <div>
@@ -691,7 +505,8 @@ const WashScheduleBU = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrd
 const mapStateToProps = state => ({
   location: state.location,
   workOrders: state.workOrders,
-  washTypes: state.washTypes
+  washTypes: state.washTypes,
+  user: state.user
 })
 
-export default connect(mapStateToProps, { getWorkOrdersOfLocation, updateWorkOrderStatus, unscheduleWorkOrder })(WashScheduleBU)
+export default connect(mapStateToProps, { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder })(WashSchedule)
