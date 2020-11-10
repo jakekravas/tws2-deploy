@@ -4,6 +4,7 @@ const path = require('path');
 const app = express();
 
 // Database
+const prod_db = require('./config/prod_db');
 const pg_db = require('./config/database');
 const mssql_db = require('./config/db_sql_server');
 
@@ -12,7 +13,8 @@ mssql_db.authenticate()
   .then(() => console.log("MSSQL database connected..."))
   .catch(err => console.log("Error: " + err));
 
-pg_db.authenticate()
+// pg_db.authenticate()
+prod_db.authenticate()
   .then(() => console.log("Postgres database connected..."))
   .catch(err => console.log("Error: " + err));
 
@@ -26,6 +28,7 @@ app.use("/api/locations", require('./routes/api/locations'));
 app.use("/api/washtypes", require('./routes/api/washtypes'));
 app.use("/api/workorders", require('./routes/api/workorders'));
 app.use("/api/userid", require('./routes/api/userid'));
+app.use("/api/trailer_wash_wo", require('./routes/api/trailer_wash_wo'));
 
 // Server static assets in production
 if (process.env.NODE_ENV ==="production") {

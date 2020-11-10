@@ -4,6 +4,19 @@ import {
   USER_ERROR
 } from "./types";
 
+export const getTrailerWashWos = () => async dispatch => {
+  try {
+    const res = await axios.get("/api/trailer_wash_wo");
+
+    console.log(res.data);
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: USER_ERROR
+    });
+  }
+}
+
 export const getUser = user => async dispatch => {
   try {
     console.log(user);

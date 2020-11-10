@@ -42,7 +42,7 @@ class Scheduler extends Component {
       onEventResizing: () => this.forceUpdate(),
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
-
+        console.log(args.e.data);
         // Location code
         const loc = args.e.data.resource.slice(0, -1);
 
@@ -50,7 +50,8 @@ class Scheduler extends Component {
         const bay = parseInt(args.e.data.resource[args.e.data.resource.length-1]);
 
         // Find order to update
-        const orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
+        // const orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
+        const orderToUpdate = this.props.workOrders.filter(wo => wo.order_id.trim() === args.e.data.id.trim())[0];
         const endTime = new Date(args.e.data.start.value);
         let duration;
 
@@ -69,9 +70,13 @@ class Scheduler extends Component {
         const s2Type = timesToLookAt[0].shift_two_type;
 
         // If a work order is dragged into the wrong location
-        if (loc !== orderToUpdate.wash_location_id) {
+        if (loc !== orderToUpdate.wash_location_id.trim()) {
           this.props.preventTimeExceed("loc");
+          console.log(loc);
+          console.log(orderToUpdate.wash_location_id.trim());
+          console.log("WL");
         } else {
+          console.log("RL");
           if (argStart < s1Start) {
             this.props.preventTimeExceed("start");
           } else if (argStart >= s1Start && argStart < s1End) {
@@ -308,7 +313,6 @@ class Scheduler extends Component {
   }
 
   setFilterText(e){
-    console.log(e.target.value);
     this.setState({ filterText: e.target.value });
   }
 
@@ -354,11 +358,14 @@ class Scheduler extends Component {
             }
           </div>
           <div className="work-orders-container">
-            {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => (
+            {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => ( */}
+            {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
               <DraggableOrder
                 wo={wo}
-                id={wo.id}
-                name={`Trailer ${wo.trailer_id}`}
+                // id={wo.id}
+                id={wo.order_id.trim()}
+                // name={`Trailer ${wo.trailer_id}`}
+                name={`Trailer ${wo.order_id.trim()}`}
                 // cityState={`${this.props.city}, ${this.props.state}`}
                 text={wo.text}
                 // duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
@@ -366,7 +373,7 @@ class Scheduler extends Component {
                 teamDuration={1}
                 soloDuration={2}
               />
-            ))}
+            ))} */}
           </div>
         </div>
         {/* <div className="col-sm-9 px-0"> */}
@@ -415,7 +422,8 @@ class Scheduler extends Component {
             </div>
             {this.state.editOpen &&
               <div className="work-orders-header-top">
-                <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
+                {/* <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/> */}
+                <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by location ID"/>
                 <div className="sort-container">
                   {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
@@ -441,12 +449,14 @@ class Scheduler extends Component {
               </div>
             }
             <div className="work-orders-container-sm">
-              {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.map(wo => ( */}
-              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => (
+              {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => ( */}
+              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
                 <DraggableOrder
                   wo={wo}
-                  id={wo.id}
-                  name={`Trailer ${wo.trailer_id}`}
+                  // id={wo.id}
+                  id={wo.order_id.trim()}
+                  // name={`Trailer ${wo.trailer_id}`}
+                  name={`Trailer ${wo.order_id.trim()}`}
                   // cityState={`${this.props.city}, ${this.props.state}`}
                   cityState={`${wo.wash_location_id}`}
                   text={wo.text}

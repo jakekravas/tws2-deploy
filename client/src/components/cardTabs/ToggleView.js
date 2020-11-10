@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { connect } from "react-redux";
 import WashSchedule from "./WashSchedule";
-import WashScheduleBU from "./WashScheduleBU";
 import HoursOfOperation from "./HoursOfOperation";
 import { getAllLocations, getLocationInfo } from "../../actions/location";
-import { getUser } from "../../actions/user";
+import { getUser, getTrailerWashWos } from "../../actions/user";
 
-const ToggleView = ({ getUser, currentUser, getLocationInfo, location: { locations, selectedLocation, loading }, user: { terminals } }) => {
+const ToggleView = ({ getUser, getTrailerWashWos, currentUser, getLocationInfo, location: { locations, selectedLocation, loading }, user: { terminals } }) => {
 
   const [view, setView] = useState("schedule");
 
   const test = () => {
     setView("schedule");
     getUser(currentUser);
+    getTrailerWashWos();
   }
 
   return (
@@ -60,4 +60,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps, { getUser, getAllLocations, getLocationInfo })(ToggleView)
+export default connect(mapStateToProps, { getUser, getTrailerWashWos, getAllLocations, getLocationInfo })(ToggleView)

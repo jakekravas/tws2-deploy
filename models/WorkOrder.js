@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
-const db = require('../config/database');
-// const db = require('../config/db_sql_server');
+// const db = require('../config/database');
+const db = require('../config/prod_db');
 
 const WorkOrder = db.define("work_order", {
   is_scheduled: {

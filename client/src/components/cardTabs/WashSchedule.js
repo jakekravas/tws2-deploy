@@ -270,7 +270,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
             className="mx-auto"
           />
           <div className="text-center">
-            <button disabled={ !terminals ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}>
+            {/* <button disabled={ !terminals || workOrders.workOrders.length === 0 ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}> */}
+            <button disabled={ !terminals || !workOrders.workOrders ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}>
               <span>
                 View Schedule For {date && date.toString().split(" ").splice(0, 4).join(" ")}
               </span>

@@ -2,6 +2,7 @@ import React from 'react';
 import {DayPilot} from "daypilot-pro-react";
 
 function DraggableOrder(props) {
+
   return (
   <div className={"draggable-item"} ref={element => {
     if (!element) {
@@ -38,7 +39,8 @@ function DraggableOrder(props) {
         <span className="work-order-dates">
           Needed:
           <br/>
-          {props.wo.needed_date_display_str}
+          {props.wo.needed_date}
+          {/* {props.wo.needed_date_display_str} */}
         </span>
       </div>
     </div>
