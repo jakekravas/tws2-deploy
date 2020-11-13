@@ -2,27 +2,15 @@ const Sequelize = require('sequelize');
 // const db = require('../config/database');
 const db = require('../config/prod_db');
 
-const WashType = db.define("wash_type", {
-  wash_code: {
+const ExtWashType = db.define("ext_wash_type", {
+  ext_wash_code: {
     type: Sequelize.STRING
   },
-  description: {
+  ext_description: {
     type: Sequelize.STRING
   },
   type: {
     type: Sequelize.STRING
-  },
-  int_team_hours: {
-    type: Sequelize.INTEGER
-  },
-  int_team_minutes: {
-    type: Sequelize.INTEGER
-  },
-  int_solo_hours: {
-    type: Sequelize.INTEGER
-  },
-  int_solo_minutes: {
-    type: Sequelize.INTEGER
   },
   ext_team_hours: {
     type: Sequelize.INTEGER
@@ -38,6 +26,6 @@ const WashType = db.define("wash_type", {
   }
 });
 
-// WashType.schema("tw_scheduler")
+ExtWashType.removeAttribute('id');
 
-module.exports = WashType;
+module.exports = ExtWashType;

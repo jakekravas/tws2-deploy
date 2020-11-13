@@ -20,11 +20,17 @@ router.get("/:code", async (req, res) => {
 });
 
 // @route      GET api/workorders/user/:code
-// @desc       Get all work orders of a specific location
+// @desc       Get all work orders of locations that user has access to
 // @access     Public
 router.get("/user/:locations", async (req, res) => {
   try {
-
+    console.log("CCCCCCCCC");
+    console.log("CCCCCCCCC");
+    console.log("CCCCCCCCC");
+    console.log("CCCCCCCCC");
+    console.log("CCCCCCCCC");
+    console.log("CCCCCCCCC");
+    console.log(req.params.locations);
     const locationsArr = req.params.locations.split(",");
     const workOrders = [];
     
@@ -32,14 +38,21 @@ router.get("/user/:locations", async (req, res) => {
       let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
       if (workOrdersOfLoc) {
         for (let i = 0; i < workOrdersOfLoc.length; i++) {
-          
-          let intWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-          });
 
-          let extWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-          });
+          let intWash;
+          let extWash;
+
+          if (workOrdersOfLoc[i].int_wash_code) {
+            intWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
+            });
+          }
+
+          if (workOrdersOfLoc[i].ext_wash_code) {
+            extWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
+            });
+          }
 
           let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
 
@@ -103,14 +116,29 @@ router.put("/:id", async (req, res) => {
       let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
       if (workOrdersOfLoc) {
         for (let i = 0; i < workOrdersOfLoc.length; i++) {
-          
-          let intWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-          });
 
-          let extWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-          });
+          let intWash;
+          let extWash;
+
+          if (workOrdersOfLoc[i].int_wash_code) {
+            intWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
+            });
+          }
+
+          if (workOrdersOfLoc[i].ext_wash_code) {
+            extWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
+            });
+          }
+          
+          // let intWash = await WashType.findOne({
+          //   where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
+          // });
+
+          // let extWash = await WashType.findOne({
+          //   where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
+          // });
 
           let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
 
@@ -118,17 +146,7 @@ router.put("/:id", async (req, res) => {
           workOrders.push(obj);
         }
       }
-      // let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
-      // if (workOrdersOfLoc) {
-      //   for (let i = 0; i < workOrdersOfLoc.length; i++) {
-      //     workOrders.push(workOrdersOfLoc[i]);
-      //   }
-      // }
     }
-
-    // const workOrders = await WorkOrder.findAll(
-    //   { where: { wash_location_id: req.body.washLocationId } }
-    // );
     
     res.json({ workOrders });
   } catch (err) {
@@ -143,26 +161,13 @@ router.put("/:id", async (req, res) => {
 router.put("/unschedule/:id", async (req, res) => {
   try {
 
-    // const workOrder = await WorkOrder.findOne({where: {id: req.params.id}});
-    // const intWash = await WashType.findOne({ where: { wash_code: workOrder.int_wash_code }});
-    // const extWash = await WashType.findOne({ where: { wash_code: workOrder.ext_wash_code }});
-
-    // Updating duration of work order, in case of wash type duration change
-    // await WorkOrder.update(
     await TrailerWashWo.update(
       {
         is_scheduled: false,
-        // int_duration_mins_team: (intWash.team_hours * 60) + intWash.team_minutes,
-        // int_duration_mins_solo: (intWash.solo_hours * 60) + intWash.solo_minutes,
-        // ext_duration_mins_team: (extWash.team_hours * 60) + extWash.team_minutes,
-        // ext_duration_mins_solo: (extWash.solo_hours * 60) + extWash.solo_minutes
       },
       // {where: { id: req.params.id }}
       {where: { order_id: req.params.id + "  " }}
     );
-
-    // Get all work orders of current location
-    // const workOrders = await WorkOrder.findAll({where: { wash_location_id: req.body.washLocationId }});
 
     const locationsArr = req.body.locations.split(",");
     const workOrders = [];
@@ -172,13 +177,20 @@ router.put("/unschedule/:id", async (req, res) => {
       if (workOrdersOfLoc) {
         for (let i = 0; i < workOrdersOfLoc.length; i++) {
           
-          let intWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-          });
+          let intWash;
+          let extWash;
 
-          let extWash = await WashType.findOne({
-            where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-          });
+          if (workOrdersOfLoc[i].int_wash_code) {
+            intWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
+            });
+          }
+
+          if (workOrdersOfLoc[i].ext_wash_code) {
+            extWash = await WashType.findOne({
+              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
+            });
+          }
 
           let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
 
@@ -186,12 +198,6 @@ router.put("/unschedule/:id", async (req, res) => {
           workOrders.push(obj);
         }
       }
-      // let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
-      // if (workOrdersOfLoc) {
-      //   for (let i = 0; i < workOrdersOfLoc.length; i++) {
-      //     workOrders.push(workOrdersOfLoc[i]);
-      //   }
-      // }
     }
     
     res.json({ workOrders });

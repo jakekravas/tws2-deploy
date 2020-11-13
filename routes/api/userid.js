@@ -15,6 +15,12 @@ const Hours = require('../../models/Hours');
 // POST request to http://localhost:3000/api/userid
 router.post("/", urlencodedParser, async (req, res) => {
   try {
+    console.log("BBBBBBBBBBB");
+    console.log("BBBBBBBBBBB");
+    console.log("BBBBBBBBBBB");
+    console.log("BBBBBBBBBBB");
+    console.log("BBBBBBBBBBB");
+    console.log("BBBBBBBBBBB");
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     const UserRole = await BtcWeb_UserRole.findAll({
       where: { UserID:  submittedUserID}
