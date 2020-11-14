@@ -2,7 +2,7 @@ import React from 'react';
 import {DayPilot} from "daypilot-pro-react";
 
 function DraggableOrder(props) {
-
+  console.log(props);
   return (
   <div className={"draggable-item"} ref={element => {
     if (!element) {

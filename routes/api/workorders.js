@@ -4,6 +4,7 @@ const router = express.Router();
 const WorkOrder = require('../../models/WorkOrder');
 const TrailerWashWo = require('../../models/TrailerWashWo');
 const WashType = require('../../models/WashType');
+const { sequelize } = require('../../models/WorkOrder');
 
 // @route      GET api/workorders/:code
 // @desc       Get all work orders of a specific location
@@ -19,64 +20,23 @@ router.get("/:code", async (req, res) => {
   }
 });
 
+
 // @route      GET api/workorders/user/:code
 // @desc       Get all work orders of locations that user has access to
 // @access     Public
 router.get("/user/:locations", async (req, res) => {
   try {
-    console.log("CCCCCCCCC");
-    console.log("CCCCCCCCC");
-    console.log("CCCCCCCCC");
-    console.log("CCCCCCCCC");
-    console.log("CCCCCCCCC");
-    console.log("CCCCCCCCC");
-    console.log(req.params.locations);
+
     const locationsArr = req.params.locations.split(",");
     const workOrders = [];
     
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
-      if (workOrdersOfLoc) {
-        for (let i = 0; i < workOrdersOfLoc.length; i++) {
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
 
-          let intWash;
-          let extWash;
-
-          if (workOrdersOfLoc[i].int_wash_code) {
-            intWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-            });
-          }
-
-          if (workOrdersOfLoc[i].ext_wash_code) {
-            extWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-            });
-          }
-
-          let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
-
-          // workOrders.push(workOrdersOfLoc[i]);
-          workOrders.push(obj);
-        }
-      }
+      workOrders.push(workOrdersOfLoc[0]);
     }
-    
-    res.json({ workOrders });
-    
-    // const locationsArr = req.params.locations.split(",");
-    // const workOrders = [];
-    
-    // for (let i = 0; i < locationsArr.length; i++) {
-    //   let workOrdersOfLoc = await WorkOrder.findAll({ where: { wash_location_id: locationsArr[i] } });
-    //   if (workOrdersOfLoc) {
-    //     for (let i = 0; i < workOrdersOfLoc.length; i++) {
-    //       workOrders.push(workOrdersOfLoc[i]);
-    //     }
-    //   }
-    // }
-    
-    // res.json({ workOrders });
+    res.json({ workOrders: workOrders });
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -88,14 +48,6 @@ router.get("/user/:locations", async (req, res) => {
 // @access     Public
 router.put("/:id", async (req, res) => {
   try {
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log('AAAAAAAAAAAA');
-    console.log(req.params.id + '  ');
     // await WorkOrder.update(
     await TrailerWashWo.update(
       {
@@ -113,42 +65,12 @@ router.put("/:id", async (req, res) => {
     const workOrders = [];
     
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
-      if (workOrdersOfLoc) {
-        for (let i = 0; i < workOrdersOfLoc.length; i++) {
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
 
-          let intWash;
-          let extWash;
-
-          if (workOrdersOfLoc[i].int_wash_code) {
-            intWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-            });
-          }
-
-          if (workOrdersOfLoc[i].ext_wash_code) {
-            extWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-            });
-          }
-          
-          // let intWash = await WashType.findOne({
-          //   where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-          // });
-
-          // let extWash = await WashType.findOne({
-          //   where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-          // });
-
-          let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
-
-          // workOrders.push(workOrdersOfLoc[i]);
-          workOrders.push(obj);
-        }
-      }
+      workOrders.push(workOrdersOfLoc[0]);
     }
-    
-    res.json({ workOrders });
+    // res.json({ workOrders: workOrders[0][0] });
+    res.json({ workOrders: workOrders });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -171,34 +93,40 @@ router.put("/unschedule/:id", async (req, res) => {
 
     const locationsArr = req.body.locations.split(",");
     const workOrders = [];
-    
+
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
-      if (workOrdersOfLoc) {
-        for (let i = 0; i < workOrdersOfLoc.length; i++) {
-          
-          let intWash;
-          let extWash;
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
 
-          if (workOrdersOfLoc[i].int_wash_code) {
-            intWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-            });
-          }
-
-          if (workOrdersOfLoc[i].ext_wash_code) {
-            extWash = await WashType.findOne({
-              where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-            });
-          }
-
-          let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
-
-          // workOrders.push(workOrdersOfLoc[i]);
-          workOrders.push(obj);
-        }
-      }
+      workOrders.push(workOrdersOfLoc[0]);
     }
+    
+    // for (let i = 0; i < locationsArr.length; i++) {
+    //   let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
+    //   if (workOrdersOfLoc) {
+    //     for (let i = 0; i < workOrdersOfLoc.length; i++) {
+          
+    //       let intWash;
+    //       let extWash;
+
+    //       if (workOrdersOfLoc[i].int_wash_code) {
+    //         intWash = await WashType.findOne({
+    //           where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
+    //         });
+    //       }
+
+    //       if (workOrdersOfLoc[i].ext_wash_code) {
+    //         extWash = await WashType.findOne({
+    //           where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
+    //         });
+    //       }
+
+    //       let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
+
+    //       // workOrders.push(workOrdersOfLoc[i]);
+    //       workOrders.push(obj);
+    //     }
+    //   }
+    // }
     
     res.json({ workOrders });
   } catch (err) {

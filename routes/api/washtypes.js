@@ -23,17 +23,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/test", async (req, res) => {
-//   try {
-//     const orders = await sequelize.query("SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code;");
-
-//     res.json({ orders });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server error");
-//   }
-// })
-
 // @route      PUT api/washtypes/:id
 // @desc       Edit wash type
 // @access     Public

@@ -31,7 +31,6 @@ export const getWorkOrdersOfLocation = id => async dispatch => {
 
 export const getWorkOrders = terminals => async dispatch => {
   try {
-    console.log("AAAAAAAAA");
     const locationIdsArr = [];
     
     for (let i = 0; i < terminals.length; i++) {
@@ -42,44 +41,49 @@ export const getWorkOrders = terminals => async dispatch => {
     
     const res = await axios.get(`/api/workorders/user/${locations}`);
 
-    console.log(res.data);
-
     // Setting a start and end property here because SQL doesn't allow us to have columns with those names, and DayPilot needs those exact names to display the orders
     let orders = res.data.workOrders;
     console.log(orders);
     const ordersArr = [];
     if (orders.length > 0) {
       for (let i = 0; i < orders.length; i++) {
-
-        // get minute duration of washes
-        let it;
-        let et;
-        let is;
-        let es;
-        
-        if (orders[i].intWash) {
-          it = (orders[i].intWash.team_hours * 60) + orders[i].intWash.team_minutes;
-          is = (orders[i].intWash.solo_hours * 60) + orders[i].intWash.solo_minutes;
+        for (let y = 0; y < orders[i].length; y++) {
+          // get minute duration of washes
+          let it;
+          let et;
+          let is;
+          let es;
+            
+          if (orders[i][y].int_wash_code !== null) {
+            it = (orders[i][y].int_team_hours * 60) + orders[i][y].int_team_minutes;
+            is = (orders[i][y].int_solo_hours * 60) + orders[i][y].int_solo_minutes;
+          } else {
+            it = 0;
+            is = 0;
+          }
+  
+          if (orders[i][y].ext_wash_code !== null) {
+            et = (orders[i][y].ext_team_hours * 60) + orders[i][y].ext_team_minutes;
+            es = (orders[i][y].ext_solo_hours * 60) + orders[i][y].ext_solo_minutes;
+          } else {
+            et = 0;
+            es = 0;
+          }        
+  
+          // // set wash durations to work order object
+          orders[i][y].int_duration_mins_team = it;
+          orders[i][y].ext_duration_mins_team = et;
+          orders[i][y].int_duration_mins_solo = is;
+          orders[i][y].ext_duration_mins_solo = es;
+  
+          orders[i][y].start = orders[i][y].start_time;
+          orders[i][y].end = orders[i][y].end_time;
+          orders[i][y].id = orders[i][y].order_id;
+  
+          orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
+  
+          ordersArr.push(orders[i][y]);
         }
-        if (orders[i].extWash) {
-          et = (orders[i].extWash.team_hours * 60) + orders[i].extWash.team_minutes;
-          es = (orders[i].extWash.solo_hours * 60) + orders[i].extWash.solo_minutes;
-        }
-        
-
-        // // set wash durations to work order object
-        orders[i].wo.int_duration_mins_team = it;
-        orders[i].wo.ext_duration_mins_team = et;
-        orders[i].wo.int_duration_mins_solo = is;
-        orders[i].wo.ext_duration_mins_solo = es;
-
-        orders[i].wo.start = orders[i].wo.start_time;
-        orders[i].wo.end = orders[i].wo.end_time;
-        orders[i].wo.id = orders[i].wo.order_id;
-
-        orders[i].wo.text =  `Needed by ${orders[i].wo.needed_date}`;
-
-        ordersArr.push(orders[i].wo);
       }
     }
     
@@ -95,7 +99,6 @@ export const getWorkOrders = terminals => async dispatch => {
   }
 };
 
-// export const updateWorkOrderStatus = (id, resource, start, end, washLocationId, terminals) => async dispatch => {
 export const updateWorkOrderStatus = (id, resource, start, end, terminals) => async dispatch => {
   try {
     const locationIdsArr = [];
@@ -113,37 +116,44 @@ export const updateWorkOrderStatus = (id, resource, start, end, terminals) => as
     const ordersArr = [];
     if (orders.length > 0) {
       for (let i = 0; i < orders.length; i++) {
-
-        let it;
-        let et;
-        let is;
-        let es;
-        
-        // get minute duration of washes
-        if (orders[i].intWash) {
-          it = (orders[i].intWash.team_hours * 60) + orders[i].intWash.team_minutes;
-          is = (orders[i].intWash.solo_hours * 60) + orders[i].intWash.solo_minutes;
+        for (let y = 0; y < orders[i].length; y++) {
+          // get minute duration of washes
+          let it;
+          let et;
+          let is;
+          let es;
+            
+          if (orders[i][y].int_wash_code !== null) {
+            it = (orders[i][y].int_team_hours * 60) + orders[i][y].int_team_minutes;
+            is = (orders[i][y].int_solo_hours * 60) + orders[i][y].int_solo_minutes;
+          } else {
+            it = 0;
+            is = 0;
+          }
+  
+          if (orders[i][y].ext_wash_code !== null) {
+            et = (orders[i][y].ext_team_hours * 60) + orders[i][y].ext_team_minutes;
+            es = (orders[i][y].ext_solo_hours * 60) + orders[i][y].ext_solo_minutes;
+          } else {
+            et = 0;
+            es = 0;
+          }        
+  
+          // // set wash durations to work order object
+          orders[i][y].int_duration_mins_team = it;
+          orders[i][y].ext_duration_mins_team = et;
+          orders[i][y].int_duration_mins_solo = is;
+          orders[i][y].ext_duration_mins_solo = es;
+  
+          orders[i][y].start = orders[i][y].start_time;
+          orders[i][y].end = orders[i][y].end_time;
+          orders[i][y].id = orders[i][y].order_id;
+  
+          orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
+  
+          ordersArr.push(orders[i][y]);
         }
-        if (orders[i].extWash) {
-          et = (orders[i].extWash.team_hours * 60) + orders[i].extWash.team_minutes;
-          es = (orders[i].extWash.solo_hours * 60) + orders[i].extWash.solo_minutes;
-        }
-
-        // // set wash durations to work order object
-        orders[i].wo.int_duration_mins_team = it;
-        orders[i].wo.ext_duration_mins_team = et;
-        orders[i].wo.int_duration_mins_solo = is;
-        orders[i].wo.ext_duration_mins_solo = es;
-
-        orders[i].wo.start = orders[i].wo.start_time;
-        orders[i].wo.end = orders[i].wo.end_time;
-        orders[i].wo.id = orders[i].wo.order_id;
-
-        orders[i].wo.text =  `Needed by ${orders[i].wo.needed_date}`;
-
-        ordersArr.push(orders[i].wo);
       }
-      console.log(ordersArr);
     }
 
     dispatch({
@@ -178,37 +188,44 @@ export const unscheduleWorkOrder = (id, terminals) => async dispatch => {
     const ordersArr = [];
     if (orders.length > 0) {
       for (let i = 0; i < orders.length; i++) {
-
-        let it;
-        let et;
-        let is;
-        let es;
-        
-        // get minute duration of washes
-        if (orders[i].intWash) {
-          it = (orders[i].intWash.team_hours * 60) + orders[i].intWash.team_minutes;
-          is = (orders[i].intWash.solo_hours * 60) + orders[i].intWash.solo_minutes;
+        for (let y = 0; y < orders[i].length; y++) {
+          // get minute duration of washes
+          let it;
+          let et;
+          let is;
+          let es;
+            
+          if (orders[i][y].int_wash_code !== null) {
+            it = (orders[i][y].int_team_hours * 60) + orders[i][y].int_team_minutes;
+            is = (orders[i][y].int_solo_hours * 60) + orders[i][y].int_solo_minutes;
+          } else {
+            it = 0;
+            is = 0;
+          }
+  
+          if (orders[i][y].ext_wash_code !== null) {
+            et = (orders[i][y].ext_team_hours * 60) + orders[i][y].ext_team_minutes;
+            es = (orders[i][y].ext_solo_hours * 60) + orders[i][y].ext_solo_minutes;
+          } else {
+            et = 0;
+            es = 0;
+          }        
+  
+          // // set wash durations to work order object
+          orders[i][y].int_duration_mins_team = it;
+          orders[i][y].ext_duration_mins_team = et;
+          orders[i][y].int_duration_mins_solo = is;
+          orders[i][y].ext_duration_mins_solo = es;
+  
+          orders[i][y].start = orders[i][y].start_time;
+          orders[i][y].end = orders[i][y].end_time;
+          orders[i][y].id = orders[i][y].order_id;
+  
+          orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
+  
+          ordersArr.push(orders[i][y]);
         }
-        if (orders[i].extWash) {
-          et = (orders[i].extWash.team_hours * 60) + orders[i].extWash.team_minutes;
-          es = (orders[i].extWash.solo_hours * 60) + orders[i].extWash.solo_minutes;
-        }
-
-        // // set wash durations to work order object
-        orders[i].wo.int_duration_mins_team = it;
-        orders[i].wo.ext_duration_mins_team = et;
-        orders[i].wo.int_duration_mins_solo = is;
-        orders[i].wo.ext_duration_mins_solo = es;
-
-        orders[i].wo.start = orders[i].wo.start_time;
-        orders[i].wo.end = orders[i].wo.end_time;
-        orders[i].wo.id = orders[i].wo.order_id;
-
-        orders[i].wo.text = `Needed by ${orders[i].wo.needed_date}`;
-
-        ordersArr.push(orders[i].wo);
       }
-      console.log(ordersArr);
     }
 
     dispatch({
