@@ -182,6 +182,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
       setErrorText("The end of a work order cannot exceed the end of a shift");
     } else if (type === "start") {
       setErrorText("The start of a work order cannot be before the start of a shift");
+    } else if (type === "late") {
+      setErrorText("The start of a work order cannot exceed its needed by date");
     }
     // getWorkOrdersOfLocation(selectedLocation.location_id);
     getWorkOrders(terminals);
@@ -214,7 +216,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
 
   const getStartAndEndTimes = (day) => {
     
-    let hrsArr = hours.filter(h => h.is_open && h.day === day);
+    // let hrsArr = hours.filter(h => h.is_open && h.day === day);
+    let hrsArr = hours.filter(h => h.day === day);
 
     let s1HrsArr = hours.filter(h => h.is_open && !h.shift_two_open && h.day === day);
 
@@ -322,21 +325,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
               <div>
                 <div className="col-12 px-0 aa">
                   <Scheduler
-                    key={1}
-                    // bayOneS1Type={bayOneS1Type}
-                    // bayOneS2Type={bayOneS2Type}
-                    // bayTwoS1Type={bayTwoS1Type}
-                    // bayTwoS2Type={bayTwoS2Type}
                     dateStr={dateStr}
                     bay={1}
                     disableMove={disableMove}
-                    // startHr={bayOneStartHr}
-                    // endHr={bayOneEndHr}
-                    // endHrStr={
-                    //   bayOneEndHr.toString().length === 1 ?
-                    //   `${dateStr}T0${bayOneEndHr}:00:00` :
-                    //   `${dateStr}T${bayOneEndHr}:00:00`
-                    // }
                     test={test}
                     preventSave={preventSave}
                     preventTimeExceed={preventTimeExceed}
@@ -355,27 +346,10 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                       workOrders.workOrders.filter(wo =>
                       (wo.is_scheduled)
                     )}
-                    // city={selectedLocation.city}
-                    // state={selectedLocation.state}
-                    // resource1={`${selectedLocation.location_id}1`}
-                    // resource2={`${selectedLocation.location_id}2`}
                     day={weekdayDisplay}
-                    // bays={selectedLocation.wash_bays}
-                    // bayOneOpen={bayOneOpen}
-                    // bayTwoOpen={bayTwoOpen}
-                    // bayOneS2Open={bayOneS2Open}
-                    // bayTwoS2Open={bayTwoS2Open}
                     hoursArr={hoursArr}
                     startTime={new Date(`${dateStr}T${startTime}`)}
                     endTime={new Date(`${dateStr}T${endTime}`)}
-                    // startHrStrB1S1 = {new Date(`${dateStr}T${startHrStrB1S1}`)}
-                    // startHrStrB1S2 = {startHrStrB1S2 && new Date(`${dateStr}T${startHrStrB1S2}`)}
-                    // startHrStrB2S1 = {new Date(`${dateStr}T${startHrStrB2S1}`)}
-                    // startHrStrB2S2 = {startHrStrB2S2 && new Date(`${dateStr}T${startHrStrB2S2}`)}
-                    // endHrStrB1S1 = {new Date(`${dateStr}T${endHrStrB1S1}`)}
-                    // endHrStrB1S2 = {endHrStrB1S2 && new Date(`${dateStr}T${endHrStrB1S2}`)}
-                    // endHrStrB2S1 = {new Date(`${dateStr}T${endHrStrB2S1}`)}
-                    // endHrStrB2S2 = {endHrStrB2S2 && new Date(`${dateStr}T${endHrStrB2S2}`)}
                   />
                 </div>
               </div>

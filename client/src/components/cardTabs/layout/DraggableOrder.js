@@ -2,7 +2,7 @@ import React from 'react';
 import {DayPilot} from "daypilot-pro-react";
 
 function DraggableOrder(props) {
-  console.log(props);
+  // console.log(props);
   return (
   <div className={"draggable-item"} ref={element => {
     if (!element) {
@@ -17,7 +17,8 @@ function DraggableOrder(props) {
     });
   }}>
     <div className="work-order-item-container">
-      <div className="work-order-trailer">Trailer {props.wo.trailer_id} - {props.cityState}</div>
+      {/* <div className="work-order-trailer">Trailer {props.wo.trailer_id} - {props.cityState}</div> */}
+      <div className="work-order-trailer">{props.name} - {props.cityState}</div>
       <div key={props.wo.id} className="work-order-content">
         <span className="work-order-title-section">
           <span className="work-order-duration">

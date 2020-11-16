@@ -10,31 +10,34 @@ const BtcWeb_UserTerminal = require('../../models/BtcWeb_UserTerminal');
 const Recent_User = require('../../models/Recent_User');
 const Location = require('../../models/Location');
 const Hours = require('../../models/Hours');
-
+const UserCode = require('../../models/UserCode');
 
 // POST request to http://localhost:3000/api/userid
 router.post("/", urlencodedParser, async (req, res) => {
   try {
-    console.log("BBBBBBBBBBB");
-    console.log("BBBBBBBBBBB");
-    console.log("BBBBBBBBBBB");
-    console.log("BBBBBBBBBBB");
-    console.log("BBBBBBBBBBB");
-    console.log("BBBBBBBBBBB");
     const submittedUserID = req.body.ctl00$cphBody$UserID;
-    const UserRole = await BtcWeb_UserRole.findAll({
-      where: { UserID:  submittedUserID}
-    });
+    const urlUser = submittedUserID.replace("\\", "_");
 
-    const role = UserRole[0].dataValues.RoleID; //their role
+    // const UserRole = await BtcWeb_UserRole.findAll({
+    //   where: { UserID:  submittedUserID}
+    // });
 
-    const UserTerminal = await BtcWeb_UserTerminal.findAll({
-      where: { UserID:  submittedUserID}
-    });
+    // const userCode = await UserCode.findAll({ where: { username: submittedUserID } }).dataValues[0].code;
 
-    const terminalArr = UserTerminal.map(i => i.dataValues.Terminal); //arr of terminals
+    // const userCodeInfo = await UserCode.findAll({ where: { username: submittedUserID } });
+    // const userCode = userCodeInfo[0].dataValues.code;
 
-    await open(`http://localhost:3000/${submittedUserID}`);
+    // const role = UserRole[0].dataValues.RoleID; //their role
+
+    // const UserTerminal = await BtcWeb_UserTerminal.findAll({
+    //   where: { UserID:  submittedUserID}
+    // });
+
+    // const terminalArr = UserTerminal.map(i => i.dataValues.Terminal); //arr of terminals
+
+    await open(`http://localhost:3000/${urlUser}`);
+    // await open(`http://localhost:3000/${submittedUserID}`);
+    // await open(`http://localhost:3000/${submittedUserID}/${userCode}`);
     // await open(`http://localhost:3000/${submittedUserID.split(".")[0]}`);
         
     // res.json({ role_id: role, terminals: terminalArr });

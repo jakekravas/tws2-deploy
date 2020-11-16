@@ -3,6 +3,7 @@ import WashTypes from "./cardTabs/WashTypes";
 import ToggleView from "./cardTabs/ToggleView";
 import { connect } from "react-redux";
 import { getAllLocations } from "../actions/location";
+import { v4 as uuidv4 } from 'uuid';
 
 import { getUser } from "../actions/user";
 
@@ -11,7 +12,12 @@ const Card = ({ user, getUser, getAllLocations }) => {
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
-    const userToGet = window.location.href.split("3000/")[1].replace("/", "_");
+    // get save uuid on back end
+    // when this runs, check uuid of url string and see if there's that same uuid in the database. if there is and it's equal to the user in the url string, load the stuff. if not, don't
+    console.log(window.location.href);
+    console.log(uuidv4());
+    // const userToGet = window.location.href.split("3000/")[1].replace("/", "_");
+    const userToGet = window.location.href.split("3000/")[1];
     getUser(userToGet);
     getAllLocations();
     setCurrentUser(userToGet);

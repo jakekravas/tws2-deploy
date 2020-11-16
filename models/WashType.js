@@ -12,28 +12,16 @@ const WashType = db.define("wash_type", {
   type: {
     type: Sequelize.STRING
   },
-  int_team_hours: {
+  team_hours: {
     type: Sequelize.INTEGER
   },
-  int_team_minutes: {
+  team_minutes: {
     type: Sequelize.INTEGER
   },
-  int_solo_hours: {
+  solo_hours: {
     type: Sequelize.INTEGER
   },
-  int_solo_minutes: {
-    type: Sequelize.INTEGER
-  },
-  ext_team_hours: {
-    type: Sequelize.INTEGER
-  },
-  ext_team_minutes: {
-    type: Sequelize.INTEGER
-  },
-  ext_solo_hours: {
-    type: Sequelize.INTEGER
-  },
-  ext_solo_minutes: {
+  solo_minutes: {
     type: Sequelize.INTEGER
   }
 });

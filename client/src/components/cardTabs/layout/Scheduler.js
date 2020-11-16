@@ -54,6 +54,8 @@ class Scheduler extends Component {
         const orderToUpdate = this.props.workOrders.filter(wo => wo.order_id.trim() === args.e.data.id.trim())[0];
         const endTime = new Date(args.e.data.start.value);
         let duration;
+        console.log(orderToUpdate);
+        console.log(new Date(orderToUpdate.needed_date));
 
         // So we know what start and end times to look at
         const timesToLookAt = this.props.hoursArr.filter(h => h.location_id === loc && h.bay === bay);
@@ -72,11 +74,7 @@ class Scheduler extends Component {
         // If a work order is dragged into the wrong location
         if (loc !== orderToUpdate.wash_location_id.trim()) {
           this.props.preventTimeExceed("loc");
-          console.log(loc);
-          console.log(orderToUpdate.wash_location_id.trim());
-          console.log("WL");
         } else {
-          console.log("RL");
           if (argStart < s1Start) {
             this.props.preventTimeExceed("start");
           } else if (argStart >= s1Start && argStart < s1End) {
@@ -89,18 +87,36 @@ class Scheduler extends Component {
   
             // Set duration
             endTime.setMinutes(endTime.getMinutes() + duration);
+
+            if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
+              this.props.preventTimeExceed("end");
+            }
   
             // If end time is within shift 1
-            if (endTime <= s1End) {
+            // if (endTime <= s1End) {
+            //   this.props.test(
+            //     args.e.data.id,
+            //     args.e.data.resource,
+            //     args.e.data.start.value,
+            //     new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+            //   );
+            // } else {
+            //   this.props.preventTimeExceed("end");
+            // }
+            
+            if (endTime > s1End) {
+              this.props.preventTimeExceed("end");
+            } else if (endTime < new Date(orderToUpdate.needed_date)) {
+              this.props.preventTimeExceed("late");
+            } else {
               this.props.test(
                 args.e.data.id,
                 args.e.data.resource,
                 args.e.data.start.value,
                 new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
               );
-            } else {
-              this.props.preventTimeExceed("end");
             }
+
           // If shift 2 is open and the start of args is withing shift 2 range
           } else if (s2Open === true && argStart >= s2Start && argStart < s2End) {
 
@@ -114,15 +130,28 @@ class Scheduler extends Component {
             endTime.setMinutes(endTime.getMinutes() + duration);
   
             // If end time is within shift 2
-            if (endTime <= s2End) {
+            // if (endTime <= s2End) {
+            //   this.props.test(
+            //     args.e.data.id,
+            //     args.e.data.resource,
+            //     args.e.data.start.value,
+            //     new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+            //   );
+            // } else {
+            //   this.props.preventTimeExceed("end");
+            // }
+
+            if (endTime > s2End) {
+              this.props.preventTimeExceed("end");
+            } else if (endTime < new Date(orderToUpdate.needed_date)) {
+              this.props.preventTimeExceed("late");
+            } else {
               this.props.test(
                 args.e.data.id,
                 args.e.data.resource,
                 args.e.data.start.value,
                 new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
               );
-            } else {
-              this.props.preventTimeExceed("end");
             }
           }
         }
@@ -158,6 +187,10 @@ class Scheduler extends Component {
         for (let i = 0; i < this.props.hoursArr.length; i++) {
           
           if (args.cell.resource === `${this.props.hoursArr[i].location_id}${this.props.hoursArr[i].bay}`) {
+            if (!this.props.hoursArr[i].is_open) {
+              args.cell.disabled = true;
+              args.cell.backColor = "#eee";
+            }
 
             // Disable cells that start before the start of shift 1
             if (new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`)) {
@@ -196,7 +229,6 @@ class Scheduler extends Component {
       },
     };
     this.handleChange = this.handleChange.bind(this);
-    // this.handleAdd = this.handleAdd.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleAlert = this.handleAlert.bind(this);
     this.handleCellDurationChange = this.handleCellDurationChange.bind(this);
@@ -221,12 +253,6 @@ class Scheduler extends Component {
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
-    // if (this.state.dayBeginsHour !== this.props.startHr) {
-    //   this.setState({ dayBeginsHour: this.props.startHr });
-    // }
-    // if (this.state.dayEndsHour !== this.props.endHr) {
-    //   this.setState({ dayEndsHour: this.props.endHr });
-    // }
     if (this.state.events !== this.props.events) {
       this.setState({ events: this.props.events });
     }
@@ -237,18 +263,6 @@ class Scheduler extends Component {
       this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders });
     }
   }
-  
-  // handleAdd() {
-  //   this.props.test(
-  //     this.state.inpId,
-  //     this.props.bay,
-  //     this.state.currentArgs.start.value,
-  //     this.state.currentArgs.start.value,
-  //     parseInt(this.state.inpDuration)
-  //   );
-
-  //   this.setState({ modalOpen: false });
-  // }
 
   handleAlert() {
     this.setState({ alertDisplay: "block" });
@@ -358,22 +372,6 @@ class Scheduler extends Component {
             }
           </div>
           <div className="work-orders-container">
-            {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => ( */}
-            {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
-              <DraggableOrder
-                wo={wo}
-                // id={wo.id}
-                id={wo.order_id.trim()}
-                // name={`Trailer ${wo.trailer_id}`}
-                name={`Trailer ${wo.order_id.trim()}`}
-                // cityState={`${this.props.city}, ${this.props.state}`}
-                text={wo.text}
-                // duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
-                duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
-                teamDuration={1}
-                soloDuration={2}
-              />
-            ))} */}
           </div>
         </div>
         {/* <div className="col-sm-9 px-0"> */}
@@ -449,18 +447,15 @@ class Scheduler extends Component {
               </div>
             }
             <div className="work-orders-container-sm">
-              {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.trailer_id.includes(this.state.filterText)).map(wo => ( */}
               {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
                 <DraggableOrder
+                  key={wo.order_id.trim()}
                   wo={wo}
-                  // id={wo.id}
                   id={wo.order_id.trim()}
                   // name={`Trailer ${wo.trailer_id}`}
-                  name={`Trailer ${wo.order_id.trim()}`}
-                  // cityState={`${this.props.city}, ${this.props.state}`}
+                  name={`Order ${wo.order_id.trim()}`}
                   cityState={`${wo.wash_location_id}`}
                   text={wo.text}
-                  // duration={ this.props.bayOneS1Type === "team" ? (wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60 : (wo.int_duration_mins_solo + wo.ext_duration_mins_solo) * 60 }
                   duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
                   teamDuration={1}
                   soloDuration={2}

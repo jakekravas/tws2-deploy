@@ -1,31 +1,43 @@
-// const Sequelize = require('sequelize');
-// // const db = require('../config/database');
-// const db = require('../config/prod_db');
+const Sequelize = require('sequelize');
+// const db = require('../config/database');
+const db = require('../config/prod_db');
 
-// const WashTypeBU = db.define("wash_type", {
-//   wash_code: {
-//     type: Sequelize.STRING
-//   },
-//   description: {
-//     type: Sequelize.STRING
-//   },
-//   type: {
-//     type: Sequelize.STRING
-//   },
-//   team_hours: {
-//     type: Sequelize.INTEGER
-//   },
-//   team_minutes: {
-//     type: Sequelize.INTEGER
-//   },
-//   solo_hours: {
-//     type: Sequelize.INTEGER
-//   },
-//   solo_minutes: {
-//     type: Sequelize.INTEGER
-//   }
-// });
+const WashType = db.define("wash_type", {
+  wash_code: {
+    type: Sequelize.STRING
+  },
+  description: {
+    type: Sequelize.STRING
+  },
+  type: {
+    type: Sequelize.STRING
+  },
+  int_team_hours: {
+    type: Sequelize.INTEGER
+  },
+  int_team_minutes: {
+    type: Sequelize.INTEGER
+  },
+  int_solo_hours: {
+    type: Sequelize.INTEGER
+  },
+  int_solo_minutes: {
+    type: Sequelize.INTEGER
+  },
+  ext_team_hours: {
+    type: Sequelize.INTEGER
+  },
+  ext_team_minutes: {
+    type: Sequelize.INTEGER
+  },
+  ext_solo_hours: {
+    type: Sequelize.INTEGER
+  },
+  ext_solo_minutes: {
+    type: Sequelize.INTEGER
+  }
+});
 
-// // WashType.schema("tw_scheduler")
+// WashType.schema("tw_scheduler")
 
-// module.exports = WashTypeBU;
+module.exports = WashType;
