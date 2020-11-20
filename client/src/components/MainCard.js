@@ -17,18 +17,18 @@ const Card = ({ user, getUser, getAllLocations }) => {
     console.log(window.location.href);
     console.log(uuidv4());
     // const userToGet = window.location.href.split("3000/")[1].replace("/", "_");
-    const userToGet = window.location.href.split("3000/")[1];
-    getUser(userToGet);
-    getAllLocations();
-    setCurrentUser(userToGet);
+    // const userToGet = window.location.href.split("3000/")[1];
+    const userToGet = window.location.href.split("/")[1];
+    console.log(userToGet);
+    // getUser(userToGet);
+    // getAllLocations();
+    // setCurrentUser(userToGet);
   }, []);
 
   return (
   // <div className="card col-md-9 mx-auto my-4 p-0">
   <div className="card col-lg-9 mx-auto my-4 p-0">
     <div className="card-header text-center">
-      {/* AAAAAAA */}
-      {/* {user.user ? user.user : "AAAA"} */}
       <ul className="nav nav-tabs card-header-tabs pull-right"  id="myTab" role="tablist">
         <li className="nav-item">
           <a className="nav-link active" id="hours-of-operation-tab" data-toggle="tab" href="#hours-of-operation" role="tab" aria-controls="hours-of-operation" aria-selected="true">Tank Wash Scheduler</a>
