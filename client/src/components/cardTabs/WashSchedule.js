@@ -32,6 +32,61 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [endTime, setEndTime] = useState();
   const [errorText, setErrorText] = useState();
 
+  const [unschedWorkOrders, setUnschedWorkOrders] = useState();
+  const [sortBy, setSortBy] = useState("needed date");
+  const [sortAsc, setSortAsc] = useState(true);
+
+  const handleSortChange = (targVal) => {
+    setSortBy(targVal);
+  }
+
+  const toggleAsc = () => {
+    console.log(sortAsc);
+    if (sortAsc) {
+      setSortAsc(false);
+      // handleSort(sortBy, false);
+    } else {
+      setSortAsc(true);
+      // handleSort(sortBy, true);
+    }
+  }
+
+  const handleSort = (srt, asc) => {
+
+    // // sort by needed date in ascending order
+    // if (srt === "needed date" && asc) {
+    //   setUnschedWorkOrders(unschedWorkOrders.sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1));
+    // // sort by needed date in descending order
+    // } else if (srt === "needed date" && !asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
+    // }
+
+    // // // sort by location in ascending order
+    // // if (sortBy === "location" && asc) {
+    // //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id > b.wash_location_id) ? 1 : -1) });
+    // // // sort by location in descending order
+    // // } else if (sortBy === "location" && !asc) {
+    // //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id < b.wash_location_id) ? 1 : -1) });
+    // // }
+
+    // // sort by team duration in ascending order
+    // if (srt === "team duration" && asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+    // // sort by team duration in descending order
+    // } else if (srt === "team duration" && !asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team < b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+    // }
+
+    // // sort by solo duration in ascending order
+    // if (srt === "solo duration" && asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo > b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+    // // sort by solo duration in descending order
+    // } else if (srt === "solo duration" && !asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+    // }
+
+  }
+
   const configureOpen = date => {
     setDayVal(date.toString().split(" ")[2]);
     setYearVal(date.toString().split(" ")[3]);
@@ -110,9 +165,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   useEffect(() => {
-     
     if (terminals) {
-
+      
       let resources = [];
 
       for (let i = 0; i < terminals.length; i++) {
@@ -138,7 +192,10 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     if (terminals) {
       getStuff();
     }
-  // }, [selectedLocation, washTypes.washTypes]);
+
+    if (workOrders) {
+      console.log(workOrders);
+    }
   }, [terminals, washTypes.washTypes]);
 
   // Set date to whatever date the user selects on the calendar
@@ -183,7 +240,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     } else if (type === "start") {
       setErrorText("The start of a work order cannot be before the start of a shift");
     } else if (type === "late") {
-      setErrorText("The start of a work order cannot exceed its needed by date");
+      // setErrorText("The start of a work order cannot exceed its needed by date");
+      setErrorText("The end of a work order cannot exceed its needed by date");
     }
     // getWorkOrdersOfLocation(selectedLocation.location_id);
     getWorkOrders(terminals);
@@ -340,6 +398,12 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                           // && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
                         )
                       )
+                      // workOrders.workOrders.filter(wo =>
+                      //   (!wo.is_scheduled
+                      //     // && wo.wash_location_id === selectedLocation.location_id
+                      //     // && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
+                      //   )
+                      // ).sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1)
                     }
                     resources={ woResources }
                     events={
@@ -350,6 +414,11 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     hoursArr={hoursArr}
                     startTime={new Date(`${dateStr}T${startTime}`)}
                     endTime={new Date(`${dateStr}T${endTime}`)}
+                    // handleSort={handleSort}
+                    handleSortChange={handleSortChange}
+                    toggleAsc={toggleAsc}
+                    sortBy={sortBy}
+                    sortAsc={sortAsc}
                   />
                 </div>
               </div>

@@ -94,14 +94,10 @@ export const getWorkOrders = terminals => async dispatch => {
           } else {
             neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
           }
-
-          // console.log(date);
-          console.log(hour);
-          console.log(minute);
-          console.log(neededDateDisplayStr);
   
           // orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
-          orders[i][y].text =  `Needed by ${neededDateDisplayStr}`;
+          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
   
           ordersArr.push(orders[i][y]);
         }
@@ -170,13 +166,31 @@ export const updateWorkOrderStatus = (id, resource, start, end, terminals) => as
           orders[i][y].end = orders[i][y].end_time;
           orders[i][y].id = orders[i][y].order_id;
 
-          let date = orders[i][y].split("T")[0];
-          let time = orders[i][y].split("T")[1].split(":");
-          console.log(date);
-          console.log(time[0]);
-          console.log(time[1]);
+          let date = orders[i][y].needed_date.split("T")[0];
+          let hour = parseInt(orders[i][y].needed_date.split("T")[1].split(":")[0]);
+          let minute = orders[i][y].needed_date.split("T")[1].split(":")[1];
+          let neededDateDisplayStr;
+
+          if (hour > 12) {
+            neededDateDisplayStr = `${date} ${hour-12}:${minute} PM`;
+          } else if (hour === 0) {
+            neededDateDisplayStr = `${date} 12:${minute} AM`;
+          } else if (hour === 12) {
+            neededDateDisplayStr = `${date} 12:${minute} PM`;
+          } else {
+            neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
+          }
   
-          orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
+          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+
+          // let date = orders[i][y].split("T")[0];
+          // let time = orders[i][y].split("T")[1].split(":");
+          // console.log(date);
+          // console.log(time[0]);
+          // console.log(time[1]);
+  
+          // orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
   
           ordersArr.push(orders[i][y]);
         }
@@ -247,8 +261,24 @@ export const unscheduleWorkOrder = (id, terminals) => async dispatch => {
           orders[i][y].start = orders[i][y].start_time;
           orders[i][y].end = orders[i][y].end_time;
           orders[i][y].id = orders[i][y].order_id;
+
+          let date = orders[i][y].needed_date.split("T")[0];
+          let hour = parseInt(orders[i][y].needed_date.split("T")[1].split(":")[0]);
+          let minute = orders[i][y].needed_date.split("T")[1].split(":")[1];
+          let neededDateDisplayStr;
+
+          if (hour > 12) {
+            neededDateDisplayStr = `${date} ${hour-12}:${minute} PM`;
+          } else if (hour === 0) {
+            neededDateDisplayStr = `${date} 12:${minute} AM`;
+          } else if (hour === 12) {
+            neededDateDisplayStr = `${date} 12:${minute} PM`;
+          } else {
+            neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
+          }
   
-          orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
+          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
   
           ordersArr.push(orders[i][y]);
         }

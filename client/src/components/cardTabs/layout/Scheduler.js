@@ -32,8 +32,11 @@ class Scheduler extends Component {
       selectedStartTime: null,
       alertDisplay: "none",
       editOpen: false,
-      sortBy: "location",
+      // sortBy: "location",
+      sortBy: "needed date",
+      sortByy: null,
       sortAsc: true,
+      sortAscc: null,
       filterText: "",
       onBeforeEventRender: args => {
         args.data.moveDisabled = this.props.disableMove;
@@ -50,12 +53,13 @@ class Scheduler extends Component {
         const bay = parseInt(args.e.data.resource[args.e.data.resource.length-1]);
 
         // Find order to update
-        // const orderToUpdate = this.props.workOrders.filter(wo => wo.id === args.e.data.id)[0];
         const orderToUpdate = this.props.workOrders.filter(wo => wo.order_id.trim() === args.e.data.id.trim())[0];
         const endTime = new Date(args.e.data.start.value);
         let duration;
         console.log(orderToUpdate);
-        console.log(new Date(orderToUpdate.needed_date));
+
+        // browsers add 7 hrs to this data object because it ends in "0Z", so we remove that here
+        orderToUpdate.needed_date = orderToUpdate.needed_date.replace("0Z", "");
 
         // So we know what start and end times to look at
         const timesToLookAt = this.props.hoursArr.filter(h => h.location_id === loc && h.bay === bay);
@@ -75,6 +79,7 @@ class Scheduler extends Component {
         if (loc !== orderToUpdate.wash_location_id.trim()) {
           this.props.preventTimeExceed("loc");
         } else {
+          
           if (argStart < s1Start) {
             this.props.preventTimeExceed("start");
           } else if (argStart >= s1Start && argStart < s1End) {
@@ -89,6 +94,9 @@ class Scheduler extends Component {
             endTime.setMinutes(endTime.getMinutes() + duration);
 
             if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
+              console.log("end");
+              console.log(new Date(endTime));
+              console.log(new Date(orderToUpdate.needed_date));
               this.props.preventTimeExceed("end");
             }
   
@@ -106,7 +114,8 @@ class Scheduler extends Component {
             
             if (endTime > s1End) {
               this.props.preventTimeExceed("end");
-            } else if (endTime < new Date(orderToUpdate.needed_date)) {
+            // } else if (endTime < new Date(orderToUpdate.needed_date)) {
+            } else if (endTime > new Date(orderToUpdate.needed_date)) {
               this.props.preventTimeExceed("late");
             } else {
               this.props.test(
@@ -143,7 +152,8 @@ class Scheduler extends Component {
 
             if (endTime > s2End) {
               this.props.preventTimeExceed("end");
-            } else if (endTime < new Date(orderToUpdate.needed_date)) {
+            // } else if (endTime < new Date(orderToUpdate.needed_date)) {
+            } else if (endTime > new Date(orderToUpdate.needed_date)) {
               this.props.preventTimeExceed("late");
             } else {
               this.props.test(
@@ -246,6 +256,7 @@ class Scheduler extends Component {
       resources: this.props.resources,
       events: this.props.events
     });
+    this.handleSort("needed date", true);
   }
   
   componentDidUpdate() {
@@ -259,8 +270,65 @@ class Scheduler extends Component {
     if (this.state.resources !== this.props.resources) {
       this.setState({ resources: this.props.resources });
     }
+
     if (this.state.unscheduledWorkOrders !== this.props.unscheduledWorkOrders) {
-      this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders });
+
+      // this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders });
+      
+      // sort by needed date in ascending order
+      if (this.props.sortBy === "needed date" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1) });
+        // sort by needed date in descending order
+      } else if (this.props.sortBy === "needed date" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
+      }
+
+      // sort by team duration in ascending order
+      if (this.props.sortBy === "team duration" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+      // sort by team duration in descending order
+      } else if (this.props.sortBy === "team duration" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team < b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+      }
+
+      // sort by solo duration in ascending order
+      if (this.props.sortBy === "solo duration" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo > b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+      // sort by solo duration in descending order
+      } else if (this.props.sortBy === "solo duration" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+      }
+
+    }
+
+    if (this.props.sortBy !== this.state.sortByy || this.props.sortAsc !== this.state.sortAscc) {
+      
+      this.setState({ sortByy: this.props.sortBy, sortAscc: this.props.sortAsc });
+      
+      // sort by needed date in ascending order
+      if (this.props.sortBy === "needed date" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1) });
+        // sort by needed date in descending order
+      } else if (this.props.sortBy === "needed date" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
+      }
+
+      // sort by team duration in ascending order
+      if (this.props.sortBy === "team duration" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+      // sort by team duration in descending order
+      } else if (this.props.sortBy === "team duration" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team < b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
+      }
+
+      // sort by solo duration in ascending order
+      if (this.props.sortBy === "solo duration" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo > b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+      // sort by solo duration in descending order
+      } else if (this.props.sortBy === "solo duration" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
+      }
+
     }
   }
 
@@ -293,6 +361,14 @@ class Scheduler extends Component {
       this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
     }
 
+    // // sort by location in ascending order
+    // if (sortBy === "location" && asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id > b.wash_location_id) ? 1 : -1) });
+    // // sort by location in descending order
+    // } else if (sortBy === "location" && !asc) {
+    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id < b.wash_location_id) ? 1 : -1) });
+    // }
+
     // sort by needed date in ascending order
     if (sortBy === "team duration" && asc) {
       this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
@@ -308,22 +384,25 @@ class Scheduler extends Component {
     } else if (sortBy === "solo duration" && !asc) {
       this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
     }
-    
   }
 
   handleSortChange(e) {
-    this.setState({ sortBy: e.target.value });
-    this.handleSort(e.target.value, this.state.sortAsc); 
+    this.props.handleSortChange(e.target.value);
+    // this.setState({ sortBy: e.target.value });
+    // this.handleSort(e.target.value, this.state.sortAsc); 
   }
 
   toggleAsc() {
-    if (this.state.sortAsc) {
-      this.setState({ sortAsc: false });
-      this.handleSort(this.state.sortBy, false);
-    } else {
-      this.setState({ sortAsc: true });
-      this.handleSort(this.state.sortBy, true);
-    }
+
+    this.props.toggleAsc();
+
+    // if (this.state.sortAsc) {
+    //   this.setState({ sortAsc: false });
+    //   this.handleSort(this.state.sortBy, false);
+    // } else {
+    //   this.setState({ sortAsc: true });
+    //   this.handleSort(this.state.sortBy, true);
+    // }
   }
 
   setFilterText(e){
@@ -356,8 +435,8 @@ class Scheduler extends Component {
                   {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
                   <select onChange={this.handleSortChange} className="sort-menu">
-                    <option className="sort-menu" value="location">Location</option>
                     <option className="sort-menu" value="needed date">Needed date</option>
+                    <option className="sort-menu" value="location">Location</option>
                     <option className="sort-menu" value="team duration">Team duration</option>
                     <option className="sort-menu" value="solo duration">Solo duration</option>
                   </select>
@@ -426,16 +505,17 @@ class Scheduler extends Component {
                   {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
                   <select onChange={this.handleSortChange} className="sort-menu">
-                    <option className="sort-menu" value="location">Location</option>
                     <option className="sort-menu" value="needed date">Needed date</option>
+                    <option className="sort-menu" value="location">Location</option>
                     <option className="sort-menu" value="team duration">Team duration</option>
                     <option className="sort-menu" value="solo duration">Solo duration</option>
                   </select>
                   {
-                    this.state.sortAsc ?
-                    <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
+                    // this.state.sortAsc ?
+                    this.state.sortAscc ?
+                    <i className="fas fa-sort-up sort-asc" onClick={this.props.toggleAsc}/>
                     :
-                    <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
+                    <i className="fas fa-sort-down sort-desc" onClick={this.props.toggleAsc}/>
                   }
                 </div>
               </div>
