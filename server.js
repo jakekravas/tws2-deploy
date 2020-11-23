@@ -5,7 +5,6 @@ const app = express();
 
 // Database
 const prod_db = require('./config/prod_db');
-const pg_db = require('./config/database');
 const mssql_db = require('./config/db_sql_server');
 
 // DB
@@ -41,6 +40,5 @@ if (process.env.NODE_ENV ==="production") {
 }
 
 const PORT = process.env.PORT || 5000;
-// const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, console.log(`Server started on port ${PORT}`));

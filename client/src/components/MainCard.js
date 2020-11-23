@@ -12,17 +12,13 @@ const Card = ({ user, getUser, getAllLocations }) => {
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
-    // get save uuid on back end
-    // when this runs, check uuid of url string and see if there's that same uuid in the database. if there is and it's equal to the user in the url string, load the stuff. if not, don't
-    console.log(window.location.href);
-    console.log(uuidv4());
     // const userToGet = window.location.href.split("3000/")[1].replace("/", "_");
-    // const userToGet = window.location.href.split("3000/")[1];
-    const userToGet = window.location.href.split("/")[1];
+    const userToGet = window.location.href.split("3000/")[1];
+    // const userToGet = window.location.href.split("/")[1];
     console.log(userToGet);
-    // getUser(userToGet);
+    getUser(userToGet);
     // getAllLocations();
-    // setCurrentUser(userToGet);
+    setCurrentUser(userToGet);
   }, []);
 
   return (
