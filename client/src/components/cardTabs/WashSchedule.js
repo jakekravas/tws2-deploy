@@ -41,7 +41,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   const toggleAsc = () => {
-    console.log(sortAsc);
     if (sortAsc) {
       setSortAsc(false);
       // handleSort(sortBy, false);
@@ -191,10 +190,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     // if (selectedLocation) {
     if (terminals) {
       getStuff();
-    }
-
-    if (workOrders) {
-      console.log(workOrders);
     }
   }, [terminals, washTypes.washTypes]);
 

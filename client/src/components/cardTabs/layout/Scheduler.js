@@ -45,7 +45,7 @@ class Scheduler extends Component {
       onEventResizing: () => this.forceUpdate(),
       // When order is dragged and released in the scheduler
       onEventMoved: args => {
-        console.log(args.e.data);
+        // console.log(args.e.data);
         // Location code
         const loc = args.e.data.resource.slice(0, -1);
 
@@ -56,7 +56,7 @@ class Scheduler extends Component {
         const orderToUpdate = this.props.workOrders.filter(wo => wo.order_id.trim() === args.e.data.id.trim())[0];
         const endTime = new Date(args.e.data.start.value);
         let duration;
-        console.log(orderToUpdate);
+        // console.log(orderToUpdate);
 
         // browsers add 7 hrs to this data object because it ends in "0Z", so we remove that here
         orderToUpdate.needed_date = orderToUpdate.needed_date.replace("0Z", "");
@@ -94,9 +94,9 @@ class Scheduler extends Component {
             endTime.setMinutes(endTime.getMinutes() + duration);
 
             if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
-              console.log("end");
-              console.log(new Date(endTime));
-              console.log(new Date(orderToUpdate.needed_date));
+              // console.log("end");
+              // console.log(new Date(endTime));
+              // console.log(new Date(orderToUpdate.needed_date));
               this.props.preventTimeExceed("end");
             }
   
@@ -260,7 +260,7 @@ class Scheduler extends Component {
   }
   
   componentDidUpdate() {
-    console.log(this.props);
+    // console.log(this.props);
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
@@ -313,6 +313,14 @@ class Scheduler extends Component {
         this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
       }
 
+      // sort by location in ascending order
+      if (this.props.sortBy === "location" && this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id.trim() > b.wash_location_id.trim()) ? 1 : -1) });
+        // sort by location in descending order
+      } else if (this.props.sortBy === "location" && !this.props.sortAsc) {
+        this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id.trim() < b.wash_location_id.trim()) ? 1 : -1) });
+      }
+
       // sort by team duration in ascending order
       if (this.props.sortBy === "team duration" && this.props.sortAsc) {
         this.setState({ unscheduledWorkOrders: this.props.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
@@ -362,12 +370,12 @@ class Scheduler extends Component {
     }
 
     // // sort by location in ascending order
-    // if (sortBy === "location" && asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id > b.wash_location_id) ? 1 : -1) });
-    // // sort by location in descending order
-    // } else if (sortBy === "location" && !asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id < b.wash_location_id) ? 1 : -1) });
-    // }
+    if (sortBy === "location" && asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id.trim() > b.wash_location_id.trim()) ? 1 : -1) });
+      // sort by location in descending order
+    } else if (sortBy === "location" && !asc) {
+      this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id.trim() < b.wash_location_id.trim()) ? 1 : -1) });
+    }
 
     // sort by needed date in ascending order
     if (sortBy === "team duration" && asc) {

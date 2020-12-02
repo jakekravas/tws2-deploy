@@ -8,7 +8,7 @@ module.exports = new Sequelize(
     host: "bulkmatic-postgres.chsi0luwnscx.us-east-2.rds.amazonaws.com",
     dialect: "postgres",
     schema: "tankwash",
-    operatorsAliases: false,
+    operatorsAliases: 0,
 
     pool: {
       max: 5,

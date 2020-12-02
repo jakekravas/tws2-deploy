@@ -7,7 +7,7 @@ module.exports = new Sequelize(
   {
     host: "SQL_DB_Listener_DEV",
     dialect: "mssql",
-    operatorsAliases: false,
+    operatorsAliases: 0,
 
     pool: {
       max: 5,
