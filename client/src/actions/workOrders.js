@@ -80,19 +80,25 @@ export const getWorkOrders = terminals => async dispatch => {
           orders[i][y].end = orders[i][y].end_time;
           orders[i][y].id = orders[i][y].order_id;
 
-          let date = orders[i][y].needed_date.split("T")[0];
+          let dt = orders[i][y].needed_date.split("T")[0];
+          // formatting date so it's in MM-DD-YYYY format instead of YYYY-MM-DD
+          let date = `${dt.split("-")[1]}-${dt.split("-")[2]}-${dt.split("-")[0]}`;
           let hour = parseInt(orders[i][y].needed_date.split("T")[1].split(":")[0]);
           let minute = orders[i][y].needed_date.split("T")[1].split(":")[1];
           let neededDateDisplayStr;
 
           if (hour > 12) {
-            neededDateDisplayStr = `${date} ${hour-12}:${minute} PM`;
+            // neededDateDisplayStr = `${date} ${hour-12}:${minute} PM`;
+            neededDateDisplayStr = `${dt.split("-")[1]}-${dt.split("-")[2]}-${dt.split("-")[0]} ${hour-12}:${minute} PM`;
           } else if (hour === 0) {
-            neededDateDisplayStr = `${date} 12:${minute} AM`;
+            // neededDateDisplayStr = `${date} 12:${minute} AM`;
+            neededDateDisplayStr = `${dt.split("-")[1]}-${dt.split("-")[2]}-${dt.split("-")[0]} 12:${minute} AM`;
           } else if (hour === 12) {
-            neededDateDisplayStr = `${date} 12:${minute} PM`;
+            // neededDateDisplayStr = `${date} 12:${minute} PM`;
+            neededDateDisplayStr = `${dt.split("-")[1]}-${dt.split("-")[2]}-${dt.split("-")[0]} 12:${minute} PM`;
           } else {
-            neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
+            // neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
+            neededDateDisplayStr = `${dt.split("-")[1]}-${dt.split("-")[2]}-${dt.split("-")[0]} ${hour}:${minute} AM`;
           }
   
           // orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
