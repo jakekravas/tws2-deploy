@@ -21,6 +21,10 @@ export const getUser = user => async dispatch => {
   try {
     console.log(user);
     const res = await axios.get(`/api/userid/user/${user}`);
+    // const res = await axios.get(`http://34.198.60.157:5069/api/userid/user/${user}`);
+    // const res = await fetch(`http://34.198.60.157:5069/api/userid/user/${user}`, { mode: "no-cors" });
+    // const x = await res.json();
+    // console.log(res);
 
     console.log(res.data);
 
