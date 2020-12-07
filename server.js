@@ -16,7 +16,6 @@ mssql_db.authenticate()
 prod_db.authenticate()
   .then(() => console.log("Postgres database connected..."))
   .catch(err => console.log("Error: " + err));
-
   
 app.use(express.json({
   extended: false

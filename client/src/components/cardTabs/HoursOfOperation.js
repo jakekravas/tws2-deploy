@@ -683,7 +683,7 @@ const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantit
           Weekly Schedule
         </div>
 
-        <table class="table table-bordered">
+        <table className="table table-bordered">
           <thead>
             <tr className="text-center">
               <th></th>
@@ -1996,7 +1996,7 @@ const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantit
         </div>
         }
       </div>
-      <div class="card-footer text-muted edit-hrs-card-footer">
+      <div className="card-footer text-muted edit-hrs-card-footer">
         <span>
           <button onClick={onCancel} className="btn btn-link cancel-btn">Cancel</button>
           <button

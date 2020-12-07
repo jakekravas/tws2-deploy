@@ -20,27 +20,27 @@ export const getTrailerWashWos = () => async dispatch => {
 export const getUser = user => async dispatch => {
   try {
     console.log(user);
-    const res = await axios.get(`/api/userid/user/${user}`);
-    // const res = await axios.get(`http://34.198.60.157:5069/api/userid/user/${user}`);
-    // const res = await fetch(`http://34.198.60.157:5069/api/userid/user/${user}`, { mode: "no-cors" });
-    // const x = await res.json();
-    // console.log(res);
-
-    console.log(res.data);
+    // const res = await axios.get(`/api/userid/user/${user}`);
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
+    
+    const res = await fetch(proxyUrl + targetUrl);
+    const data = await res.json();
+    console.log(data);
 
     const hours = [];
 
-    for (let i = 0; i < res.data.hours.length; i++) {
-      for (let y = 0; y < res.data.hours[i].length; y++) {
-        hours.push(res.data.hours[i][y]);
+    for (let i = 0; i < data.hours.length; i++) {
+      for (let y = 0; y < data.hours[i].length; y++) {
+        hours.push(data.hours[i][y]);
       }
     }
 
-    res.data.hours = hours;
+    data.hours = hours;
 
     dispatch({
       type: GET_USER,
-      payload: res.data
+      payload: data
     });
   } catch (err) {
     console.log(err);

@@ -17,12 +17,12 @@ const ToggleView = ({ getUser, getTrailerWashWos, currentUser, getLocationInfo, 
 
   return (
     <div>
-
       <div className="text-center">
         <label style={{visibility: view === "schedule" ? "hidden" : "initial"}} className="mb-0 text-dark" htmlFor="location">Location:</label>&nbsp;&nbsp;&nbsp;
           <select style={{visibility: view === "schedule" ? "hidden" : "initial"}} onChange={e => getLocationInfo(e.target.value)} className="text-center mt-3 mr-3" name="location" id="">
             {!selectedLocation && <option value="">--</option>}
-            {!loading && terminals &&
+            {/* {!loading && terminals && */}
+            {terminals &&
               terminals.map(loc => (
               <option value={loc.id} key={loc.id}>{loc.city}, {loc.state}</option>
             ))}
