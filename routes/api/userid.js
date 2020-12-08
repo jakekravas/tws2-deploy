@@ -35,7 +35,10 @@ router.post("/", urlencodedParser, async (req, res) => {
 
     // const terminalArr = UserTerminal.map(i => i.dataValues.Terminal); //arr of terminals
 
-    await open(`http://localhost:3000/user_${urlUser}`);
+    // const ranStr = "asdf";
+
+    // await open(`http://localhost:3000/user_${urlUser}`);
+    await open(`https://tank-wash-scheduler-v2.herokuapp.com/user_${urlUser}`);
     // await open(`http://localhost:3000/${submittedUserID}`);
     // await open(`http://localhost:3000/${submittedUserID}/${userCode}`);
     // await open(`http://localhost:3000/${submittedUserID.split(".")[0]}`);

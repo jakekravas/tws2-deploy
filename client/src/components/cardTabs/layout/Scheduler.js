@@ -497,6 +497,12 @@ class Scheduler extends Component {
             }}
           />
         </div>
+        <div style={{display: this.props.alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
+          {this.props.errorText}
+        </div>
+        {/* <div>
+          aaaaa
+        </div> */}
         {/* <div className="col-sm-3 px-0 wo-sm"> */}
         <div className="col-12 px-0 wo-sm">
           <div className="work-orders-header">

@@ -229,13 +229,16 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   
   const preventTimeExceed = (type) => {
     if (type === "loc") {
+      // alert("Work orders must be scheduled be scheduled on their correct terminal");
       setErrorText("Work orders must be scheduled be scheduled on their correct terminal");
     } else if (type === "end") {
+      // alert("The end of a work order cannot exceed the end of a shift");
       setErrorText("The end of a work order cannot exceed the end of a shift");
     } else if (type === "start") {
+      // alert("The start of a work order cannot be before the start of a shift");
       setErrorText("The start of a work order cannot be before the start of a shift");
     } else if (type === "late") {
-      // setErrorText("The start of a work order cannot exceed its needed by date");
+      // alert("The end of a work order cannot exceed its needed by date");
       setErrorText("The end of a work order cannot exceed its needed by date");
     }
     // getWorkOrdersOfLocation(selectedLocation.location_id);
@@ -365,12 +368,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
             {/* Ghost element used for spacing purposes */}
             <span></span>
           </div>
-          <div style={{display: alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
-            {/* This wash must be completed no later than {neededDateAlert} */}
-          {/* The end of a wash cannot exceed the end of a shift */}
-          {/* Work orders must fit within the hours of a shift */}
-          {errorText}
-          </div>
+          {/* <div style={{display: alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
+            {errorText}
+          </div> */}
           {/* 2 BAYS AND BOTH OPEN */}
             {/* {selectedLocation.wash_bays === 2 && bayOneOpen && bayTwoOpen ? */}
             {bayOneOpen || bayTwoOpen ?
@@ -414,6 +414,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     toggleAsc={toggleAsc}
                     sortBy={sortBy}
                     sortAsc={sortAsc}
+                    alertDisplay={alertDisplay}
+                    errorText={errorText}
                   />
                 </div>
               </div>
