@@ -39,7 +39,8 @@ class Scheduler extends Component {
       sortAscc: null,
       filterText: "",
       onBeforeEventRender: args => {
-        args.data.moveDisabled = this.props.disableMove;
+        // args.data.moveDisabled = this.props.disableMove;
+        args.data.moveDisabled = false;
       },
       // prevents box resizing
       onEventResizing: () => this.forceUpdate(),
