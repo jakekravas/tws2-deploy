@@ -21,7 +21,8 @@ export const getUser = user => async dispatch => {
   try {
     console.log(user);
     // const res = await axios.get(`/api/userid/user/${user}`);
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    // const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
     const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
     
     const res = await fetch(proxyUrl + targetUrl);
