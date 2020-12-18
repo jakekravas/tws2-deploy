@@ -15,6 +15,7 @@ class Scheduler extends Component {
       treeEnabled: true,
       treeAnimation: false,
       cellDuration: 30,
+      height: 315,
       // cellDuration: this.props.cellDuration,
       allowEventOverlap: false,
       currentDP: null,
