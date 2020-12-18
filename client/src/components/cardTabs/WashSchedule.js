@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Modal from "react-modal";
 import { connect } from "react-redux";
 import '../../css/syncfusion.css';
 import Scheduler from "./layout/Scheduler";
 import DraggableOrder from "./layout/DraggableOrder";
 import { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
+
+// Modal.setAppElement("#root");
 
 const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrdersOfLocation, getWorkOrders, location: { selectedLocation }, workOrders, washTypes, user: { terminals, hours } }) => {
   const [displayCal, setDisplayCal] = useState(true);
@@ -35,55 +38,19 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [unschedWorkOrders, setUnschedWorkOrders] = useState();
   const [sortBy, setSortBy] = useState("needed date");
   const [sortAsc, setSortAsc] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSortChange = (targVal) => {
     setSortBy(targVal);
   }
 
   const toggleAsc = () => {
+    // setSortAsc(!sortAsc);
     if (sortAsc) {
       setSortAsc(false);
-      // handleSort(sortBy, false);
     } else {
       setSortAsc(true);
-      // handleSort(sortBy, true);
     }
-  }
-
-  const handleSort = (srt, asc) => {
-
-    // // sort by needed date in ascending order
-    // if (srt === "needed date" && asc) {
-    //   setUnschedWorkOrders(unschedWorkOrders.sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1));
-    // // sort by needed date in descending order
-    // } else if (srt === "needed date" && !asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (new Date(a.needed_date) < new Date(b.needed_date)) ? 1 : -1) });
-    // }
-
-    // // // sort by location in ascending order
-    // // if (sortBy === "location" && asc) {
-    // //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id > b.wash_location_id) ? 1 : -1) });
-    // // // sort by location in descending order
-    // // } else if (sortBy === "location" && !asc) {
-    // //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.wash_location_id < b.wash_location_id) ? 1 : -1) });
-    // // }
-
-    // // sort by team duration in ascending order
-    // if (srt === "team duration" && asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team > b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
-    // // sort by team duration in descending order
-    // } else if (srt === "team duration" && !asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_team + a.ext_duration_mins_team < b.int_duration_mins_team + b.ext_duration_mins_team) ? 1 : -1) });
-    // }
-
-    // // sort by solo duration in ascending order
-    // if (srt === "solo duration" && asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo > b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
-    // // sort by solo duration in descending order
-    // } else if (srt === "solo duration" && !asc) {
-    //   this.setState({ unscheduledWorkOrders: this.state.unscheduledWorkOrders.sort((a, b) => (a.int_duration_mins_solo + a.ext_duration_mins_solo < b.int_duration_mins_solo + b.ext_duration_mins_solo) ? 1 : -1) });
-    // }
-
   }
 
   const configureOpen = date => {
@@ -164,25 +131,27 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   useEffect(() => {
-    if (terminals) {
+    // if (terminals) {
       
-      let resources = [];
+    //   let resources = [];
 
-      for (let i = 0; i < terminals.length; i++) {
-        if (terminals[i].wash_bays === 2) {
-          resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
-            { name: "Bay 1", id: `${terminals[i].location_id}1` },
-            { name: "Bay 2", id: `${terminals[i].location_id}2` }
-          ]});
-        } else {
-          resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
-            { name: "Bay 1", id: `${terminals[i].location_id}1` }
-          ]});
-        }
-      }
-      // setting resources
-      setWoResources(resources);
-    }
+    //   for (let i = 0; i < terminals.length; i++) {
+    //     if (terminals[i].wash_bays === 2) {
+    //       resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+    //         { name: "Bay 1", id: `${terminals[i].location_id}1` },
+    //         { name: "Bay 2", id: `${terminals[i].location_id}2` }
+    //       ]});
+    //     } else {
+    //       resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+    //         { name: "Bay 1", id: `${terminals[i].location_id}1` }
+    //       ]});
+    //     }
+    //   }
+    //   // setting resources
+    //   setWoResources(resources);
+    // }
+
+    resetResources();
     
     let today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -251,8 +220,64 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     }, 5000);
   }
 
+  const displayWarning = type => {
+    if (type === "late") {
+      setErrorText("Warning: This work order is scheduled to end beyond its needed by date");
+    }
+
+    setAlertDisplay("block");
+    setTimeout(() => {
+      setAlertDisplay("none");
+    }, 5000);
+  }
+
+  const loadWorkOrders = () => {
+    if (terminals) {
+      getWorkOrders(terminals);
+    }
+  }
+
+  const resetResources = () => {
+    if (terminals) {
+      const resources = [];
+  
+      for (let i = 0; i < terminals.length; i++) {
+        if (terminals[i].wash_bays === 2) {
+          resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+            { name: "Bay 1", id: `${terminals[i].location_id}1` },
+            { name: "Bay 2", id: `${terminals[i].location_id}2` }
+          ]});
+        } else {
+          resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+            { name: "Bay 1", id: `${terminals[i].location_id}1` }
+          ]});
+        }
+      }
+      // setting resources
+      setWoResources(resources); 
+    }
+  }
+  
+  const changeResources = washLocationId => {
+    const resources = [];
+
+    for (let i = 0; i < terminals.length; i++) {
+      if (terminals[i].wash_bays === 2 && terminals[i].location_id === washLocationId) {
+        resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+          { name: "Bay 1", id: `${terminals[i].location_id}1` },
+          { name: "Bay 2", id: `${terminals[i].location_id}2` }
+        ]});
+      } else if (terminals[i].wash_bays === 1 && terminals[i].location_id === washLocationId) {
+        resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
+          { name: "Bay 1", id: `${terminals[i].location_id}1` }
+        ]});
+      }
+    }
+    // setting resources
+    setWoResources(resources);
+  }
+
   const test = (id, resource, start, end) => {
-    // updateWorkOrderStatus(id, resource, start, end, selectedLocation.location_id, terminals);
     updateWorkOrderStatus(id, resource, start, end, terminals);
   }
 
@@ -272,7 +297,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
 
   const getStartAndEndTimes = (day) => {
     
-    // let hrsArr = hours.filter(h => h.is_open && h.day === day);
     let hrsArr = hours.filter(h => h.day === day);
 
     let s1HrsArr = hours.filter(h => h.is_open && !h.shift_two_open && h.day === day);
@@ -379,12 +403,17 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                 <div className="col-12 px-0 aa">
                   <Scheduler
                     dateStr={dateStr}
+                    terminals={terminals}
                     bay={1}
                     disableMove={disableMove}
                     test={test}
                     preventSave={preventSave}
                     preventTimeExceed={preventTimeExceed}
+                    displayWarning={displayWarning}
+                    loadWorkOrders={loadWorkOrders}
                     onUnschedule={onUnschedule}
+                    changeResources={changeResources}
+                    resetResources={resetResources}
                     workOrders={workOrders.workOrders}
                     unscheduledWorkOrders={
                       workOrders.workOrders.filter(wo =>

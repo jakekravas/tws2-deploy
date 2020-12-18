@@ -31,7 +31,7 @@ router.get("/user/:locations", async (req, res) => {
     const workOrders = [];
     
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
 
       workOrders.push(workOrdersOfLoc[0]);
     }
@@ -65,7 +65,7 @@ router.put("/:id", async (req, res) => {
     const workOrders = [];
     
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
 
       workOrders.push(workOrdersOfLoc[0]);
     }
@@ -95,7 +95,7 @@ router.put("/unschedule/:id", async (req, res) => {
     const workOrders = [];
 
     for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}';`);
+      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
 
       workOrders.push(workOrdersOfLoc[0]);
     }

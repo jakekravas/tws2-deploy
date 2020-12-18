@@ -10,12 +10,12 @@ const mssql_db = require('./config/db_sql_server');
 // DB
 mssql_db.authenticate()
   .then(() => console.log("MSSQL database connected..."))
-  .catch(err => console.log("Error: " + err));
+  .catch(err => console.log("MSSQL DB Error: " + err));
 
 // pg_db.authenticate()
 prod_db.authenticate()
   .then(() => console.log("Postgres database connected..."))
-  .catch(err => console.log("Error: " + err));
+  .catch(err => console.log("Postgres DB Error: " + err));
   
 app.use(express.json({
   extended: false

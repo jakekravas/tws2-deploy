@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { DayPilotScheduler } from "daypilot-pro-react";
-import DraggableOrder from "../layout/DraggableOrder"
+import Modal from "react-modal";
+import DraggableOrder from "../layout/DraggableOrder";
+
+Modal.setAppElement("#root");
 
 class Scheduler extends Component {
 
@@ -37,7 +40,12 @@ class Scheduler extends Component {
       sortByy: null,
       sortAsc: true,
       sortAscc: null,
+      dataId: null,
+      dataResource: null,
+      dataStartVal: null,
+      dataEndVal: null,
       filterText: "",
+      selectedLocation: "All locations",
       onBeforeEventRender: args => {
         // args.data.moveDisabled = this.props.disableMove;
         args.data.moveDisabled = false;
@@ -94,30 +102,42 @@ class Scheduler extends Component {
             // Set duration
             endTime.setMinutes(endTime.getMinutes() + duration);
 
-            if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
-              // console.log("end");
-              // console.log(new Date(endTime));
-              // console.log(new Date(orderToUpdate.needed_date));
-              this.props.preventTimeExceed("end");
-            }
-  
-            // If end time is within shift 1
-            // if (endTime <= s1End) {
-            //   this.props.test(
-            //     args.e.data.id,
-            //     args.e.data.resource,
-            //     args.e.data.start.value,
-            //     new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
-            //   );
-            // } else {
+            // If end of order exceeds needed by date
+            // if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
+            //   // console.log("end");
+            //   // console.log(new Date(endTime));
+            //   // console.log(new Date(orderToUpdate.needed_date));
+            //   console.log("END");
+            //   console.log(new Date(endTime));
+            //   console.log(new Date(orderToUpdate.needed_date));
             //   this.props.preventTimeExceed("end");
             // }
             
+            // If end of order exceeds end of shift 1
             if (endTime > s1End) {
+              console.log("END");
               this.props.preventTimeExceed("end");
             // } else if (endTime < new Date(orderToUpdate.needed_date)) {
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
-              this.props.preventTimeExceed("late");
+              // this.props.preventTimeExceed("late");
+
+              // Show warning
+              // this.props.displayWarning("late");
+              this.setState({
+                modalOpen: true,
+                dataId: args.e.data.id,
+                dataResource: args.e.data.resource,
+                dataStartVal: args.e.data.start.value,
+                dataEndVal: new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              });
+              // Schedule order
+              // this.props.test(
+              //   args.e.data.id,
+              //   args.e.data.resource,
+              //   args.e.data.start.value,
+              //   new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              // );
+
             } else {
               this.props.test(
                 args.e.data.id,
@@ -155,8 +175,27 @@ class Scheduler extends Component {
               this.props.preventTimeExceed("end");
             // } else if (endTime < new Date(orderToUpdate.needed_date)) {
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
-              this.props.preventTimeExceed("late");
-            } else {
+              // this.props.preventTimeExceed("late");
+
+              // Show warning
+              // this.props.displayWarning("late");
+              this.setState({
+                modalOpen: true,
+                dataId: args.e.data.id,
+                dataResource: args.e.data.resource,
+                dataStartVal: args.e.data.start.value,
+                dataEndVal: new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              });
+              // Schedule order
+              // this.props.test(
+              //   args.e.data.id,
+              //   args.e.data.resource,
+              //   args.e.data.start.value,
+              //   new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+              // );
+
+              } else {
+              // Schedule order
               this.props.test(
                 args.e.data.id,
                 args.e.data.resource,
@@ -241,6 +280,7 @@ class Scheduler extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.closeModalAndAdd = this.closeModalAndAdd.bind(this);
     this.handleAlert = this.handleAlert.bind(this);
     this.handleCellDurationChange = this.handleCellDurationChange.bind(this);
     this.handleSortChange = this.handleSortChange.bind(this);
@@ -248,6 +288,7 @@ class Scheduler extends Component {
     this.handleSort = this.handleSort.bind(this);
     this.setFilterText = this.setFilterText.bind(this);
     this.setEditOpen = this.setEditOpen.bind(this);
+    this.handleLocationSelect = this.handleLocationSelect.bind(this);
   }
 
   componentDidMount() {
@@ -352,8 +393,39 @@ class Scheduler extends Component {
     this.setState({ inpId: e.target.value, inpDuration: e.target.id });
   }
 
+  handleLocationSelect(e) {
+    console.log(this.state.resources);
+
+    // let loneSrc = this.state.resources.filter(resource => (resource.))
+    console.log(this.props.resources[0]);
+
+    
+    // this.setState({ resources: [this.props.resources[0]] })
+    
+    const val = e.target.value;
+    if (val === "All locations") {
+      this.setState({ selectedLocation: e.target.value, filterText: "" });
+      this.props.resetResources();
+    } else {
+      this.setState({ selectedLocation: e.target.value, filterText: e.target.value });
+      this.props.changeResources(val);
+    }
+  }
+
   closeModal() {
-    this.setState({ modalOpen: false, inpId: null, inpDuration: null });
+    // this.setState({ modalOpen: false, inpId: null, inpDuration: null });
+    this.setState({ modalOpen: false });
+    this.props.loadWorkOrders();
+  }
+  
+  closeModalAndAdd() {
+    this.setState({ modalOpen: false });
+    this.props.test(
+      this.state.dataId,
+      this.state.dataResource,
+      this.state.dataStartVal,
+      this.state.dataEndVal
+    );
   }
 
   handleCellDurationChange(e) {
@@ -470,6 +542,15 @@ class Scheduler extends Component {
               <div className="white-key"></div>&nbsp;<p className="key-text mr-3">- team shift</p>
               <div className="grey-key"></div>&nbsp;<p className="key-text">- solo shift</p>
             </div>
+            <div className="location-dropdown">
+              View:&nbsp;
+              <select onChange={this.handleLocationSelect} value={this.state.selectedLocation}>
+                <option value="All locations">All locations</option>
+                {this.props.terminals.map(loc => (
+                  <option id={`${loc.city}, ${loc.state} - ${loc.location_id}`} className="location-dropdown-text" value={loc.location_id}>{loc.city}, {loc.state} - {loc.location_id}</option>
+                ))}
+              </select>
+            </div>
             <div>
               <span className="scale-text">Scale:</span>&nbsp;
               <button
@@ -490,6 +571,31 @@ class Scheduler extends Component {
                   15 min</button>
             </div>
           </div>
+          <Modal
+            isOpen={this.state.modalOpen}
+            className="modall"
+            style = {
+                {
+                  content: {
+                    width: "300px",
+                  }
+                }
+              }
+            >
+            <div className="card wo-card">
+              <div className="card text-center">
+                <div className="card-body">
+                  <div className="alert alert-danger p-1 my-0 text-center">
+                  Warning: This work order is scheduled to end beyond its needed by date
+                  </div>
+                  <div className="mt-3">
+                    <button onClick={this.closeModal} className="btn cancel-add-btn mr-1">Cancel</button>
+                    <button onClick={this.closeModalAndAdd} className="btn submit-btn ml-1">Add to scheduler</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal>
           <DayPilotScheduler
             {...config}
             

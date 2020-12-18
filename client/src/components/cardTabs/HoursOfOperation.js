@@ -654,7 +654,6 @@ const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantit
       // <div className="col-sm-10 mx-auto py-3 px-0">
       <div className="col-sm-10 mx-auto py-3 px-0 hours-of-operation-view">
         <Modal
-          // isOpen={this.state.modalOpen}
           isOpen={modalOpen}
           className="modall"
           style = {

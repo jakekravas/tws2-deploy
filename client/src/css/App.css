@@ -126,6 +126,10 @@
   margin-right: 8px;
 }
 
+.location-dropdown {
+  font-size: 13px;
+}
+
 .work-order-content {
   background-color: #f6f6f6;
   /* margin: 14px 0; */
