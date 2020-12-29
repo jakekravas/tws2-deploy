@@ -11,12 +11,12 @@ const Card = ({ user, checkForUser, getUser, getAllLocations }) => {
 
   useEffect(() => {
 
-    checkForUser();
+    // checkForUser();
 
-    // const userToGet = window.location.href.split("user_")[1];
-    // getUser(userToGet);
-    // getAllLocations();
-    // setCurrentUser(userToGet);
+    const userToGet = window.location.href.split("user_")[1];
+    getUser(userToGet);
+    getAllLocations();
+    setCurrentUser(userToGet);
   }, []);
 
   return (
