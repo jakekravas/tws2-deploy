@@ -234,49 +234,51 @@ class Scheduler extends Component {
           args.cell.disabled = true;
           args.cell.backColor = "#eee";
         }
-
-        for (let i = 0; i < this.props.hoursArr.length; i++) {
-          
-          if (args.cell.resource === `${this.props.hoursArr[i].location_id}${this.props.hoursArr[i].bay}`) {
-            if (!this.props.hoursArr[i].is_open) {
-              args.cell.disabled = true;
-              args.cell.backColor = "#eee";
-            }
-
-            // Disable cells that start before the start of shift 1
-            if (new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`)) {
-              args.cell.disabled = true;
-              args.cell.backColor = "#eee";
-
-            // Color code shift 1 if it's a solo shift
-            } else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && this.props.hoursArr[i].shift_one_type === "solo") {
-              args.cell.backColor = "rgb(225, 225, 225)";
-            }
-
-            // If there's a shift 2
-            if (this.props.hoursArr[i].shift_two_open) {
-              
-              // Disable cells that start after the end of shift 1 and before the start of shift 2
-              if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`)) {
+        if (this.props.hoursArr) {
+          for (let i = 0; i < this.props.hoursArr.length; i++) {
+            
+            if (args.cell.resource === `${this.props.hoursArr[i].location_id}${this.props.hoursArr[i].bay}`) {
+              if (!this.props.hoursArr[i].is_open) {
                 args.cell.disabled = true;
                 args.cell.backColor = "#eee";
               }
-
-              // Color code shift 2 if it's a solo shift
-              else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
+  
+              // Disable cells that start before the start of shift 1
+              if (new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`)) {
+                args.cell.disabled = true;
+                args.cell.backColor = "#eee";
+  
+              // Color code shift 1 if it's a solo shift
+              } else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && this.props.hoursArr[i].shift_one_type === "solo") {
                 args.cell.backColor = "rgb(225, 225, 225)";
               }
-
-            } else {
-
-              // Disable cells that start after the end of shift 1
-              if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
-                args.cell.disabled = true;
-                args.cell.backColor = "#eee";
-              }
-            } 
+  
+              // If there's a shift 2
+              if (this.props.hoursArr[i].shift_two_open) {
+                
+                // Disable cells that start after the end of shift 1 and before the start of shift 2
+                if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`) && new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`)) {
+                  args.cell.disabled = true;
+                  args.cell.backColor = "#eee";
+                }
+  
+                // Color code shift 2 if it's a solo shift
+                else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
+                  args.cell.backColor = "rgb(225, 225, 225)";
+                }
+  
+              } else {
+  
+                // Disable cells that start after the end of shift 1
+                if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
+                  args.cell.disabled = true;
+                  args.cell.backColor = "#eee";
+                }
+              } 
+            }
           }
         }
+
       },
     };
     this.handleChange = this.handleChange.bind(this);

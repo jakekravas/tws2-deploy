@@ -12,38 +12,42 @@ const Location = require('../../models/Location');
 const Hours = require('../../models/Hours');
 const UserCode = require('../../models/UserCode');
 
+let userToSend;
+
 // POST request to http://localhost:3000/api/userid
 router.post("/", urlencodedParser, async (req, res) => {
   try {
+
+    console.log("ROUTE HIT");
+    console.log("ROUTE HIT");
+    console.log("ROUTE HIT");
+    console.log("ROUTE HIT");
+    console.log("ROUTE HIT");
+    
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     const urlUser = submittedUserID.replace("\\", "_");
+    userToSend = submittedUserID.replace("\\", "_");
 
-    // const UserRole = await BtcWeb_UserRole.findAll({
-    //   where: { UserID:  submittedUserID}
-    // });
+    // await open(`http://localhost:3000`);
+    // await open(`https://tank-wash-scheduler-v2.herokuapp.com/user_${urlUser}`);        
+  } catch (err) {
+    console.log(err);
+  }
+});
 
-    // const userCode = await UserCode.findAll({ where: { username: submittedUserID } }).dataValues[0].code;
+// Check for user
+router.get("/checkuser", async (req, res) => {
+  try {
+    let intervalId = setInterval(() => {
+      if (userToSend) {
+        console.log(userToSend);
+        stopInterval();
+        res.json({ userToSend });
+      }
+    }, 1000);
 
-    // const userCodeInfo = await UserCode.findAll({ where: { username: submittedUserID } });
-    // const userCode = userCodeInfo[0].dataValues.code;
+    const stopInterval = () => clearInterval(intervalId);
 
-    // const role = UserRole[0].dataValues.RoleID; //their role
-
-    // const UserTerminal = await BtcWeb_UserTerminal.findAll({
-    //   where: { UserID:  submittedUserID}
-    // });
-
-    // const terminalArr = UserTerminal.map(i => i.dataValues.Terminal); //arr of terminals
-
-    // const ranStr = "asdf";
-
-    // await open(`http://localhost:3000/user_${urlUser}`);
-    await open(`https://tank-wash-scheduler-v2.herokuapp.com/user_${urlUser}`);
-    // await open(`http://localhost:3000/${submittedUserID}`);
-    // await open(`http://localhost:3000/${submittedUserID}/${userCode}`);
-    // await open(`http://localhost:3000/${submittedUserID.split(".")[0]}`);
-        
-    // res.json({ role_id: role, terminals: terminalArr });
   } catch (err) {
     console.log(err);
   }

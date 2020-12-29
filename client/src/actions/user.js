@@ -17,6 +17,43 @@ export const getTrailerWashWos = () => async dispatch => {
   }
 }
 
+export const checkForUser = () => async dispatch => {
+  try {
+    console.log("action hit");
+    const res = await axios.get("/api/userid/checkuser");
+    const user = res.data.userToSend
+
+    console.log(res.data.userToSend);
+
+    const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
+    const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
+
+    const userInfoRes = await fetch(proxyUrl + targetUrl);
+    const data = await userInfoRes.json();
+    
+    const hours = [];
+    
+    for (let i = 0; i < data.hours.length; i++) {
+      for (let y = 0; y < data.hours[i].length; y++) {
+        hours.push(data.hours[i][y]);
+      }
+    }
+    
+    data.hours = hours;
+    console.log(data);
+
+    dispatch({
+      type: GET_USER,
+      payload: data
+    });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: USER_ERROR
+    });
+  }
+}
+
 export const getUser = user => async dispatch => {
   try {
     console.log(user);

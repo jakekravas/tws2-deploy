@@ -3,18 +3,20 @@ import WashTypes from "./cardTabs/WashTypes";
 import ToggleView from "./cardTabs/ToggleView";
 import { connect } from "react-redux";
 import { getAllLocations } from "../actions/location";
+import { getUser, checkForUser } from "../actions/user";
 
-import { getUser } from "../actions/user";
-
-const Card = ({ user, getUser, getAllLocations }) => {
+const Card = ({ user, checkForUser, getUser, getAllLocations }) => {
 
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
-    const userToGet = window.location.href.split("user_")[1];
-    getUser(userToGet);
+
+    checkForUser();
+
+    // const userToGet = window.location.href.split("user_")[1];
+    // getUser(userToGet);
     // getAllLocations();
-    setCurrentUser(userToGet);
+    // setCurrentUser(userToGet);
   }, []);
 
   return (
@@ -48,4 +50,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps, { getUser, getAllLocations })(Card)
+export default connect(mapStateToProps, { checkForUser, getUser, getAllLocations })(Card)
