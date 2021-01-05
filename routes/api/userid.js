@@ -7,29 +7,18 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false});
 
 const BtcWeb_UserRole = require('../../models/BtcWeb_UserRole');
 const BtcWeb_UserTerminal = require('../../models/BtcWeb_UserTerminal');
-const Recent_User = require('../../models/Recent_User');
 const Location = require('../../models/Location');
 const Hours = require('../../models/Hours');
-const UserCode = require('../../models/UserCode');
 
 let userToSend;
 
-// POST request to http://localhost:3000/api/userid
 router.post("/", urlencodedParser, async (req, res) => {
   try {
-
-    console.log("ROUTE HIT");
-    console.log("ROUTE HIT");
-    console.log("ROUTE HIT");
-    console.log("ROUTE HIT");
-    console.log("ROUTE HIT");
     
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     const urlUser = submittedUserID.replace("\\", "_");
     userToSend = submittedUserID.replace("\\", "_");
 
-    // await open(`http://localhost:3000`);
-    // await open(`https://tank-wash-scheduler-v2.herokuapp.com/user_${urlUser}`);        
   } catch (err) {
     console.log(err);
   }
@@ -74,18 +63,9 @@ router.get("/user/:user", async (req, res) => {
     for (let i = 0; i < terminalsToLoop.length; i++) {
       let location = await Location.findOne({ where: { terminal_id: terminalsToLoop[i]}});
       if (location) {
-        // let monday = await Hours.findOne({
-        //   where:
-        //     {
-        //       bay: 1,
-        //       location_id: location.dataValues.location_id,
-        //       day: "Monday"
-        //     }
-        // });
 
         let hoursOfLocation = await Hours.findAll({ where: { location_id: location.dataValues.location_id } });
 
-        // terminals.push(location, bayOneHours, bayTwoHours);
         terminals.push(location);
         hours.push(hoursOfLocation);
       }

@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import Modal from "react-modal";
 import { connect } from "react-redux";
 import '../../css/syncfusion.css';
 import Scheduler from "./layout/Scheduler";
-import DraggableOrder from "./layout/DraggableOrder";
 import { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
-
-// Modal.setAppElement("#root");
 
 const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrdersOfLocation, getWorkOrders, location: { selectedLocation }, workOrders, washTypes, user: { terminals, hours } }) => {
   const [displayCal, setDisplayCal] = useState(true);
@@ -38,7 +34,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [unschedWorkOrders, setUnschedWorkOrders] = useState();
   const [sortBy, setSortBy] = useState("needed date");
   const [sortAsc, setSortAsc] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
 
   const handleSortChange = (targVal) => {
     setSortBy(targVal);
