@@ -10,16 +10,18 @@ const Card = ({ user, checkForUser, getUser, getAllLocations }) => {
   const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
+    
+    if (user.user === null) {
+      checkForUser();
+    } else {
+      setCurrentUser(user.user.replace("\\", "_"));
+    }
 
-    checkForUser();
-
-    console.log(user);
-
-    const userToGet = window.location.href.split("user_")[1];
-    getUser(userToGet);
-    getAllLocations();
-    setCurrentUser(userToGet);
-  }, []);
+    // const userToGet = window.location.href.split("user_")[1];
+    // getUser(userToGet);
+    // getAllLocations();
+    // setCurrentUser(userToGet);
+  }, [user]);
 
   return (
   <div className="card col-lg-9 mx-auto my-4 p-0">

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const open = require('open');
+const puppeteer = require('puppeteer');
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false});
 
@@ -10,35 +11,48 @@ const BtcWeb_UserTerminal = require('../../models/BtcWeb_UserTerminal');
 const Location = require('../../models/Location');
 const Hours = require('../../models/Hours');
 
-let userToSend;
+let userToSend = null;
 
 router.post("/", urlencodedParser, async (req, res) => {
   try {
     
     const submittedUserID = req.body.ctl00$cphBody$UserID;
-    const urlUser = submittedUserID.replace("\\", "_");
+    
+    await open("http://localhost:3000");
+
     userToSend = submittedUserID.replace("\\", "_");
+    console.log("USERTOSEND: " + userToSend);
 
   } catch (err) {
-    console.log(err);
+    console.log(`ERROR: ${err}`);
   }
 });
 
 // Check for user
 router.get("/checkuser", async (req, res) => {
+  console.log("HIT CHECKUSER");
   try {
-    let intervalId = setInterval(() => {
-      if (userToSend) {
-        console.log(userToSend);
-        stopInterval();
+
+    setTimeout(() => {
+      if (userToSend !== null) {
+        console.log("TIMERUSER: " + userToSend);
         res.json({ userToSend });
+        userToSend = null;
       }
-    }, 1000);
+    }, 3000);
+    // let intervalId = setInterval(() => {
+    //   if (userToSend !== null) {
+    //     console.log(userToSend);
+    //     stopInterval();
+    //     res.json({ userToSend });
+    //     userToSend = null;
+    //   }
+    // }, 1000);
 
     const stopInterval = () => clearInterval(intervalId);
 
   } catch (err) {
-    console.log(err);
+    console.log(`ERROR: ${err}`);
   }
 });
 
@@ -73,7 +87,7 @@ router.get("/user/:user", async (req, res) => {
     
     res.json({ user, role, terminals, hours });
   } catch (err) {
-    console.log(err);
+    console.log(`ERROR: ${err}`);
   }
 });
 

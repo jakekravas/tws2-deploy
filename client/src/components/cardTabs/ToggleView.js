@@ -12,7 +12,6 @@ const ToggleView = ({ getUser, getTrailerWashWos, currentUser, getLocationInfo, 
   const test = () => {
     setView("schedule");
     getUser(currentUser);
-    getTrailerWashWos();
   }
 
   return (

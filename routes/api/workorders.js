@@ -27,14 +27,20 @@ router.get("/:code", async (req, res) => {
 router.get("/user/:locations", async (req, res) => {
   try {
 
-    const locationsArr = req.params.locations.split(",");
-    const workOrders = [];
-    
-    for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
+    // const locationsArr = req.params.locations.split(",");
+    const locationsArr = req.params.locations;
+    // const workOrders = [];
 
-      workOrders.push(workOrdersOfLoc[0]);
-    }
+    // join locationsArr and find where IN
+    
+    // for (let i = 0; i < locationsArr.length; i++) {
+    //   let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
+
+    //   workOrders.push(workOrdersOfLoc[0]);
+    // }
+
+    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N';`);
+
     res.json({ workOrders: workOrders });
 
   } catch (err) {
@@ -61,15 +67,18 @@ router.put("/:id", async (req, res) => {
       {where: { order_id: req.params.id + "  " }}
     )
 
-    const locationsArr = req.body.locations.split(",");
-    const workOrders = [];
+    // const locationsArr = req.body.locations.split(",");
+    const locationsArr = req.body.locations;
+    // const workOrders = [];
     
-    for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
+    // for (let i = 0; i < locationsArr.length; i++) {
+    //   let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
 
-      workOrders.push(workOrdersOfLoc[0]);
-    }
-    // res.json({ workOrders: workOrders[0][0] });
+    //   workOrders.push(workOrdersOfLoc[0]);
+    // }
+
+    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N';`);
+
     res.json({ workOrders: workOrders });
   } catch (err) {
     console.error(err.message);
@@ -91,42 +100,9 @@ router.put("/unschedule/:id", async (req, res) => {
       {where: { order_id: req.params.id + "  " }}
     );
 
-    const locationsArr = req.body.locations.split(",");
-    const workOrders = [];
+    const locationsArr = req.body.locations;
 
-    for (let i = 0; i < locationsArr.length; i++) {
-      let workOrdersOfLoc = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id = '${locationsArr[i]}' AND tankwash.trailer_wash_wo.void = 'N';`);
-
-      workOrders.push(workOrdersOfLoc[0]);
-    }
-    
-    // for (let i = 0; i < locationsArr.length; i++) {
-    //   let workOrdersOfLoc = await TrailerWashWo.findAll({ where: { wash_location_id: locationsArr[i] } });
-    //   if (workOrdersOfLoc) {
-    //     for (let i = 0; i < workOrdersOfLoc.length; i++) {
-          
-    //       let intWash;
-    //       let extWash;
-
-    //       if (workOrdersOfLoc[i].int_wash_code) {
-    //         intWash = await WashType.findOne({
-    //           where: { wash_code: workOrdersOfLoc[i].int_wash_code.trim() }
-    //         });
-    //       }
-
-    //       if (workOrdersOfLoc[i].ext_wash_code) {
-    //         extWash = await WashType.findOne({
-    //           where: { wash_code: workOrdersOfLoc[i].ext_wash_code.trim() }
-    //         });
-    //       }
-
-    //       let obj = { wo: workOrdersOfLoc[i], intWash: intWash, extWash: extWash }
-
-    //       // workOrders.push(workOrdersOfLoc[i]);
-    //       workOrders.push(obj);
-    //     }
-    //   }
-    // }
+    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N';`);
     
     res.json({ workOrders });
   } catch (err) {

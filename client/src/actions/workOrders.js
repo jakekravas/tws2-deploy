@@ -34,7 +34,7 @@ export const getWorkOrders = terminals => async dispatch => {
     const locationIdsArr = [];
     
     for (let i = 0; i < terminals.length; i++) {
-      locationIdsArr.push(terminals[i].location_id);
+      locationIdsArr.push(`'${terminals[i].location_id}'`);
     }
     
     const locations = locationIdsArr.join();
@@ -102,8 +102,9 @@ export const getWorkOrders = terminals => async dispatch => {
           }
   
           // orders[i][y].text =  `Needed by ${orders[i][y].needed_date}`;
-          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
-          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].unscheduled_text =  neededDateDisplayStr;
+          // orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Trailer ${orders[i][y].trailer_id.trim()}. Int wash type: ${orders[i][y].int_wash_code}`;
   
           ordersArr.push(orders[i][y]);
         }
@@ -127,7 +128,7 @@ export const updateWorkOrderStatus = (id, resource, start, end, terminals) => as
     const locationIdsArr = [];
     
     for (let i = 0; i < terminals.length; i++) {
-      locationIdsArr.push(terminals[i].location_id);
+      locationIdsArr.push(`'${terminals[i].location_id}'`);
     }
     
     const locations = locationIdsArr.join();
@@ -187,8 +188,9 @@ export const updateWorkOrderStatus = (id, resource, start, end, terminals) => as
             neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
           }
   
-          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
-          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].unscheduled_text =  neededDateDisplayStr;
+          // orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Trailer ${orders[i][y].trailer_id.trim()}. Int wash type: ${orders[i][y].int_wash_code}`;
 
           // let date = orders[i][y].split("T")[0];
           // let time = orders[i][y].split("T")[1].split(":");
@@ -219,11 +221,10 @@ export const updateWorkOrderStatus = (id, resource, start, end, terminals) => as
 export const unscheduleWorkOrder = (id, terminals) => async dispatch => {
   try {
     id = id.trim();
-    // console.log(id);
     const locationIdsArr = [];
     
     for (let i = 0; i < terminals.length; i++) {
-      locationIdsArr.push(terminals[i].location_id);
+      locationIdsArr.push(`'${terminals[i].location_id}'`);
     }
     
     const locations = locationIdsArr.join();
@@ -283,8 +284,9 @@ export const unscheduleWorkOrder = (id, terminals) => async dispatch => {
             neededDateDisplayStr = `${date} ${hour}:${minute} AM`;
           }
   
-          orders[i][y].unscheduled_text =  `Needed by ${neededDateDisplayStr}`;
-          orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].unscheduled_text =  neededDateDisplayStr;
+          // orders[i][y].text =  `Order ${orders[i][y].order_id} - Needed by ${neededDateDisplayStr}`;
+          orders[i][y].text =  `Trailer ${orders[i][y].trailer_id.trim()}. Int wash type: ${orders[i][y].int_wash_code}`;
   
           ordersArr.push(orders[i][y]);
         }

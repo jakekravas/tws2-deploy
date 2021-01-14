@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DayPilotScheduler } from "daypilot-pro-react";
 import Modal from "react-modal";
 import DraggableOrder from "../layout/DraggableOrder";
+import DraggableTOrder from "../layout/DraggableTOrder";
 
 Modal.setAppElement("#root");
 
@@ -46,6 +47,10 @@ class Scheduler extends Component {
       dataStartVal: null,
       dataEndVal: null,
       filterText: "",
+      filterLocation: "",
+      filterOrderId: "",
+      filterTrailerId: "",
+      filterIntWashType: "",
       selectedLocation: "All locations",
       onBeforeEventRender: args => {
         // args.data.moveDisabled = this.props.disableMove;
@@ -292,6 +297,10 @@ class Scheduler extends Component {
     this.setFilterText = this.setFilterText.bind(this);
     this.setEditOpen = this.setEditOpen.bind(this);
     this.handleLocationSelect = this.handleLocationSelect.bind(this);
+    this.changeLocationFilter = this.changeLocationFilter.bind(this);
+    this.changeOrderIdFilter = this.changeOrderIdFilter.bind(this);
+    this.changeTrailerIdFilter = this.changeTrailerIdFilter.bind(this);
+    this.changeIntWashTypeFilter = this.changeIntWashTypeFilter.bind(this);
   }
 
   componentDidMount() {
@@ -497,6 +506,30 @@ class Scheduler extends Component {
     this.setState({ editOpen: !this.state.editOpen });
   }
 
+  changeLocationFilter(e) {
+    this.setState({
+      filterLocation: e.target.value
+    });
+  }
+  
+  changeOrderIdFilter(e) {
+    this.setState({
+      filterOrderId: e.target.value
+    });
+  }
+  
+  changeTrailerIdFilter(e) {
+    this.setState({
+      filterTrailerId: e.target.value
+    });
+  }
+  
+  changeIntWashTypeFilter(e) {
+    this.setState({
+      filterIntWashType: e.target.value
+    });
+  }
+
   render() {
     var {...config} = this.state;
 
@@ -526,9 +559,9 @@ class Scheduler extends Component {
                   </select>
                   {
                     this.state.sortAsc ?
-                    <i class="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
+                    <i className="fas fa-sort-up sort-asc" onClick={this.toggleAsc}/>
                     :
-                    <i class="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
+                    <i className="fas fa-sort-down sort-desc" onClick={this.toggleAsc}/>
                   }
                 </div>
               </div>
@@ -623,8 +656,7 @@ class Scheduler extends Component {
             </div>
             {this.state.editOpen &&
               <div className="work-orders-header-top">
-                {/* <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/> */}
-                <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by location ID"/>
+                {/* <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by location ID"/> */}
                 <div className="sort-container">
                   {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
@@ -650,7 +682,90 @@ class Scheduler extends Component {
                 </div>
               </div>
             }
-            <div className="work-orders-container-sm">
+            <div id="wash-types-container">
+              <div id="wt-table">
+                <table className="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th className="unscheduled-order-th">Location</th>
+                    <th className="unscheduled-order-th">Order ID</th>
+                    <th className="text-center unscheduled-order-th">Trailer</th>
+                    <th className="text-center unscheduled-order-th">Int Wash Type</th>
+                    <th className="text-center unscheduled-order-th">Team Duration</th>
+                    <th className="text-center unscheduled-order-th">Solo Duration</th>
+                    <th className="text-center unscheduled-order-th">Needed By</th>
+                    <th className="unscheduled-order-th"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input
+                        className="unscheduled-order-filter"
+                        type="text"
+                        placeholder="Filter"
+                        value={this.state.filterLocation}
+                        onChange={this.changeLocationFilter}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="unscheduled-order-filter"
+                        type="text"
+                        placeholder="Filter"
+                        value={this.state.filterOrderId}
+                        onChange={this.changeOrderIdFilter}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="unscheduled-order-filter"
+                        type="text"
+                        placeholder="Filter"
+                        value={this.state.filterTrailerId}
+                        onChange={this.changeTrailerIdFilter}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        className="unscheduled-order-filter"
+                        type="text"
+                        placeholder="Filter"
+                        value={this.state.filterIntWashType}
+                        onChange={this.changeIntWashTypeFilter}
+                      />
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => ( */}
+                  {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(
+                    wo =>
+                    wo.wash_location_id.includes(this.state.filterLocation.toUpperCase()) &&
+                    wo.order_id.includes(this.state.filterOrderId) &&
+                    wo.trailer_id.includes(this.state.filterTrailerId) &&
+                    (wo.int_wash_code === null ||
+                    wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase()))
+                  ).map(wo => (
+                    <DraggableTOrder
+                      key={wo.order_id.trim()}
+                      wo={wo}
+                      id={wo.order_id.trim()}
+                      name={`Order ${wo.order_id.trim()}`}
+                      cityState={`${wo.wash_location_id}`}
+                      text={wo.text}
+                      duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
+                      teamDuration={1}
+                      soloDuration={2}
+                    />
+                  ))}
+                </tbody>
+                </table>
+              </div>
+            </div>
+            {/* <div className="work-orders-container-sm">
               {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
                 <DraggableOrder
                   key={wo.order_id.trim()}
@@ -665,7 +780,7 @@ class Scheduler extends Component {
                   soloDuration={2}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

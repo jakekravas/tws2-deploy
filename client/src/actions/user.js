@@ -8,7 +8,6 @@ export const getTrailerWashWos = () => async dispatch => {
   try {
     const res = await axios.get("/api/trailer_wash_wo");
 
-    console.log(res.data);
   } catch (err) {
     console.log(err);
     dispatch({
@@ -21,15 +20,16 @@ export const checkForUser = () => async dispatch => {
   try {
     console.log("action hit");
     const res = await axios.get("/api/userid/checkuser");
-    const user = res.data.userToSend
-
     console.log(res.data.userToSend);
-
+    const user = res.data.userToSend
+    
     const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
     const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
-
+    
     const userInfoRes = await fetch(proxyUrl + targetUrl);
     const data = await userInfoRes.json();
+
+    console.log(data);
     
     const hours = [];
     
@@ -40,7 +40,6 @@ export const checkForUser = () => async dispatch => {
     }
     
     data.hours = hours;
-    console.log(data);
 
     dispatch({
       type: GET_USER,
@@ -56,7 +55,6 @@ export const checkForUser = () => async dispatch => {
 
 export const getUser = user => async dispatch => {
   try {
-    console.log(user);
     // const res = await axios.get(`/api/userid/user/${user}`);
     // const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
@@ -64,7 +62,6 @@ export const getUser = user => async dispatch => {
     
     const res = await fetch(proxyUrl + targetUrl);
     const data = await res.json();
-    console.log(data);
 
     const hours = [];
 

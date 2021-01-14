@@ -126,26 +126,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   useEffect(() => {
-    // if (terminals) {
-      
-    //   let resources = [];
-
-    //   for (let i = 0; i < terminals.length; i++) {
-    //     if (terminals[i].wash_bays === 2) {
-    //       resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
-    //         { name: "Bay 1", id: `${terminals[i].location_id}1` },
-    //         { name: "Bay 2", id: `${terminals[i].location_id}2` }
-    //       ]});
-    //     } else {
-    //       resources.push( {name: `${terminals[i].city}, ${terminals[i].state} - ${terminals[i].location_id}`, id: terminals[i].id, expanded: true, children: [
-    //         { name: "Bay 1", id: `${terminals[i].location_id}1` }
-    //       ]});
-    //     }
-    //   }
-    //   // setting resources
-    //   setWoResources(resources);
-    // }
-
     resetResources();
     
     let today = new Date();
@@ -194,7 +174,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const preventTimeExceed = (type) => {
     if (type === "loc") {
       // alert("Work orders must be scheduled be scheduled on their correct terminal");
-      setErrorText("Work orders must be scheduled be scheduled on their correct terminal");
+      setErrorText("Work orders must be scheduled on their correct terminal");
     } else if (type === "end") {
       // alert("The end of a work order cannot exceed the end of a shift");
       setErrorText("The end of a work order cannot exceed the end of a shift");

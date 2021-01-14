@@ -28,6 +28,25 @@
   /* height: 100px; */
 }
 
+.unscheduled-order-th {
+  position: sticky;
+  width: 3px !important;
+  top: 0;
+  background-color: #f6f6f6;
+  font-size: 14px;
+}
+
+.unscheduled-order {
+  cursor: pointer;
+  font-size: 14px;
+  width: 50% !important;
+}
+
+.unscheduled-order-filter {
+  width: 100%;
+  font-size: 14px;
+}
+
 /* #work-orders-container { */
 .work-orders-container {
   max-height: 350px;
@@ -353,6 +372,7 @@
 
 .sticky-th {
   position: sticky;
+  width: 3px !important;
   top: 0;
   background-color: #f6f6f6;
 }
