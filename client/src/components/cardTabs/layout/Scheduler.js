@@ -3,6 +3,7 @@ import { DayPilotScheduler } from "daypilot-pro-react";
 import Modal from "react-modal";
 import DraggableOrder from "../layout/DraggableOrder";
 import DraggableTOrder from "../layout/DraggableTOrder";
+import WorkOrderDetails from "../layout/WorkOrderDetails";
 
 Modal.setAppElement("#root");
 
@@ -30,10 +31,9 @@ class Scheduler extends Component {
       // unscheduledWorkOrders: null,
       unscheduledWorkOrders: [],
       modalOpen: false,
+      modalOpenn: false,
       moveDisabled: true,
       durationBarVisible: true,
-      unscheduledOrders: [],
-      unscheduledOrdersDisabled: [],
       selectedStartTime: null,
       alertDisplay: "none",
       editOpen: false,
@@ -52,6 +52,7 @@ class Scheduler extends Component {
       filterTrailerId: "",
       filterIntWashType: "",
       selectedLocation: "All locations",
+      currentWoDetails: null,
       onBeforeEventRender: args => {
         // args.data.moveDisabled = this.props.disableMove;
         args.data.moveDisabled = false;
@@ -107,17 +108,6 @@ class Scheduler extends Component {
   
             // Set duration
             endTime.setMinutes(endTime.getMinutes() + duration);
-
-            // If end of order exceeds needed by date
-            // if (new Date(endTime) > new Date(orderToUpdate.needed_date)){
-            //   // console.log("end");
-            //   // console.log(new Date(endTime));
-            //   // console.log(new Date(orderToUpdate.needed_date));
-            //   console.log("END");
-            //   console.log(new Date(endTime));
-            //   console.log(new Date(orderToUpdate.needed_date));
-            //   this.props.preventTimeExceed("end");
-            // }
             
             // If end of order exceeds end of shift 1
             if (endTime > s1End) {
@@ -125,10 +115,6 @@ class Scheduler extends Component {
               this.props.preventTimeExceed("end");
             // } else if (endTime < new Date(orderToUpdate.needed_date)) {
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
-              // this.props.preventTimeExceed("late");
-
-              // Show warning
-              // this.props.displayWarning("late");
               this.setState({
                 modalOpen: true,
                 dataId: args.e.data.id,
@@ -136,13 +122,6 @@ class Scheduler extends Component {
                 dataStartVal: args.e.data.start.value,
                 dataEndVal: new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
               });
-              // Schedule order
-              // this.props.test(
-              //   args.e.data.id,
-              //   args.e.data.resource,
-              //   args.e.data.start.value,
-              //   new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
-              // );
 
             } else {
               this.props.test(
@@ -164,18 +143,6 @@ class Scheduler extends Component {
   
             // Set duration
             endTime.setMinutes(endTime.getMinutes() + duration);
-  
-            // If end time is within shift 2
-            // if (endTime <= s2End) {
-            //   this.props.test(
-            //     args.e.data.id,
-            //     args.e.data.resource,
-            //     args.e.data.start.value,
-            //     new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
-            //   );
-            // } else {
-            //   this.props.preventTimeExceed("end");
-            // }
 
             if (endTime > s2End) {
               this.props.preventTimeExceed("end");
@@ -192,13 +159,6 @@ class Scheduler extends Component {
                 dataStartVal: args.e.data.start.value,
                 dataEndVal: new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
               });
-              // Schedule order
-              // this.props.test(
-              //   args.e.data.id,
-              //   args.e.data.resource,
-              //   args.e.data.start.value,
-              //   new Date(endTime.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
-              // );
 
               } else {
               // Schedule order
@@ -301,6 +261,8 @@ class Scheduler extends Component {
     this.changeOrderIdFilter = this.changeOrderIdFilter.bind(this);
     this.changeTrailerIdFilter = this.changeTrailerIdFilter.bind(this);
     this.changeIntWashTypeFilter = this.changeIntWashTypeFilter.bind(this);
+    this.openWoModal = this.openWoModal.bind(this);
+    this.closeWoModal = this.closeWoModal.bind(this);
   }
 
   componentDidMount() {
@@ -481,21 +443,10 @@ class Scheduler extends Component {
 
   handleSortChange(e) {
     this.props.handleSortChange(e.target.value);
-    // this.setState({ sortBy: e.target.value });
-    // this.handleSort(e.target.value, this.state.sortAsc); 
   }
 
   toggleAsc() {
-
     this.props.toggleAsc();
-
-    // if (this.state.sortAsc) {
-    //   this.setState({ sortAsc: false });
-    //   this.handleSort(this.state.sortBy, false);
-    // } else {
-    //   this.setState({ sortAsc: true });
-    //   this.handleSort(this.state.sortBy, true);
-    // }
   }
 
   setFilterText(e){
@@ -528,6 +479,17 @@ class Scheduler extends Component {
     this.setState({
       filterIntWashType: e.target.value
     });
+  }
+
+  openWoModal(order_id) {
+    this.setState({
+      modalOpenn: true,
+      currentWoDetails: this.state.unscheduledWorkOrders.filter(wo => wo.order_id === order_id)[0]
+    });
+  }
+
+  closeWoModal() {
+    this.setState({ modalOpenn: false });
   }
 
   render() {
@@ -631,6 +593,13 @@ class Scheduler extends Component {
                 </div>
               </div>
             </div>
+          </Modal>
+          <Modal isOpen={this.state.modalOpenn}>
+            <WorkOrderDetails
+              className="wo-modal"
+              wo={this.state.currentWoDetails}
+              closeWoModal={this.closeWoModal}
+            />
           </Modal>
           <DayPilotScheduler
             {...config}
@@ -751,6 +720,7 @@ class Scheduler extends Component {
                   ).map(wo => (
                     <DraggableTOrder
                       key={wo.order_id.trim()}
+                      openWoModal={this.openWoModal}
                       wo={wo}
                       id={wo.order_id.trim()}
                       name={`Order ${wo.order_id.trim()}`}

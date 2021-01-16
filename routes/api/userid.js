@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const open = require('open');
-const puppeteer = require('puppeteer');
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false});
 
@@ -18,10 +17,11 @@ router.post("/", urlencodedParser, async (req, res) => {
     
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     
-    await open("http://localhost:3000");
-
     userToSend = submittedUserID.replace("\\", "_");
-    console.log("USERTOSEND: " + userToSend);
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({ status: "OK" }));
+    res.end();
 
   } catch (err) {
     console.log(`ERROR: ${err}`);
@@ -30,26 +30,13 @@ router.post("/", urlencodedParser, async (req, res) => {
 
 // Check for user
 router.get("/checkuser", async (req, res) => {
-  console.log("HIT CHECKUSER");
   try {
 
-    setTimeout(() => {
-      if (userToSend !== null) {
-        console.log("TIMERUSER: " + userToSend);
-        res.json({ userToSend });
-        userToSend = null;
-      }
-    }, 3000);
-    // let intervalId = setInterval(() => {
-    //   if (userToSend !== null) {
-    //     console.log(userToSend);
-    //     stopInterval();
-    //     res.json({ userToSend });
-    //     userToSend = null;
-    //   }
-    // }, 1000);
-
-    const stopInterval = () => clearInterval(intervalId);
+    if (userToSend !== null) {
+      console.log(`User: ${userToSend}`);
+      res.json({ userToSend });
+      userToSend = null;
+    }
 
   } catch (err) {
     console.log(`ERROR: ${err}`);

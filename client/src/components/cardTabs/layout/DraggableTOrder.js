@@ -2,6 +2,12 @@ import React from 'react';
 import {DayPilot} from "daypilot-pro-react";
 
 function DraggableTOrder(props) {
+
+  const setCurrentWo = () => {
+    console.log("aaaa");
+    props.openWoModal(props.wo.order_id);
+  }
+
   return (
   <tr className={"draggable-item unscheduled-order"} ref={element => {
     if (!element) {
@@ -32,7 +38,8 @@ function DraggableTOrder(props) {
     </td>
     <td>{props.wo.unscheduled_text}</td>
     <td>
-      <i className="fas fa-info-circle"/>
+      {/* <i onClick={props.openWoModal(props.wo.order_id)} className="fas fa-info-circle"/> */}
+      <i className="fas fa-info-circle" onClick={setCurrentWo} />
     </td>
   </tr>);
 }

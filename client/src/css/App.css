@@ -116,6 +116,22 @@
   margin: 0 10px;
 }
 
+.wo-inp {
+  width: 45%;
+}
+
+.wo-details {
+  font-size: 12px !important;
+  padding: 0;
+}
+
+.close-wo-det-btn {
+  /* justify-self: right !important; */
+  margin-left: auto;
+  margin-right: 10px;
+  padding: 3px 7px;
+}
+
 .sort-container {
   display: flex;
   align-items: center !important;
