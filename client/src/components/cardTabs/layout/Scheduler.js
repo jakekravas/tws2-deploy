@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { DayPilotScheduler } from "daypilot-pro-react";
 import Modal from "react-modal";
-import DraggableOrder from "../layout/DraggableOrder";
 import DraggableTOrder from "../layout/DraggableTOrder";
 import WorkOrderDetails from "../layout/WorkOrderDetails";
 
@@ -18,7 +17,6 @@ class Scheduler extends Component {
       treeAnimation: false,
       cellDuration: 30,
       height: 315,
-      // cellDuration: this.props.cellDuration,
       allowEventOverlap: false,
       currentDP: null,
       cellHeight: 20,
@@ -28,7 +26,6 @@ class Scheduler extends Component {
       inpDuration: null,
       inpVal: "",
       inpId: null,
-      // unscheduledWorkOrders: null,
       unscheduledWorkOrders: [],
       modalOpen: false,
       modalOpenn: false,
@@ -37,7 +34,6 @@ class Scheduler extends Component {
       selectedStartTime: null,
       alertDisplay: "none",
       editOpen: false,
-      // sortBy: "location",
       sortBy: "needed date",
       sortByy: null,
       sortAsc: true,
@@ -111,7 +107,6 @@ class Scheduler extends Component {
             
             // If end of order exceeds end of shift 1
             if (endTime > s1End) {
-              console.log("END");
               this.props.preventTimeExceed("end");
             // } else if (endTime < new Date(orderToUpdate.needed_date)) {
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
@@ -276,7 +271,6 @@ class Scheduler extends Component {
   }
   
   componentDidUpdate() {
-    // console.log(this.props);
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
@@ -368,20 +362,17 @@ class Scheduler extends Component {
   }
 
   handleLocationSelect(e) {
-    console.log(this.state.resources);
 
     // let loneSrc = this.state.resources.filter(resource => (resource.))
-    console.log(this.props.resources[0]);
-
     
     // this.setState({ resources: [this.props.resources[0]] })
     
     const val = e.target.value;
     if (val === "All locations") {
-      this.setState({ selectedLocation: e.target.value, filterText: "" });
+      this.setState({ selectedLocation: e.target.value, filterLocation: "" });
       this.props.resetResources();
     } else {
-      this.setState({ selectedLocation: e.target.value, filterText: e.target.value });
+      this.setState({ selectedLocation: e.target.value, filterLocation: e.target.value });
       this.props.changeResources(val);
     }
   }
@@ -612,9 +603,6 @@ class Scheduler extends Component {
         <div style={{display: this.props.alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
           {this.props.errorText}
         </div>
-        {/* <div>
-          aaaaa
-        </div> */}
         {/* <div className="col-sm-3 px-0 wo-sm"> */}
         <div className="col-12 px-0 wo-sm">
           <div className="work-orders-header">
@@ -715,8 +703,9 @@ class Scheduler extends Component {
                     wo.wash_location_id.includes(this.state.filterLocation.toUpperCase()) &&
                     wo.order_id.includes(this.state.filterOrderId) &&
                     wo.trailer_id.includes(this.state.filterTrailerId) &&
-                    (wo.int_wash_code === null ||
-                    wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase()))
+                    wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase())
+                    // (wo.int_wash_code === null ||
+                    // wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase()))
                   ).map(wo => (
                     <DraggableTOrder
                       key={wo.order_id.trim()}
@@ -735,22 +724,6 @@ class Scheduler extends Component {
                 </table>
               </div>
             </div>
-            {/* <div className="work-orders-container-sm">
-              {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => (
-                <DraggableOrder
-                  key={wo.order_id.trim()}
-                  wo={wo}
-                  id={wo.order_id.trim()}
-                  // name={`Trailer ${wo.trailer_id}`}
-                  name={`Order ${wo.order_id.trim()}`}
-                  cityState={`${wo.wash_location_id}`}
-                  text={wo.text}
-                  duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}
-                  teamDuration={1}
-                  soloDuration={2}
-                />
-              ))}
-            </div> */}
           </div>
         </div>
       </div>

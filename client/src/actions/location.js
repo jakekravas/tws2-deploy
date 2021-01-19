@@ -9,7 +9,7 @@ import {
 
 export const getAllLocations = () => async dispatch => {
   try {
-    const res = await axios.get("/api/locations");
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/locations`);
 
     dispatch({
       type: GET_ALL_LOCATIONS,
@@ -24,7 +24,7 @@ export const getAllLocations = () => async dispatch => {
 
 export const getLocationInfo = id => async dispatch => {
   try {
-    const res = await axios.get(`/api/locations/${id}`);
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/locations/${id}`);
 
     let locationInfo = res.data.location;
 
@@ -44,7 +44,7 @@ export const getLocationInfo = id => async dispatch => {
 
 export const updateLocationHrs = (id, formData) => async dispatch => {
   try {
-    const res = await axios.put(`/api/locations/hours/${id}`, formData);
+    const res = await axios.put(`${process.env.REACT_APP_URL}/api/locations/hours/${id}`, formData);
     let locationInfo = res.data.location;
 
     locationInfo.bayOneHours = res.data.bayOneHours;
@@ -63,7 +63,7 @@ export const updateLocationHrs = (id, formData) => async dispatch => {
 
 export const updateWashBayQuantity = (id, formData) => async dispatch => {
   try {
-    const res = await axios.put(`/api/locations/washbays/${id}`, formData);
+    const res = await axios.put(`${process.env.REACT_APP_URL}/api/locations/washbays/${id}`, formData);
     let locationInfo = res.data.location;
 
     locationInfo.bayOneHours = res.data.bayOneHours;

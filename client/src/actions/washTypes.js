@@ -9,7 +9,7 @@ import {
 
 export const getAllWashTypes = () => async dispatch => {
   try {
-    const res = await axios.get("/api/washtypes");
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/washtypes`);
 
     dispatch({
       type: GET_ALL_WASH_TYPES,
@@ -24,7 +24,7 @@ export const getAllWashTypes = () => async dispatch => {
 
 export const addWashType = formData => async dispatch => {
   try {
-    const res = await axios.post("/api/washtypes", formData);
+    const res = await axios.post(`${process.env.REACT_APP_URL}/api/washtypes`, formData);
 
     dispatch({
       type: ADD_WASH_TYPE,
@@ -39,7 +39,7 @@ export const addWashType = formData => async dispatch => {
 
 export const updateWashType = (id, formData) => async dispatch => {
   try {
-    const res = await axios.put(`/api/washtypes/${id}`, formData);
+    const res = await axios.put(`${process.env.REACT_APP_URL}/api/washtypes/${id}`, formData);
 
     dispatch({
       type: UPDATE_WASH_TYPE,
@@ -54,7 +54,7 @@ export const updateWashType = (id, formData) => async dispatch => {
 
 export const deleteWashType = id => async dispatch => {
   try {
-    const res = await axios.delete(`/api/washtypes/${id}`);
+    const res = await axios.delete(`${process.env.REACT_APP_URL}/api/washtypes/${id}`);
     
     dispatch({
       type: DELETE_WASH_TYPE,

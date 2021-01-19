@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/7xdoejwd4zhwflp3hdweah2m2u/2020.4.4788.tar.gz",
+    "dotenv": "^8.2.0",
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-calendar": "^3.1.0",

@@ -4,7 +4,6 @@ import {DayPilot} from "daypilot-pro-react";
 function DraggableTOrder(props) {
 
   const setCurrentWo = () => {
-    console.log("aaaa");
     props.openWoModal(props.wo.order_id);
   }
 
@@ -40,6 +39,7 @@ function DraggableTOrder(props) {
     <td>
       {/* <i onClick={props.openWoModal(props.wo.order_id)} className="fas fa-info-circle"/> */}
       <i className="fas fa-info-circle" onClick={setCurrentWo} />
+      {/* <a href="" onClick={setCurrentWo}>More Info</a> */}
     </td>
   </tr>);
 }

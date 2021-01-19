@@ -6,7 +6,7 @@ import {
 
 export const getTrailerWashWos = () => async dispatch => {
   try {
-    const res = await axios.get("/api/trailer_wash_wo");
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/trailer_wash_wo`);
 
   } catch (err) {
     console.log(err);
@@ -19,17 +19,14 @@ export const getTrailerWashWos = () => async dispatch => {
 export const checkForUser = () => async dispatch => {
   try {
     console.log("action hit");
-    const res = await axios.get("/api/userid/checkuser");
-    console.log(res.data.userToSend);
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/userid/checkuser`);
     const user = res.data.userToSend
     
-    const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
-    const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
+    // const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
+    const targetUrl = `${process.env.REACT_APP_URL}/api/userid/user/${user}`;
     
-    const userInfoRes = await fetch(proxyUrl + targetUrl);
+    const userInfoRes = await fetch(targetUrl);
     const data = await userInfoRes.json();
-
-    console.log(data);
     
     const hours = [];
     
@@ -57,10 +54,10 @@ export const getUser = user => async dispatch => {
   try {
     // const res = await axios.get(`/api/userid/user/${user}`);
     // const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-    const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
-    const targetUrl = `http://34.198.60.157:5069/api/userid/user/${user}`;
+    // const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
+    const targetUrl = `${process.env.REACT_APP_URL}api/userid/user/${user}`;
     
-    const res = await fetch(proxyUrl + targetUrl);
+    const res = await fetch(targetUrl);
     const data = await res.json();
 
     const hours = [];
