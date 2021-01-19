@@ -639,8 +639,8 @@ const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantit
   }
 
   const configureShift2Display = (start, end) => {
-    console.log(start);
-    console.log(end);
+    // console.log(start);
+    // console.log(end);
     return `${formatTime(start)} - ${ formatTime(end)}`;
   }
 

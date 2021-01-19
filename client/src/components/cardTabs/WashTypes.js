@@ -55,11 +55,8 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
 
   const editClick = e => {
     // Finding wash type that matches the one we clicked
-    console.log(e.target.id);
     setCodeToEdit(e.target.id);
     const washTypeToEdit = washTypes.filter(i => i.wash_code === e.target.id)[0];
-
-    console.log(washTypeToEdit);
     
     setEditWashType({
       id: washTypeToEdit.id,

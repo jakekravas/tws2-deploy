@@ -253,10 +253,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   const test = (id, resource, start, end) => {
-    console.log(id);
-    console.log(resource);
-    console.log(start);
-    console.log(end);
     updateWorkOrderStatus(id, resource, start, end, terminals);
   }
 
