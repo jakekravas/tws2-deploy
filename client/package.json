@@ -7,7 +7,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "daypilot-pro-react": "https://npm.daypilot.org/daypilot-pro-react/7xdoejwd4zhwflp3hdweah2m2u/2020.4.4788.tar.gz",
     "dotenv": "^8.2.0",
     "moment": "^2.27.0",

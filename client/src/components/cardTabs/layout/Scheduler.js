@@ -625,32 +625,9 @@ class Scheduler extends Component {
         <div className="col-12 px-0 wo-sm">
           <div className="work-orders-header">
             <div className="work-orders-header-top">
-              <i className="fas fa-bars bars-menu" onClick={this.setEditOpen}/>
-              <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6>
-              <i className="fas fa-bars bars-hidden"/>
+              {/* <h6 style={{margin: "11.4px 0"}} className="text-center text-dark">Work Orders</h6> */}
+              <h6 className="text-center text-dark">Work Orders</h6>
             </div>
-            {this.state.editOpen &&
-              <div className="work-orders-header-top">
-                {/* <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by location ID"/> */}
-                <div className="sort-container">
-                  {/* <input type="checkbox" name="" id=""/> */}
-                  <p className="sort-by-text">Sort by: </p>
-                  <select onChange={this.handleSortChange} className="sort-menu">
-                    <option className="sort-menu" value="needed date">Needed date</option>
-                    <option className="sort-menu" value="location">Location</option>
-                    <option className="sort-menu" value="team duration">Team duration</option>
-                    <option className="sort-menu" value="solo duration">Solo duration</option>
-                  </select>
-                  {
-                    // this.state.sortAsc ?
-                    this.state.sortAscc ?
-                    <i className="fas fa-sort-up sort-asc" onClick={this.props.toggleAsc}/>
-                    :
-                    <i className="fas fa-sort-down sort-desc" onClick={this.props.toggleAsc}/>
-                  }
-                </div>
-              </div>
-            }
             {this.state.editOpen &&
               <div>
                 <div className="wo-filter-container">
