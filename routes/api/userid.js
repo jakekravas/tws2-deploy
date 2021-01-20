@@ -18,6 +18,7 @@ router.post("/", urlencodedParser, async (req, res) => {
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     
     userToSend = submittedUserID.replace("\\", "_");
+    console.log(userToSend);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: "OK" }));

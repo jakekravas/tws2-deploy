@@ -31,11 +31,10 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [endTime, setEndTime] = useState();
   const [errorText, setErrorText] = useState();
 
-  const [unschedWorkOrders, setUnschedWorkOrders] = useState();
   const [sortBy, setSortBy] = useState("needed date");
   const [sortAsc, setSortAsc] = useState(true);
 
-  const handleSortChange = (targVal) => {
+  const handleSortChange = targVal => {
     setSortBy(targVal);
   }
 
