@@ -51,7 +51,6 @@ class Scheduler extends Component {
       selectedLocation: "All locations",
       currentWoDetails: null,
       onEventClick: args => {
-        console.log(args.e.data.wash_id);
         this.openWoModal(args.e.data.wash_id, true);
       },
       onBeforeEventRender: args => {
@@ -445,7 +444,6 @@ class Scheduler extends Component {
   }
 
   setFilterText(e){
-    console.log(e.target.value);
     this.setState({ filterText: e.target.value, filterLocation: e.target.value });
   }
 
@@ -454,7 +452,6 @@ class Scheduler extends Component {
   }
 
   changeLocationFilter(e) {
-    console.log(e.target.value);
     this.setState({
       filterLocation: e.target.value
     });
