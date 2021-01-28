@@ -760,7 +760,8 @@ class Scheduler extends Component {
                     // wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase())
                     wo.wash_location_id.includes(this.props.filterLocation.toUpperCase()) &&
                     wo.order_id.includes(this.props.filterOrderId) &&
-                    wo.trailer_id.includes(this.props.filterTrailerId)
+                    wo.trailer_id.includes(this.props.filterTrailerId) &&
+                    (wo.int_wash_code === null || wo.int_wash_code.includes(this.props.filterIntWashType.toUpperCase()))
                   ).map(wo => (
                     <DraggableTOrder
                       // key={wo.order_id.trim()}
