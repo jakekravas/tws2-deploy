@@ -4,13 +4,12 @@ import 'react-calendar/dist/Calendar.css';
 import { connect } from "react-redux";
 import '../../css/syncfusion.css';
 import Scheduler from "./layout/Scheduler";
-import { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
+import { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
 
-const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrdersOfLocation, getWorkOrders, location: { selectedLocation }, workOrders, washTypes, user: { terminals, hours } }) => {
+const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrders, workOrders, washTypes, user: { terminals, hours } }) => {
   const [displayCal, setDisplayCal] = useState(true);
   const [date, setDate] = useState(new Date());
   const [dateZeroed, setDateZeroed] = useState(new Date());
-  const [isOpen, setIsOpen] = useState(true);
   const [bayOneOpen, setbayOneOpen] = useState(true);
   const [bayTwoOpen, setbayTwoOpen] = useState(true);
   const [yearVal, setYearVal] = useState();
@@ -19,7 +18,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [weekdayDisplay, setWeekdayDisplay] = useState();
   const [dateStr, setDateStr] = useState();
 
-  const [events, setEvents] = useState();
   const [neededDateAlert, setNeededDateAlert] = useState("");
   const [alertDisplay, setAlertDisplay] = useState("none");
 
@@ -30,6 +28,12 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [errorText, setErrorText] = useState();
+  const [schedulerLocation, setSchedulerLocation] = useState("All locations");
+  const [filterLocation, setFilterLocation] = useState("");
+  const [filterOrderId, setFilterOrderId] = useState("");
+  const [filterTrailerId, setFilterTrailerId] = useState("");
+  const [filterIntWashType, setFilterIntWashType] = useState("");
+  const [filterText, setFilterText] = useState("");
 
   const [sortBy, setSortBy] = useState("needed date");
   const [sortAsc, setSortAsc] = useState(true);
@@ -117,7 +121,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   const getStuff = async () => {
-    // if (selectedLocation) {
     if (terminals) {
       await getWorkOrders(terminals);
       configureOpen(date);
@@ -130,7 +133,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     let today = new Date();
     today.setHours(0, 0, 0, 0);
     setTodaysDate(today);
-    // if (selectedLocation) {
     if (terminals) {
       getStuff();
     }
@@ -142,7 +144,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     let dz = new Date(date);
     dz.setHours(0, 0, 0, 0);
     setDateZeroed(dz);
-    // if (selectedLocation) configureOpen(date);
     if (terminals) configureOpen(date);
   }
 
@@ -156,10 +157,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     setDisplayCal(false);
   }
 
-  const onUnschedule = id => unscheduleWorkOrder(id, terminals);
+  const onUnschedule = id => unscheduleWorkOrder(id, workOrders.workOrders);
 
   const preventSave = (neededDateStr) => {
-    // getWorkOrdersOfLocation(selectedLocation.location_id);
     getWorkOrders(terminals);
     
     // Display alert to let user know that order can't be scheduled at this time
@@ -172,19 +172,14 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   
   const preventTimeExceed = (type) => {
     if (type === "loc") {
-      // alert("Work orders must be scheduled be scheduled on their correct terminal");
       setErrorText("Work orders must be scheduled on their correct terminal");
     } else if (type === "end") {
-      // alert("The end of a work order cannot exceed the end of a shift");
       setErrorText("The end of a work order cannot exceed the end of a shift");
     } else if (type === "start") {
-      // alert("The start of a work order cannot be before the start of a shift");
       setErrorText("The start of a work order cannot be before the start of a shift");
     } else if (type === "late") {
-      // alert("The end of a work order cannot exceed its needed by date");
       setErrorText("The end of a work order cannot exceed its needed by date");
     }
-    // getWorkOrdersOfLocation(selectedLocation.location_id);
     getWorkOrders(terminals);
     
     // setNeededDateAlert(neededDateStr);
@@ -229,6 +224,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
       }
       // setting resources
       setWoResources(resources); 
+      setSchedulerLocation("All locations");
+      setFilterLocation("");
+      // setFilterText();
     }
   }
   
@@ -249,10 +247,33 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     }
     // setting resources
     setWoResources(resources);
+    setSchedulerLocation(washLocationId);
+    setFilterLocation(washLocationId);
+  }
+
+  const changeLocationFilter = val => {
+    setFilterLocation(val);
+  }
+
+  const changeOrderIdFilter = val => {
+    setFilterOrderId(val);
+  }
+
+  const changeTrailerIdFilter = val => {
+    setFilterTrailerId(val);
+  }
+
+  const changeIntWashTypeFilter = val => {
+    setFilterIntWashType(val);
+  }
+
+  const changeFilterText = val => {
+    setFilterLocation(val);
+    setFilterText(val);
   }
 
   const test = (id, resource, start, end) => {
-    updateWorkOrderStatus(id, resource, start, end, terminals);
+    updateWorkOrderStatus(id, resource, start, end, workOrders.workOrders);
   }
 
   const getPreviousDay = () => {
@@ -327,26 +348,10 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
             className="mx-auto"
           />
           <div className="text-center">
-            {/* <button disabled={ !terminals || workOrders.workOrders.length === 0 ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}> */}
             <button disabled={ !terminals || !workOrders.workOrders ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}>
-            {/* <button disabled={ !terminals ? true : false } id="date-confirm-btn" className="btn" onClick={onDateConfirm}> */}
               <span>
                 View Schedule For {date && date.toString().split(" ").splice(0, 4).join(" ")}
               </span>
-            {/* <button disabled={!isOpen || !selectedLocation ? true : false} id="date-confirm-btn" className="btn" onClick={onDateConfirm}>
-              {!selectedLocation ? (
-                <span>
-                  Select a location to view schedule
-                </span>
-              ) : selectedLocation && isOpen ? (
-                <span>
-                  View Schedule For {date && date.toString().split(" ").splice(0, 4).join(" ")}
-                </span>
-              ) : (
-                <span>
-                  Closed on {date && date.toString().split(" ").splice(0, 4).join(" ")}
-                </span>
-              )} */}
             </button>
           </div>
         </section>
@@ -366,11 +371,6 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
             {/* Ghost element used for spacing purposes */}
             <span></span>
           </div>
-          {/* <div style={{display: alertDisplay}} className="alert alert-danger my-0 rounded-0 text-center">
-            {errorText}
-          </div> */}
-          {/* 2 BAYS AND BOTH OPEN */}
-            {/* {selectedLocation.wash_bays === 2 && bayOneOpen && bayTwoOpen ? */}
             {bayOneOpen || bayTwoOpen ?
             <div>
               <div>
@@ -391,17 +391,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     workOrders={workOrders.workOrders}
                     unscheduledWorkOrders={
                       workOrders.workOrders.filter(wo =>
-                        (!wo.is_scheduled
-                          // && wo.wash_location_id === selectedLocation.location_id
-                          // && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                        )
+                        (!wo.is_scheduled)
                       )
-                      // workOrders.workOrders.filter(wo =>
-                      //   (!wo.is_scheduled
-                      //     // && wo.wash_location_id === selectedLocation.location_id
-                      //     // && new Date(wo.needed_date.split("T")[0]) >= new Date(dateStr)
-                      //   )
-                      // ).sort((a, b) => (new Date(a.needed_date) > new Date(b.needed_date)) ? 1 : -1)
                     }
                     resources={ woResources }
                     events={
@@ -419,6 +410,16 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     sortAsc={sortAsc}
                     alertDisplay={alertDisplay}
                     errorText={errorText}
+                    selectedLocation={schedulerLocation}
+                    filterLocation={filterLocation}
+                    filterOrderId={filterOrderId}
+                    filterTrailerId={filterTrailerId}
+                    filterIntWashType={filterIntWashType}
+                    changeLocationFilter={changeLocationFilter}
+                    changeOrderIdFilter={changeOrderIdFilter}
+                    changeTrailerIdFilter={changeTrailerIdFilter}
+                    changeIntWashTypeFilter={changeIntWashTypeFilter}
+                    changeFilterText={changeFilterText}
                   />
                 </div>
               </div>
@@ -440,10 +441,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
 }
 
 const mapStateToProps = state => ({
-  location: state.location,
   workOrders: state.workOrders,
   washTypes: state.washTypes,
   user: state.user
 })
 
-export default connect(mapStateToProps, { getWorkOrdersOfLocation, getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder })(WashSchedule)
+export default connect(mapStateToProps, { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder })(WashSchedule)

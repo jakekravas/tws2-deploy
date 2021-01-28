@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Location = require('../../models/Location');
-const WorkOrder = require('../../models/WorkOrder');
+const TrailerWashWo = require('../../models/TrailerWashWo');
 const Hours = require('../../models/Hours');
 
 // @route      GET api/locations
@@ -188,10 +188,12 @@ router.put("/washbays/:id", async (req, res) => {
       { wash_bays: parseInt(req.body.washBays) },
       { where: { id: req.params.id } }
     );
+    
+    console.log(location);
 
     if (req.body.washBays === 1) {
       // Find all orders of this location that are scheduled for bay 2
-      let ordersToUnschedule = await WorkOrder.findAll({
+      let ordersToUnschedule = await TrailerWashWo.findAll({
         where: {wash_location_id: locationToUpdate.location_id, is_scheduled: true, resource: `${locationToUpdate.location_id}2`}
       });
 

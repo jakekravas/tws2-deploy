@@ -18,11 +18,9 @@ export const getTrailerWashWos = () => async dispatch => {
 
 export const checkForUser = () => async dispatch => {
   try {
-    console.log("action hit");
     const res = await axios.get(`${process.env.REACT_APP_URL}/api/userid/checkuser`);
     const user = res.data.userToSend
     
-    // const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
     const targetUrl = `${process.env.REACT_APP_URL}/api/userid/user/${user}`;
     
     const userInfoRes = await fetch(targetUrl);
@@ -52,10 +50,7 @@ export const checkForUser = () => async dispatch => {
 
 export const getUser = user => async dispatch => {
   try {
-    // const res = await axios.get(`/api/userid/user/${user}`);
-    // const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-    // const proxyUrl = "https://floating-cove-33663.herokuapp.com/";
-    const targetUrl = `${process.env.REACT_APP_URL}api/userid/user/${user}`;
+    const targetUrl = `${process.env.REACT_APP_URL}/api/userid/user/${user}`;
     
     const res = await fetch(targetUrl);
     const data = await res.json();

@@ -1,6 +1,5 @@
 import {
   GET_WORK_ORDERS_OF_LOCATION,
-  UPDATE_WORK_ORDER,
   WORK_ORDER_ERROR
 } from "../actions/types";
 

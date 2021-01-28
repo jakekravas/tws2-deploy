@@ -29,11 +29,9 @@ router.get("/user/:locations", async (req, res) => {
 
     const locationsArr = req.params.locations;
     
-    console.log(locationsArr);
-
     const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N' AND tankwash.trailer_wash_wo.wash_location_id IS NOT NULL AND tankwash.trailer_wash_wo.order_id IS NOT NULL AND tankwash.trailer_wash_wo.trailer_id IS NOT NULL AND tankwash.trailer_wash_wo.int_wash_code IS NOT NULL;`);
 
-    res.json({ workOrders: workOrders });
+    res.json({ workOrders });
 
   } catch (err) {
     console.error(err.message);
@@ -44,27 +42,22 @@ router.get("/user/:locations", async (req, res) => {
 // @route      PUT api/workorders/:id
 // @desc       Update status of work order
 // @access     Public
+
 router.put("/:id", async (req, res) => {
   try {
-    console.log(req.body);
-    // await WorkOrder.update(
     await TrailerWashWo.update(
       {
         resource: req.body.resource,
         start_time: req.body.start,
         end_time: req.body.end,
         is_scheduled: true
-        // display_text: req.body.text,
       },
-      {where: { order_id: req.params.id }}
-      // {where: { order_id: req.params.id + "  " }}
+      {where: { wash_id: req.params.id }}
     )
 
-    const locationsArr = req.body.locations;
-
-    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N' AND tankwash.trailer_wash_wo.wash_location_id IS NOT NULL AND tankwash.trailer_wash_wo.order_id IS NOT NULL AND tankwash.trailer_wash_wo.trailer_id IS NOT NULL AND tankwash.trailer_wash_wo.int_wash_code IS NOT NULL;`);
-
-    res.json({ workOrders: workOrders });
+    const workOrder = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_id = '${req.params.id}';`);
+    
+    res.json({ workOrder: workOrder[0][0] });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -81,15 +74,12 @@ router.put("/unschedule/:id", async (req, res) => {
       {
         is_scheduled: false,
       },
-      {where: { order_id: req.params.id }}
-      // {where: { order_id: req.params.id + "  " }}
+      {where: { wash_id: req.params.id }}
     );
 
-    const locationsArr = req.body.locations;
-
-    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N' AND tankwash.trailer_wash_wo.wash_location_id IS NOT NULL AND tankwash.trailer_wash_wo.order_id IS NOT NULL AND tankwash.trailer_wash_wo.trailer_id IS NOT NULL AND tankwash.trailer_wash_wo.int_wash_code IS NOT NULL;`);
+    const workOrder = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_id = '${req.params.id}';`);
     
-    res.json({ workOrders });
+    res.json({ workOrder: workOrder[0][0] });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

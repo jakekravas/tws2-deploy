@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
-const open = require('open');
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false});
 
@@ -18,8 +17,8 @@ router.post("/", urlencodedParser, async (req, res) => {
     const submittedUserID = req.body.ctl00$cphBody$UserID;
     
     userToSend = submittedUserID.replace("\\", "_");
-    console.log(userToSend);
 
+    // Letting the front-end know that the data was successfully handled
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write(JSON.stringify({ status: "OK" }));
     res.end();

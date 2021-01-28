@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import WashSchedule from "./WashSchedule";
 import HoursOfOperation from "./HoursOfOperation";
 import { getAllLocations, getLocationInfo } from "../../actions/location";
-import { getUser, getTrailerWashWos } from "../../actions/user";
+import { getUser } from "../../actions/user";
 
-const ToggleView = ({ getUser, getTrailerWashWos, currentUser, getLocationInfo, location: { locations, selectedLocation, loading }, user: { terminals } }) => {
+const ToggleView = ({ getUser, currentUser, getLocationInfo, location: { selectedLocation }, user: { terminals } }) => {
 
   const [view, setView] = useState("schedule");
 
@@ -20,10 +20,9 @@ const ToggleView = ({ getUser, getTrailerWashWos, currentUser, getLocationInfo, 
         <label style={{visibility: view === "schedule" ? "hidden" : "initial"}} className="mb-0 text-dark" htmlFor="location">Location:</label>&nbsp;&nbsp;&nbsp;
           <select style={{visibility: view === "schedule" ? "hidden" : "initial"}} onChange={e => getLocationInfo(e.target.value)} className="text-center mt-3 mr-3" name="location" id="">
             {!selectedLocation && <option value="">--</option>}
-            {/* {!loading && terminals && */}
             {terminals &&
               terminals.map(loc => (
-              <option value={loc.id} key={loc.id}>{loc.city}, {loc.state}</option>
+              <option value={loc.id} key={loc.id}>{loc.city}, {loc.state} - {loc.location_id}</option>
             ))}
           </select>
       </div>
@@ -59,4 +58,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps, { getUser, getTrailerWashWos, getAllLocations, getLocationInfo })(ToggleView)
+export default connect(mapStateToProps, { getUser, getAllLocations, getLocationInfo })(ToggleView)

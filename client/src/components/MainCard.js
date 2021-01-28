@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import WashTypes from "./cardTabs/WashTypes";
 import ToggleView from "./cardTabs/ToggleView";
 import { connect } from "react-redux";
-import { getAllLocations } from "../actions/location";
-import { getUser, checkForUser } from "../actions/user";
+import { checkForUser } from "../actions/user";
 
-const Card = ({ user, checkForUser, getUser, getAllLocations }) => {
+const Card = ({ user, checkForUser }) => {
 
   const [currentUser, setCurrentUser] = useState();
 
@@ -16,11 +15,7 @@ const Card = ({ user, checkForUser, getUser, getAllLocations }) => {
     } else {
       setCurrentUser(user.user.replace("\\", "_"));
     }
-
-    // const userToGet = window.location.href.split("user_")[1];
-    // getUser(userToGet);
-    // getAllLocations();
-    // setCurrentUser(userToGet);
+    
   }, [user]);
 
   return (
@@ -55,4 +50,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps, { checkForUser, getUser, getAllLocations })(Card)
+export default connect(mapStateToProps, { checkForUser })(Card)

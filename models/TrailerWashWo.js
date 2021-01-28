@@ -106,6 +106,9 @@ const TrailerWashWo = db.define("trailer_wash_wo", {
   tractor_id: {
     type: Sequelize.STRING
   },
+  trailer_id: {
+    type: Sequelize.STRING
+  },
   vendor_id: {
     type: Sequelize.STRING
   },

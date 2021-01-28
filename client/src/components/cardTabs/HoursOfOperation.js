@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
-import { updateLocationHrs, updateWashBayQuantity, getLocationInfo } from "../../actions/location";
+import { updateLocationHrs, updateWashBayQuantity } from "../../actions/location";
 import TimePicker from 'react-time-picker';
 import Modal from "react-modal";
 import DayHoursView from "./layout/DayHoursView";
 
-const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantity, getLocationInfo, location: { selectedLocation } }) => {
+const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: { selectedLocation } }) => {
   const [editOpen, setEditOpen] = useState(false);
-  const [washBays, setWashBays] = useState();
   const [bayEditHours, setBayEditHours] = useState(1);
-  const [saveDisabled, setSaveDisabled] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   const [daysOpen, setDaysOpen] = useState({
@@ -639,8 +637,6 @@ const HoursOfOperation = ({ currentUser, updateLocationHrs, updateWashBayQuantit
   }
 
   const configureShift2Display = (start, end) => {
-    // console.log(start);
-    // console.log(end);
     return `${formatTime(start)} - ${ formatTime(end)}`;
   }
 
@@ -2032,4 +2028,4 @@ const mapStateToProps = state => ({
   location: state.location
 });
 
-export default connect(mapStateToProps, { updateLocationHrs, updateWashBayQuantity, getLocationInfo })(HoursOfOperation);
+export default connect(mapStateToProps, { updateLocationHrs, updateWashBayQuantity })(HoursOfOperation);
