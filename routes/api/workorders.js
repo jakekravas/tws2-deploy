@@ -11,7 +11,11 @@ const { sequelize } = require('../../models/WorkOrder');
 // @access     Public
 router.get("/:code", async (req, res) => {
   try {
-    const workOrders = await WorkOrder.findAll({where: {wash_location_id: req.params.code}});
+    const workOrders = await WorkOrder.findAll(
+      {
+        where: { wash_location_id: req.params.code }
+      }
+    );
     
     res.json({ workOrders });
   } catch (err) {
@@ -42,7 +46,6 @@ router.get("/user/:locations", async (req, res) => {
 // @route      PUT api/workorders/:id
 // @desc       Update status of work order
 // @access     Public
-
 router.put("/:id", async (req, res) => {
   try {
     await TrailerWashWo.update(

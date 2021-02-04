@@ -44,11 +44,6 @@ class Scheduler extends Component {
       dataStartVal: null,
       dataEndVal: null,
       filterText: "",
-      // filterLocation: "",
-      // filterOrderId: "",
-      // filterTrailerId: "",
-      // filterIntWashType: "",
-      // selectedLocation: "All locations",
       currentWoDetails: null,
       onEventClick: args => {
         this.openWoModal(args.e.data.wash_id, true);
@@ -257,7 +252,7 @@ class Scheduler extends Component {
     this.setEditOpen = this.setEditOpen.bind(this);
     this.handleLocationSelect = this.handleLocationSelect.bind(this);
     this.changeLocationFilter = this.changeLocationFilter.bind(this);
-    this.changeOrderIdFilter = this.changeOrderIdFilter.bind(this);
+    this.changeWashIdFilter = this.changeWashIdFilter.bind(this);
     this.changeTrailerIdFilter = this.changeTrailerIdFilter.bind(this);
     this.changeIntWashTypeFilter = this.changeIntWashTypeFilter.bind(this);
     this.openWoModal = this.openWoModal.bind(this);
@@ -446,7 +441,6 @@ class Scheduler extends Component {
   }
 
   setFilterText(e){
-    // this.setState({ filterText: e.target.value, filterLocation: e.target.value });
     this.props.changeFilterText(e.target.value);
   }
 
@@ -455,28 +449,18 @@ class Scheduler extends Component {
   }
 
   changeLocationFilter(e) {
-    // this.setState({ filterLocation: e.target.value });
     this.props.changeLocationFilter(e.target.value);
   }
   
-  changeOrderIdFilter(e) {
-    // this.setState({
-    //   filterOrderId: e.target.value
-    // });
-    this.props.changeOrderIdFilter(e.target.value);
+  changeWashIdFilter(e) {
+    this.props.changeWashIdFilter(e.target.value);
   }
   
   changeTrailerIdFilter(e) {
-    // this.setState({
-    //   filterTrailerId: e.target.value
-    // });
     this.props.changeTrailerIdFilter(e.target.value);
   }
   
   changeIntWashTypeFilter(e) {
-    // this.setState({
-    //   filterIntWashType: e.target.value
-    // });
     this.props.changeIntWashTypeFilter(e.target.value);
   }
 
@@ -502,7 +486,6 @@ class Scheduler extends Component {
     var {...config} = this.state;
 
     return (
-      // <div className="row mx-auto">
       <div>
         <div className="col-sm-3 px-0 wo-md">
           <div className="work-orders-header">
@@ -514,11 +497,9 @@ class Scheduler extends Component {
             {this.state.editOpen &&
               <div>
                 <div className="wo-filter-container">
-                  {/* <input onChange={this.setFilterText} value={this.state.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/> */}
                   <input onChange={this.setFilterText} value={this.props.filterText} className="wo-filter" type="text" placeholder="filter by trailer #"/>
                 </div>
                 <div className="sort-container">
-                  {/* <input type="checkbox" name="" id=""/> */}
                   <p className="sort-by-text">Sort by: </p>
                   <select onChange={this.handleSortChange} className="sort-menu">
                     <option className="sort-menu" value="needed date">Needed date</option>
@@ -643,10 +624,9 @@ class Scheduler extends Component {
                 <table className="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th className="unscheduled-order-th">
-                      Location
-                    </th>
-                    <th className="unscheduled-order-th">Order ID</th>
+                    <th className="unscheduled-order-th">Location</th>
+                    {/* <th className="unscheduled-order-th">Order ID</th> */}
+                    <th className="unscheduled-order-th">Wash ID</th>
                     <th className="text-center unscheduled-order-th">Trailer</th>
                     <th className="text-center unscheduled-order-th">Int Wash Type</th>
                     <th className="text-center unscheduled-order-th">Team Duration</th>
@@ -704,7 +684,6 @@ class Scheduler extends Component {
                         className="unscheduled-order-filter"
                         type="text"
                         placeholder="Filter"
-                        // value={this.state.filterLocation}
                         value={this.props.filterLocation}
                         onChange={this.changeLocationFilter}
                       />
@@ -714,9 +693,8 @@ class Scheduler extends Component {
                         className="unscheduled-order-filter"
                         type="text"
                         placeholder="Filter"
-                        // value={this.state.filterOrderId}
-                        value={this.props.filterOrderId}
-                        onChange={this.changeOrderIdFilter}
+                        value={this.props.filterWashId}
+                        onChange={this.changeWashIdFilter}
                       />
                     </td>
                     <td>
@@ -724,7 +702,6 @@ class Scheduler extends Component {
                         className="unscheduled-order-filter"
                         type="text"
                         placeholder="Filter"
-                        // value={this.state.filterTrailerId}
                         value={this.props.filterTrailerId}
                         onChange={this.changeTrailerIdFilter}
                       />
@@ -734,7 +711,6 @@ class Scheduler extends Component {
                         className="unscheduled-order-filter"
                         type="text"
                         placeholder="Filter"
-                        // value={this.state.filterIntWashType}
                         value={this.props.filterIntWashType}
                         onChange={this.changeIntWashTypeFilter}
                       />
@@ -744,36 +720,21 @@ class Scheduler extends Component {
                     <td></td>
                     <td></td>
                   </tr>
-                  {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(wo => wo.wash_location_id.includes(this.state.filterText.toUpperCase())).map(wo => ( */}
-                  {/* {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(
-                    wo =>
-                    wo.wash_location_id.includes(this.state.filterLocation.toUpperCase()) &&
-                    wo.order_id.includes(this.state.filterOrderId) &&
-                    wo.trailer_id.includes(this.state.filterTrailerId) &&
-                    wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase()) */}
                   {this.state.unscheduledWorkOrders.length > 0 && this.state.unscheduledWorkOrders.filter(
                     wo =>
-                    // wo.wash_location_id.includes(this.state.filterLocation.toUpperCase()) &&
-                    // wo.order_id.includes(this.state.filterOrderId) &&
-                    // wo.trailer_id.includes(this.state.filterTrailerId)
-                    // wo.trailer_id.includes(this.state.filterTrailerId) &&
-                    // wo.int_wash_code.includes(this.state.filterIntWashType.toUpperCase())
                     wo.wash_location_id.includes(this.props.filterLocation.toUpperCase()) &&
-                    wo.order_id.includes(this.props.filterOrderId) &&
+                    wo.wash_id.toString().includes(this.props.filterWashId) &&
                     wo.trailer_id.includes(this.props.filterTrailerId) &&
                     (wo.int_wash_code === null || wo.int_wash_code.includes(this.props.filterIntWashType.toUpperCase()))
                   ).map(wo => (
                     <DraggableTOrder
-                      // key={wo.order_id.trim()}
                       key={wo.wash_id}
                       openWoModal={this.openWoModal}
                       wo={wo}
-                      // id={wo.order_id.trim()}
                       id={wo.wash_id}
-                      name={`Order ${wo.order_id.trim()}`}
-                      // selectedLocation={this.state.selectedLocation}
+                      // name={`Order ${wo.order_id.trim()}`}
+                      name={`Wash ID: ${wo.wash_id}`}
                       selectedLocation={this.props.selectedLocation}
-                      // cityState={`${wo.wash_location_id}`}
                       // cityState={wo.wash_location_id}
                       text={wo.text}
                       duration={(wo.int_duration_mins_team + wo.ext_duration_mins_team) * 60}

@@ -21,7 +21,8 @@ function DraggableTOrder(props) {
     });
   }}>
     <td>{props.wo.wash_location_id}</td>
-    <td>{props.wo.order_id.trim()}</td>
+    {/* <td>{props.wo.order_id.trim()}</td> */}
+    <td>{props.wo.wash_id}</td>
     <td>{props.wo.trailer_id}</td>
     <td>{props.wo.int_wash_code}</td>
     <td>

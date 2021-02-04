@@ -30,7 +30,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [errorText, setErrorText] = useState();
   const [schedulerLocation, setSchedulerLocation] = useState("All locations");
   const [filterLocation, setFilterLocation] = useState("");
-  const [filterOrderId, setFilterOrderId] = useState("");
+  const [filterWashId, setFilterWashId] = useState("");
   const [filterTrailerId, setFilterTrailerId] = useState("");
   const [filterIntWashType, setFilterIntWashType] = useState("");
   const [filterText, setFilterText] = useState("");
@@ -42,14 +42,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     setSortBy(targVal);
   }
 
-  const toggleAsc = () => {
-    // setSortAsc(!sortAsc);
-    if (sortAsc) {
-      setSortAsc(false);
-    } else {
-      setSortAsc(true);
-    }
-  }
+  const toggleAsc = () => setSortAsc(!sortAsc)
 
   const configureOpen = date => {
     setDayVal(date.toString().split(" ")[2]);
@@ -255,8 +248,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     setFilterLocation(val);
   }
 
-  const changeOrderIdFilter = val => {
-    setFilterOrderId(val);
+  const changeWashIdFilter = val => {
+    setFilterWashId(val);
   }
 
   const changeTrailerIdFilter = val => {
@@ -412,11 +405,11 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     errorText={errorText}
                     selectedLocation={schedulerLocation}
                     filterLocation={filterLocation}
-                    filterOrderId={filterOrderId}
+                    filterWashId={filterWashId}
                     filterTrailerId={filterTrailerId}
                     filterIntWashType={filterIntWashType}
                     changeLocationFilter={changeLocationFilter}
-                    changeOrderIdFilter={changeOrderIdFilter}
+                    changeWashIdFilter={changeWashIdFilter}
                     changeTrailerIdFilter={changeTrailerIdFilter}
                     changeIntWashTypeFilter={changeIntWashTypeFilter}
                     changeFilterText={changeFilterText}

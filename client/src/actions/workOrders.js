@@ -4,6 +4,8 @@ import {
   WORK_ORDER_ERROR
 } from "./types";
 
+let currentTime = new Date();
+
 export const getWorkOrders = terminals => async dispatch => {
   try {
     const locationIdsArr = [];
@@ -19,6 +21,7 @@ export const getWorkOrders = terminals => async dispatch => {
     // Setting a start and end property here because SQL doesn't allow us to have columns with those names, and DayPilot needs those exact names to display the orders
     let orders = res.data.workOrders;
     const ordersArr = [];
+    
     if (orders.length > 0) {
       for (let i = 0; i < orders.length; i++) {
         for (let y = 0; y < orders[i].length; y++) {
@@ -52,8 +55,13 @@ export const getWorkOrders = terminals => async dispatch => {
   
           orders[i][y].start = orders[i][y].start_time;
           orders[i][y].end = orders[i][y].end_time;
-          // orders[i][y].id = orders[i][y].order_id;
           orders[i][y].id = orders[i][y].wash_id;
+
+          if (orders[i][y].is_scheduled && currentTime > new Date(orders[i][y].start_time) && orders[i][y].in_date === null) {
+            orders[i][y].backColor = "rgb(252, 88, 88)"; //red
+          } else {
+            orders[i][y].backColor = "#3a9c3a"; //green
+          }
 
           let dt = orders[i][y].needed_date.split("T")[0];
           // formatting date so it's in MM-DD-YYYY format instead of YYYY-MM-DD
@@ -131,6 +139,12 @@ const formatOrder = order => {
   order.start = order.start_time;
   order.end = order.end_time;
   order.id = order.wash_id;
+
+  if (order.is_scheduled && currentTime > new Date(order.start_time) && order.in_date === null) {
+    order.backColor = "rgb(252, 88, 88)"; //red
+  } else {
+    order.backColor = "#3a9c3a"; //green
+  }
 
   let date = order.needed_date.split("T")[0];
   let hour = parseInt(order.needed_date.split("T")[1].split(":")[0]);
