@@ -33,7 +33,7 @@ router.get("/user/:locations", async (req, res) => {
 
     const locationsArr = req.params.locations;
     
-    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N' AND tankwash.trailer_wash_wo.wash_location_id IS NOT NULL AND tankwash.trailer_wash_wo.order_id IS NOT NULL AND tankwash.trailer_wash_wo.trailer_id IS NOT NULL AND tankwash.trailer_wash_wo.int_wash_code IS NOT NULL;`);
+    const workOrders = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo LEFT JOIN tankwash.ext_wash_types ON tankwash.trailer_wash_wo.ext_wash_code = tankwash.ext_wash_types.ext_wash_code LEFT JOIN tankwash.int_wash_types ON tankwash.trailer_wash_wo.int_wash_code = tankwash.int_wash_types.int_wash_code WHERE tankwash.trailer_wash_wo.wash_location_id IN (${locationsArr}) AND tankwash.trailer_wash_wo.void = 'N' AND tankwash.trailer_wash_wo.history = true AND tankwash.trailer_wash_wo.wash_location_id IS NOT NULL AND tankwash.trailer_wash_wo.order_id IS NOT NULL AND tankwash.trailer_wash_wo.trailer_id IS NOT NULL AND tankwash.trailer_wash_wo.int_wash_code IS NOT NULL;`);
 
     res.json({ workOrders });
 
