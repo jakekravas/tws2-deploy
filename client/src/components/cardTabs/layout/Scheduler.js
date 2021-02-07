@@ -65,7 +65,6 @@ class Scheduler extends Component {
         const bay = parseInt(args.e.data.resource[args.e.data.resource.length-1]);
 
         // Find order to update
-        // const orderToUpdate = this.props.workOrders.filter(wo => wo.order_id.trim() === args.e.data.id.trim())[0];
         const orderToUpdate = this.props.workOrders.filter(wo => wo.wash_id === args.e.data.id)[0];
         const endTime = new Date(args.e.data.start.value);
         let duration;
@@ -74,18 +73,30 @@ class Scheduler extends Component {
         orderToUpdate.needed_date = orderToUpdate.needed_date.replace("0Z", "");
 
         // So we know what start and end times to look at
-        const timesToLookAt = this.props.hoursArr.filter(h => h.location_id === loc && h.bay === bay);
-
+        const timesToLookAt = this.props.hoursArr.filter(h => h.location_id === loc && h.bay === bay)[0];
+        console.log(timesToLookAt);
         const argStart = new Date(args.e.data.start.value);
 
-        const s1Start = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_one_start}`);
-        const s1End = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_one_end}`);
-        const s1Type = timesToLookAt[0].shift_one_type;
+        const s1Start = new Date(`${this.props.dateStr}T${timesToLookAt.shift_one_start}`);
+        const s1Type = timesToLookAt.shift_one_type;
+        let s1End;
 
-        const s2Open = timesToLookAt[0].shift_two_open;
-        const s2Start = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_two_start}`);
-        const s2End = new Date(`${this.props.dateStr}T${timesToLookAt[0].shift_two_end}`);
-        const s2Type = timesToLookAt[0].shift_two_type;
+        if (timesToLookAt.shift_one_end > timesToLookAt.shift_one_start) {
+          s1End = new Date(`${this.props.dateStr}T${timesToLookAt.shift_one_end}`);
+        } else {
+          s1End = new Date(`${this.props.leakDateStr}T${timesToLookAt.shift_one_end}`);
+        }
+
+        const s2Open = timesToLookAt.shift_two_open;
+        const s2Start = new Date(`${this.props.dateStr}T${timesToLookAt.shift_two_start}`);
+        const s2Type = timesToLookAt.shift_two_type;
+        let s2End;
+
+        if (timesToLookAt.shift_two_end > timesToLookAt.shift_two_start) {
+          s2End = new Date(`${this.props.dateStr}T${timesToLookAt.shift_two_end}`);
+        } else {
+          s2End = new Date(`${this.props.leakDateStr}T${timesToLookAt.shift_two_end}`);
+        }
 
         // If a work order is dragged into the wrong location
         if (loc !== orderToUpdate.wash_location_id.trim()) {
@@ -105,10 +116,12 @@ class Scheduler extends Component {
             // Set duration
             endTime.setMinutes(endTime.getMinutes() + duration);
             
-            // If end of order exceeds end of shift 1
-            if (endTime > s1End) {
+            // If order exceeds end of shift 1 ends and there either isn't a shift 2
+            if (endTime > s1End && !timesToLookAt.shift_two_open) {
               this.props.preventTimeExceed("end");
-            // } else if (endTime < new Date(orderToUpdate.needed_date)) {
+            // If order exceeds end of shift 1 ends and there is a shift 2 but its start time isn't equal to shift 1's end time
+            } else if (endTime > s1End && (s1End.toString() !== s2Start.toString())) {
+              this.props.preventTimeExceed("shift-end");
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
               this.setState({
                 modalOpen: true,

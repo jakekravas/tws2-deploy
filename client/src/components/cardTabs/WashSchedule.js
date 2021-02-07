@@ -185,7 +185,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     if (type === "loc") {
       setErrorText("Work orders must be scheduled on their correct terminal");
     } else if (type === "end") {
-      setErrorText("The end of a work order cannot exceed the end of a shift");
+      setErrorText("The end of a work order cannot exceed the end of a work day");
+    } else if (type === "shift-end") {
+      setErrorText("The end of a work order cannot exceed the end of a shift unless it leads directly into another shift");
     } else if (type === "start") {
       setErrorText("The start of a work order cannot be before the start of a shift");
     } else if (type === "late") {
