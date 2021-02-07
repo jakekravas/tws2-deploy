@@ -17,6 +17,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const [monthDisplay, setMonthDisplay] = useState();
   const [weekdayDisplay, setWeekdayDisplay] = useState();
   const [dateStr, setDateStr] = useState();
+  const [leakDateStr, setLeakDateStr] = useState();
+  const [useLeakDate, setUseLeakDate] = useState(false);
 
   const [neededDateAlert, setNeededDateAlert] = useState("");
   const [alertDisplay, setAlertDisplay] = useState("none");
@@ -45,55 +47,71 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   const toggleAsc = () => setSortAsc(!sortAsc)
 
   const configureOpen = date => {
+
+    let leakDate = new Date(date);
+    leakDate.setDate(leakDate.getDate() + 1)
+
     setDayVal(date.toString().split(" ")[2]);
     setYearVal(date.toString().split(" ")[3]);
     if (date.toString().split(" ")[1] === "Jan") {
       setMonthDisplay("January");
       setDateStr(`${date.toString().split(" ")[3]}-01-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-01-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Feb") {
       setMonthDisplay("February");
       setDateStr(`${date.toString().split(" ")[3]}-02-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-02-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Mar") {
       setMonthDisplay("March");
       setDateStr(`${date.toString().split(" ")[3]}-03-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-03-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Apr") {
       setMonthDisplay("April");
       setDateStr(`${date.toString().split(" ")[3]}-04-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-04-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "May") {
       setMonthDisplay("May");
       setDateStr(`${date.toString().split(" ")[3]}-05-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-05-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Jun") {
       setMonthDisplay("June");
       setDateStr(`${date.toString().split(" ")[3]}-06-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-06-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Jul") {
       setMonthDisplay("July");
       setDateStr(`${date.toString().split(" ")[3]}-07-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-07-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Aug") {
       setMonthDisplay("August");
       setDateStr(`${date.toString().split(" ")[3]}-08-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-08-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Sep") {
       setMonthDisplay("September");
       setDateStr(`${date.toString().split(" ")[3]}-09-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-09-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Oct") {
       setMonthDisplay("October");
       setDateStr(`${date.toString().split(" ")[3]}-10-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-10-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Nov") {
       setMonthDisplay("November");
       setDateStr(`${date.toString().split(" ")[3]}-11-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-11-${leakDate.toString().split(" ")[2]}`);
     }
     if (date.toString().split(" ")[1] === "Dec") {
       setMonthDisplay("December");
       setDateStr(`${date.toString().split(" ")[3]}-12-${date.toString().split(" ")[2]}`);
+      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-12-${leakDate.toString().split(" ")[2]}`);
     }
 
     if (date.toString().split(" ")[0] === "Mon") {
@@ -284,6 +302,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   const getStartAndEndTimes = (day) => {
+
+    // IF THERE ARE NO LEAK SHIFTS, TAKE THE LATEST END TIME OF ALL SHIFTS (WHAT WE'RE DOING NOW)
+    // IF THERE ARE ANY LEAK SHIFTS, TAKE THE LATEST END TIME OF THOSE LEAK SHIFTS
     
     let hrsArr = hours.filter(h => h.day === day);
 
@@ -296,36 +317,68 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     let maxEndS2;
     let maxEnd;
     
+    let leakedArrS1 = [];
+    let leakedArrS2 = [];
+    
     if (s1HrsArr.length > 0) {
 
       // Get earliest shift one start time
       minStart = hrsArr.sort((a, b) => (a.shift_one_start > b.shift_one_start) ? 1 : -1)[0].shift_one_start;
-
-      // Get latest shift one end time
-      maxEndS1 = s1HrsArr.sort((a, b) => (a.shift_one_end < b.shift_one_end) ? 1 : -1)[0];
+      
+      // Check for shift one end times beyond midnight
+      leakedArrS1 = s1HrsArr.filter(h => h.shift_one_end < h.shift_one_start);
+      
+      if (leakedArrS1.length > 0) {
+        // Get latest shift one end time of leaked
+        maxEndS1 = leakedArrS1.sort((a, b) => (a.shift_one_end < b.shift_one_end) ? 1 : -1)[0];
+        // setUseLeakDate(true);
+      } else {
+        // Get latest shift one end time
+        maxEndS1 = s1HrsArr.sort((a, b) => (a.shift_one_end < b.shift_one_end) ? 1 : -1)[0];
+      }
 
       // If there are any shift 2s
       if (s2HrsArr.length > 0) {
 
-        // Get latest shift two end time
-        maxEndS2 = s2HrsArr.sort((a, b) => (a.shift_two_end < b.shift_two_end) ? 1 : -1)[0];
-
-        // Set maxEnd to the later of the two max end times
-        if (maxEndS2.shift_two_end > maxEndS1.shift_one_end) {
-          maxEnd = maxEndS2.shift_two_end
+        // Check for shift two end times beyond midnight
+        leakedArrS2 = s2HrsArr.filter(h => h.shift_two_end < h.shift_two_start);
+        
+        if (leakedArrS2.length > 0) {
+          console.log('s2 leak');
+          // Get latest shift two end time of leaked
+          maxEndS2 = leakedArrS2.sort((a, b) => (a.shift_two_end < b.shift_two_end) ? 1 : -1)[0];
+          // setUseLeakDate(true);
         } else {
-          maxEnd = maxEndS1.shift_one_end
+          // Get latest shift two end time
+          maxEndS2 = s2HrsArr.sort((a, b) => (a.shift_two_end < b.shift_two_end) ? 1 : -1)[0];
+        }
+
+        if ((leakedArrS1.length === 0 && leakedArrS2.length === 0) || (leakedArrS1.length > 0 && leakedArrS2.length > 0)) {
+          // Set maxEnd to the later of the two max end times
+          if (maxEndS2.shift_two_end > maxEndS1.shift_one_end) {
+            maxEnd = maxEndS2.shift_two_end
+          } else {
+            maxEnd = maxEndS1.shift_one_end
+          }
+        } else if (leakedArrS1.length > 0 && leakedArrS2.length === 0) {
+          maxEnd = maxEndS1.shift_one_end;
+        } else if (leakedArrS1.length === 0 && leakedArrS2.length > 0) {
+          maxEnd = maxEndS2.shift_two_end;
         }
 
       // If there are no shift 2s
       } else {
         maxEnd = maxEndS1.shift_one_end;
       }
-
+      if (leakedArrS1.length > 0 || leakedArrS2.length > 0) {
+        setUseLeakDate(true);
+      } else {
+        setUseLeakDate(false);
+      }
+      console.log(maxEnd);
       setStartTime(minStart);
       setEndTime(maxEnd);
     }
-    
     setHoursArr(hrsArr);
     setWeekdayDisplay(day);
   }
@@ -370,6 +423,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                 <div className="col-12 px-0 aa">
                   <Scheduler
                     dateStr={dateStr}
+                    leakDateStr={leakDateStr}
                     terminals={terminals}
                     bay={1}
                     disableMove={disableMove}
@@ -395,7 +449,8 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     day={weekdayDisplay}
                     hoursArr={hoursArr}
                     startTime={new Date(`${dateStr}T${startTime}`)}
-                    endTime={new Date(`${dateStr}T${endTime}`)}
+                    // endTime={new Date(`${dateStr}T${endTime}`)}
+                    endTime={useLeakDate ? new Date(`${leakDateStr}T${endTime}`) : new Date(`${dateStr}T${endTime}`)}
                     // handleSort={handleSort}
                     handleSortChange={handleSortChange}
                     toggleAsc={toggleAsc}

@@ -844,7 +844,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="mondayEnd"
                   name="mondayEnd"
-                  minTime={mondayStart}
+                  // minTime={mondayStart}
                   disabled={!mondayOpen}
                   value={mondayOpen && mondayEnd}
                   onChange={time => setEndTimes({...endTimes, mondayEnd: time})}
@@ -884,7 +884,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="mondayEnd"
                     name="mondayEndB1S2"
-                    minTime={mondayStartB1S2}
+                    // minTime={mondayStartB1S2}
                     disabled={!mondayOpen}
                     value={mondayOpen && mondayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, mondayEndB1S2: time})}
@@ -1444,7 +1444,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="mondayEnd2"
                   name="mondayEnd2"
-                  minTime={mondayStart2}
+                  // minTime={mondayStart2}
                   disabled={!mondayOpen2}
                   value={mondayOpen2 && mondayEnd2}
                   onChange={time => setEndTimes({...endTimes, mondayEnd2: time})}
@@ -1484,7 +1484,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="mondayEnd2"
                     name="mondayEndB2S2"
-                    minTime={mondayStartB2S2}
+                    // minTime={mondayStartB2S2}
                     disabled={!mondayOpen2}
                     value={mondayOpen2 && mondayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, mondayEndB2S2: time})}

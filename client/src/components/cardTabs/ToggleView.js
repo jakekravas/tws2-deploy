@@ -40,7 +40,7 @@ const ToggleView = ({ getUser, currentUser, getLocationInfo, location: { selecte
           onClick={() => setView("hours")}
           className={view === "hours" ? "scheduler-bay-btn-2 active-sched" : "scheduler-bay-btn-2"}
         >
-          Hours of Service
+          Hours of Operation
         </button>
       </div>
       {

@@ -11,8 +11,9 @@ class Scheduler extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Hour"}],
+      // timeHeaders: [{"groupBy": "Day"}, {"groupBy": "Hour"}, {"groupBy": "Week"}],
       timeHeaders: [{"groupBy": "Hour"}],
+      days: 2,
       treeEnabled: true,
       treeAnimation: false,
       cellDuration: 30,
@@ -201,7 +202,7 @@ class Scheduler extends Component {
                 args.cell.disabled = true;
                 args.cell.backColor = "#eee";
               }
-  
+
               // Disable cells that start before the start of shift 1
               if (new Date(args.cell.start.value) < new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`)) {
                 args.cell.disabled = true;
@@ -220,24 +221,64 @@ class Scheduler extends Component {
                   args.cell.disabled = true;
                   args.cell.backColor = "#eee";
                 }
-  
-                // Color code shift 2 if it's a solo shift
-                else if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
-                  args.cell.backColor = "rgb(225, 225, 225)";
+                
+                // If we DONT need to use leak date
+                if (this.props.hoursArr[i].shift_two_end > this.props.hoursArr[i].shift_two_start) {
+    
+                  // Color code shift 2 if it's a solo shift
+                  if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
+                    args.cell.backColor = "rgb(225, 225, 225)";
+                  }
+                  
+                  if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_two_end}`)) {
+                    args.cell.disabled = true;
+                    args.cell.backColor = "#eee";
+                  }
+                  
+                // If we DO need to use the leak date
+                } else if (this.props.hoursArr[i].shift_two_end < this.props.hoursArr[i].shift_two_start) {
+                  
+                  // Color code shift 2 if it's a solo shift
+                  if (new Date(args.cell.start.value) >= new Date(`${this.props.dateStr}T${this.props.hoursArr[i].shift_two_start}`) && new Date(args.cell.start.value) <= new Date(`${this.props.leakDateStr}T${this.props.hoursArr[i].shift_two_end}`) && this.props.hoursArr[i].shift_two_type === "solo") {
+                    args.cell.backColor = "rgb(225, 225, 225)";
+                  }
+                  
+                  if (new Date(args.cell.start.value) >= new Date( `${this.props.leakDateStr}T${this.props.hoursArr[i].shift_two_end}`)) {
+                    args.cell.disabled = true;
+                    args.cell.backColor = "#eee";
+                  }
                 }
+
   
+              // IF THERE'S ONLY A SHIFT 1
               } else {
-  
+
                 // Disable cells that start after the end of shift 1
-                if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
-                  args.cell.disabled = true;
-                  args.cell.backColor = "#eee";
+
+                // If we DONT need to use leak date
+                if (this.props.hoursArr[i].shift_one_end > this.props.hoursArr[i].shift_one_start) {
+                  if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
+                    args.cell.disabled = true;
+                    args.cell.backColor = "#eee";
+                  }
+                  
+                // If we DO need to use leak date
+                } else {
+                  if (new Date(args.cell.start.value) >= new Date( `${this.props.leakDateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
+                    args.cell.disabled = true;
+                    args.cell.backColor = "#eee";
+
+                  // If it's a solo shift, color code it
+                  } else if (this.props.hoursArr[i].shift_one_type === 'solo') {
+                    if (new Date(args.cell.start.value) >= new Date( `${this.props.dateStr}T${this.props.hoursArr[i].shift_one_start}`) && new Date(args.cell.end.value) <= new Date( `${this.props.leakDateStr}T${this.props.hoursArr[i].shift_one_end}`)) {
+                      args.cell.backColor = "rgb(225, 225, 225)";
+                    }
+                  }
                 }
-              } 
+              }
             }
           }
         }
-
       },
     };
     this.handleChange = this.handleChange.bind(this);
@@ -260,6 +301,7 @@ class Scheduler extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     // load event data
     this.setState({
       startDate: this.props.dateStr,
@@ -270,8 +312,6 @@ class Scheduler extends Component {
   }
   
   componentDidUpdate() {
-    console.log(this.state.resources);
-    console.log(this.props.resources);
     if (this.state.startDate !== this.props.dateStr) {
       this.setState({ startDate: this.props.dateStr });
     }
