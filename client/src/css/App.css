@@ -6,6 +6,10 @@
   visibility: hidden;
 }
 
+.main-container {
+  max-width: 1500px !important;
+}
+
 #schedule-container {
   /* border: 1px solid rgb(230, 236, 240); */
   border: 1px solid rgba(230, 236, 240, 0.911);
@@ -774,5 +778,11 @@ tr {
   .react-calendar__month-view__weekdays__weekday {
     font-size: 11px;
     padding: 0.5em;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .container {
+    max-width: 1240px !important;
   }
 }
