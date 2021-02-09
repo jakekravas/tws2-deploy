@@ -926,7 +926,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="tuesdayEnd"
                   name="tuesdayEnd"
-                  minTime={tuesdayStart}
+                  // minTime={tuesdayStart}
                   disabled={!tuesdayOpen}
                   value={tuesdayOpen && tuesdayEnd}
                   onChange={time => setEndTimes({...endTimes, tuesdayEnd: time})}
@@ -966,7 +966,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="tuesdayEnd"
                     name="tuesdayEndB1S2"
-                    minTime={tuesdayStartB1S2}
+                    // minTime={tuesdayStartB1S2}
                     disabled={!tuesdayOpen}
                     value={tuesdayOpen && tuesdayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, tuesdayEndB1S2: time})}
@@ -1008,7 +1008,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="wednesdayEnd"
                   name="wednesdayEnd"
-                  minTime={wednesdayStart}
+                  // minTime={wednesdayStart}
                   disabled={!wednesdayOpen}
                   value={wednesdayOpen && wednesdayEnd}
                   onChange={time => setEndTimes({...endTimes, wednesdayEnd: time})}
@@ -1048,7 +1048,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="wednesdayEnd"
                     name="wednesdayEndB1S2"
-                    minTime={wednesdayStartB1S2}
+                    // minTime={wednesdayStartB1S2}
                     disabled={!wednesdayOpen}
                     value={wednesdayOpen && wednesdayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, wednesdayEndB1S2: time})}
@@ -1090,7 +1090,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="thursdayEnd"
                   name="thursdayEnd"
-                  minTime={thursdayStart}
+                  // minTime={thursdayStart}
                   disabled={!thursdayOpen}
                   value={thursdayOpen && thursdayEnd}
                   onChange={time => setEndTimes({...endTimes, thursdayEnd: time})}
@@ -1130,7 +1130,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="thursdayEnd"
                     name="thursdayEndB1S2"
-                    minTime={thursdayStartB1S2}
+                    // minTime={thursdayStartB1S2}
                     disabled={!thursdayOpen}
                     value={thursdayOpen && thursdayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, thursdayEndB1S2: time})}
@@ -1172,7 +1172,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="fridayEnd"
                   name="fridayEnd"
-                  minTime={fridayStart}
+                  // minTime={fridayStart}
                   disabled={!fridayOpen}
                   value={fridayOpen && fridayEnd}
                   onChange={time => setEndTimes({...endTimes, fridayEnd: time})}
@@ -1212,7 +1212,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="fridayEnd"
                     name="fridayEndB1S2"
-                    minTime={fridayStartB1S2}
+                    // minTime={fridayStartB1S2}
                     disabled={!fridayOpen}
                     value={fridayOpen && fridayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, fridayEndB1S2: time})}
@@ -1253,7 +1253,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="saturdayEnd"
                   name="saturdayEnd"
-                  minTime={saturdayStart}
+                  // minTime={saturdayStart}
                   disabled={!saturdayOpen}
                   value={saturdayOpen && saturdayEnd}
                   onChange={time => setEndTimes({...endTimes, saturdayEnd: time})}
@@ -1293,7 +1293,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="saturdayEnd"
                     name="saturdayEndB1S2"
-                    minTime={saturdayStartB1S2}
+                    // minTime={saturdayStartB1S2}
                     disabled={!saturdayOpen}
                     value={saturdayOpen && saturdayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, saturdayEndB1S2: time})}
@@ -1335,7 +1335,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="sundayEnd"
                   name="sundayEnd"
-                  minTime={sundayStart}
+                  // minTime={sundayStart}
                   disabled={!sundayOpen}
                   value={sundayOpen && sundayEnd}
                   onChange={time => setEndTimes({...endTimes, sundayEnd: time})}
@@ -1375,7 +1375,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="sundayEnd"
                     name="sundayEndB1S2"
-                    minTime={sundayStartB1S2}
+                    // minTime={sundayStartB1S2}
                     disabled={!sundayOpen}
                     value={sundayOpen && sundayEndB1S2}
                     onChange={time => setEndTimes({...endTimes, sundayEndB1S2: time})}
@@ -1526,7 +1526,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="tuesdayEnd2"
                   name="tuesdayEnd2"
-                  minTime={tuesdayStart2}
+                  // minTime={tuesdayStart2}
                   disabled={!tuesdayOpen2}
                   value={tuesdayOpen2 && tuesdayEnd2}
                   onChange={time => setEndTimes({...endTimes, tuesdayEnd2: time})}
@@ -1566,7 +1566,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="tuesdayEnd2"
                     name="tuesdayEndB2S2"
-                    minTime={tuesdayStartB2S2}
+                    // minTime={tuesdayStartB2S2}
                     disabled={!tuesdayOpen2}
                     value={tuesdayOpen2 && tuesdayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, tuesdayEndB2S2: time})}
@@ -1608,7 +1608,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="wednesdayEnd2"
                   name="wednesdayEnd2"
-                  minTime={wednesdayStart2}
+                  // minTime={wednesdayStart2}
                   disabled={!wednesdayOpen2}
                   value={wednesdayOpen2 && wednesdayEnd2}
                   onChange={time => setEndTimes({...endTimes, wednesdayEnd2: time})}
@@ -1648,7 +1648,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="wednesdayEnd2"
                     name="wednesdayEndB1S2"
-                    minTime={wednesdayStartB2S2}
+                    // minTime={wednesdayStartB2S2}
                     disabled={!wednesdayOpen2}
                     value={wednesdayOpen2 && wednesdayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, wednesdayEndB2S2: time})}
@@ -1690,7 +1690,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="thursdayEnd2"
                   name="thursdayEnd2"
-                  minTime={thursdayStart2}
+                  // minTime={thursdayStart2}
                   disabled={!thursdayOpen2}
                   value={thursdayOpen2 && thursdayEnd2}
                   onChange={time => setEndTimes({...endTimes, thursdayEnd2: time})}
@@ -1730,7 +1730,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="thursdayEnd2"
                     name="thursdayEndB2S2"
-                    minTime={thursdayStartB2S2}
+                    // minTime={thursdayStartB2S2}
                     disabled={!thursdayOpen2}
                     value={thursdayOpen2 && thursdayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, thursdayEndB2S2: time})}
@@ -1772,7 +1772,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="fridayEnd2"
                   name="fridayEnd2"
-                  minTime={fridayStart2}
+                  // minTime={fridayStart2}
                   disabled={!fridayOpen2}
                   value={fridayOpen2 && fridayEnd2}
                   onChange={time => setEndTimes({...endTimes, fridayEnd2: time})}
@@ -1812,7 +1812,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="fridayEnd2"
                     name="fridayEndB2S2"
-                    minTime={fridayStartB2S2}
+                    // minTime={fridayStartB2S2}
                     disabled={!fridayOpen2}
                     value={fridayOpen2 && fridayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, fridayEndB2S2: time})}
@@ -1853,7 +1853,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="saturdayEnd2"
                   name="saturdayEnd2"
-                  minTime={saturdayStart2}
+                  // minTime={saturdayStart2}
                   disabled={!saturdayOpen2}
                   value={saturdayOpen2 && saturdayEnd2}
                   onChange={time => setEndTimes({...endTimes, saturdayEnd2: time})}
@@ -1893,7 +1893,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="saturdayEnd2"
                     name="saturdayEndB2S2"
-                    minTime={saturdayStartB2S2}
+                    // minTime={saturdayStartB2S2}
                     disabled={!saturdayOpen2}
                     value={saturdayOpen2 && saturdayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, saturdayEndB2S2: time})}
@@ -1934,7 +1934,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                   className="time-select ml-1"
                   id="sundayEnd2"
                   name="sundayEnd2"
-                  minTime={sundayStart2}
+                  // minTime={sundayStart2}
                   disabled={!sundayOpen2}
                   value={sundayOpen2 && sundayEnd2}
                   onChange={time => setEndTimes({...endTimes, sundayEnd2: time})}
@@ -1973,7 +1973,7 @@ const HoursOfOperation = ({ updateLocationHrs, updateWashBayQuantity, location: 
                     className="time-select ml-1"
                     id="sundayEnd2"
                     name="sundayEndB2S2"
-                    minTime={sundayStartB2S2}
+                    // minTime={sundayStartB2S2}
                     disabled={!sundayOpen2}
                     value={sundayOpen2 && sundayEndB2S2}
                     onChange={time => setEndTimes({...endTimes, sundayEndB2S2: time})}

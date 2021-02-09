@@ -52,9 +52,16 @@ export const getWorkOrders = terminals => async dispatch => {
           orders[i][y].ext_duration_mins_team = et;
           orders[i][y].int_duration_mins_solo = is;
           orders[i][y].ext_duration_mins_solo = es;
+
+          if (orders[i][y].in_date !== null && orders[i][y].out_date !== null && orders[i][y].resource !== null) {
+            orders[i][y].start = orders[i][y].in_date;
+            orders[i][y].end = orders[i][y].out_date;
+            orders[i][y].is_scheduled = true;
+          } else {
+            orders[i][y].start = orders[i][y].start_time;
+            orders[i][y].end = orders[i][y].end_time;
+          }
   
-          orders[i][y].start = orders[i][y].start_time;
-          orders[i][y].end = orders[i][y].end_time;
           orders[i][y].id = orders[i][y].wash_id;
 
           if (orders[i][y].is_scheduled && currentTime > new Date(orders[i][y].start_time) && orders[i][y].in_date === null) {
@@ -136,8 +143,14 @@ const formatOrder = order => {
   order.int_duration_mins_solo = is;
   order.ext_duration_mins_solo = es;
 
-  order.start = order.start_time;
-  order.end = order.end_time;
+  if (order.in_date !== null && order.out_date !== null) {
+    order.start = order.in_date;
+    order.end = order.out_date;
+  } else {
+    order.start = order.start_time;
+    order.end = order.end_time;
+  }
+
   order.id = order.wash_id;
 
   if (order.is_scheduled && currentTime > new Date(order.start_time) && order.in_date === null) {
