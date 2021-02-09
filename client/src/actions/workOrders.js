@@ -143,7 +143,7 @@ const formatOrder = order => {
   order.int_duration_mins_solo = is;
   order.ext_duration_mins_solo = es;
 
-  if (order.in_date !== null && order.out_date !== null) {
+  if (order.in_date !== null && order.out_date !== null && order.resource !== null) {
     order.start = order.in_date;
     order.end = order.out_date;
   } else {
