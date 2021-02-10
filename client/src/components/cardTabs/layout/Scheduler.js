@@ -118,7 +118,10 @@ class Scheduler extends Component {
             
             // If order exceeds end of shift 1 ends and there either isn't a shift 2
             if (endTime > s1End && !timesToLookAt.shift_two_open) {
+              console.log(endTime);
+              console.log(s1End);
               this.props.preventTimeExceed("end");
+
             // If order exceeds end of shift 1 ends and there is a shift 2 but its start time isn't equal to shift 1's end time
             } else if (endTime > s1End && (s1End.toString() !== s2Start.toString())) {
               this.props.preventTimeExceed("shift-end");

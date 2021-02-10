@@ -450,6 +450,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     )}
                     day={weekdayDisplay}
                     hoursArr={hoursArr}
+                    allHoursArr={hours}
                     startTime={new Date(`${dateStr}T${startTime}`)}
                     // endTime={new Date(`${dateStr}T${endTime}`)}
                     endTime={useLeakDate ? new Date(`${leakDateStr}T${endTime}`) : new Date(`${dateStr}T${endTime}`)}
