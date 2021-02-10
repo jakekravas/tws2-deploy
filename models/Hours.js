@@ -37,6 +37,9 @@ const Hours = db.define("hour", {
   },
   shift_two_type: {
     type: Sequelize.STRING
+  },
+  sort_order: {
+    type: Sequelize.INTEGER
   }
 });
 

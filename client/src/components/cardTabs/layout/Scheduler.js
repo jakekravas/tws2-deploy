@@ -3,6 +3,7 @@ import { DayPilotScheduler } from "daypilot-pro-react";
 import Modal from "react-modal";
 import DraggableTOrder from "../layout/DraggableTOrder";
 import WorkOrderDetails from "../layout/WorkOrderDetails";
+import { getDateStr } from "../../../actions/misc";
 
 Modal.setAppElement("#root");
 
@@ -118,11 +119,90 @@ class Scheduler extends Component {
             
             // If order exceeds end of shift 1 ends and there either isn't a shift 2
             if (endTime > s1End && !timesToLookAt.shift_two_open) {
-              console.log(endTime);
-              console.log(s1End);
-              this.props.preventTimeExceed("end");
+              let difference = endTime - s1End;
 
-            // If order exceeds end of shift 1 ends and there is a shift 2 but its start time isn't equal to shift 1's end time
+              // Get all open hour objects for this location and bay
+              let allHrs = this.props.allHoursArr.filter(
+                h => h.location_id === timesToLookAt.location_id
+                && h.bay === timesToLookAt.bay
+                && h.is_open
+              );
+
+              // sort the array by day of the week
+              allHrs.sort((a, b) => (a.sort_order > b.sort_order) ? 1 : -1);
+
+              // find index to look at
+              let indexToLookAt = allHrs.findIndex(i => i.id === timesToLookAt.id)+1;
+              let nextHrs = allHrs[indexToLookAt];
+              if (nextHrs === undefined) nextHrs = allHrs[0];
+
+              // subract current sort_order from nextHrs sort_order
+              let diff1 = nextHrs.sort_order - timesToLookAt.sort_order;
+              let diff2 = timesToLookAt.sort_order - nextHrs.sort_order;
+
+              if (diff1 > diff2) {
+                let selectedDate = new Date(args.e.data.start.value);
+                // Get date of next shift
+                selectedDate.setHours(selectedDate.getHours() + (diff1*24));
+                // Get start time of next shift and append it to the date
+                let dateToLeakInto = new Date(`${getDateStr(selectedDate)}T${nextHrs.shift_one_start}:00`);
+                
+                // Add the remainder of the order the start of the shift
+                dateToLeakInto.setMilliseconds(dateToLeakInto.getMilliseconds() + difference);
+
+                if (dateToLeakInto > new Date(orderToUpdate.needed_date)) {
+                  this.setState({
+                    modalOpen: true,
+                    dataId: args.e.data.id,
+                    dataResource: args.e.data.resource,
+                    dataStartVal: args.e.data.start.value,
+                    dataEndVal: new Date(dateToLeakInto.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+                  });
+                } else {
+                  this.props.test(
+                    args.e.data.id,
+                    args.e.data.resource,
+                    args.e.data.start.value,
+                    new Date(dateToLeakInto.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+                  );
+                }
+                
+              } else {
+                let inv = [7, 6, 5, 4, 3, 2, 1];
+
+                // get absolute value of diff2, add inv[absolute] to date of timesToLookAt
+                let diff = inv[Math.abs(diff2)];
+
+                let selectedDate = new Date(args.e.data.start.value);
+                // Get date of next shift
+                selectedDate.setHours(selectedDate.getHours() + (diff*24));
+                // Get start time of next shift and append it to the date
+                let dateToLeakInto = new Date(`${getDateStr(selectedDate)}T${nextHrs.shift_one_start}:00`);
+                
+                // Add the remainder of the order the start of the shift
+                dateToLeakInto.setMilliseconds(dateToLeakInto.getMilliseconds() + difference);
+
+                if (dateToLeakInto > new Date(orderToUpdate.needed_date)) {
+                  this.setState({
+                    modalOpen: true,
+                    dataId: args.e.data.id,
+                    dataResource: args.e.data.resource,
+                    dataStartVal: args.e.data.start.value,
+                    dataEndVal: new Date(dateToLeakInto.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+                  });
+                } else {
+                  this.props.test(
+                    args.e.data.id,
+                    args.e.data.resource,
+                    args.e.data.start.value,
+                    new Date(dateToLeakInto.toString().split("GMT")[0]+" UTC").toISOString().split(".")[0]
+                  );
+                }
+              }
+
+              // this.props.preventTimeExceed("end");
+
+            // If order exceeds end of shift 1 and there is a shift 2 but its start time isn't equal to shift 1's end time
             } else if (endTime > s1End && (s1End.toString() !== s2Start.toString())) {
               this.props.preventTimeExceed("shift-end");
             } else if (endTime > new Date(orderToUpdate.needed_date)) {
@@ -143,7 +223,7 @@ class Scheduler extends Component {
               );
             }
 
-          // If shift 2 is open and the start of args is withing shift 2 range
+          // If shift 2 is open and the start of args is within shift 2 range
           } else if (s2Open === true && argStart >= s2Start && argStart < s2End) {
 
             if (s2Type === "team") {

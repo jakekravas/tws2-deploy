@@ -56,62 +56,132 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     if (date.toString().split(" ")[1] === "Jan") {
       setMonthDisplay("January");
       setDateStr(`${date.toString().split(" ")[3]}-01-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-01-${leakDate.toString().split(" ")[2]}`);
+      
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-01-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-02-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Feb") {
       setMonthDisplay("February");
       setDateStr(`${date.toString().split(" ")[3]}-02-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-02-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "28") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-02-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-03-01`);
+      }
     }
     if (date.toString().split(" ")[1] === "Mar") {
       setMonthDisplay("March");
       setDateStr(`${date.toString().split(" ")[3]}-03-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-03-${leakDate.toString().split(" ")[2]}`);
+      
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-03-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-04-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Apr") {
       setMonthDisplay("April");
       setDateStr(`${date.toString().split(" ")[3]}-04-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-04-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "30") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-04-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-05-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "May") {
       setMonthDisplay("May");
       setDateStr(`${date.toString().split(" ")[3]}-05-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-05-${leakDate.toString().split(" ")[2]}`);
+      
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-05-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-06-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Jun") {
       setMonthDisplay("June");
       setDateStr(`${date.toString().split(" ")[3]}-06-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-06-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "30") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-06-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-07-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Jul") {
       setMonthDisplay("July");
       setDateStr(`${date.toString().split(" ")[3]}-07-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-07-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-07-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-08-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Aug") {
       setMonthDisplay("August");
       setDateStr(`${date.toString().split(" ")[3]}-08-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-08-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-08-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-09-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Sep") {
       setMonthDisplay("September");
       setDateStr(`${date.toString().split(" ")[3]}-09-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-09-${leakDate.toString().split(" ")[2]}`);
+      
+      if (date.toString().split(" ")[2] !== "30") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-09-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-10-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Oct") {
       setMonthDisplay("October");
       setDateStr(`${date.toString().split(" ")[3]}-10-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-10-${leakDate.toString().split(" ")[2]}`);
+      
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-10-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-11-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Nov") {
       setMonthDisplay("November");
       setDateStr(`${date.toString().split(" ")[3]}-11-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-11-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "30") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-11-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-12-01`);
+      }
+
     }
     if (date.toString().split(" ")[1] === "Dec") {
       setMonthDisplay("December");
       setDateStr(`${date.toString().split(" ")[3]}-12-${date.toString().split(" ")[2]}`);
-      setLeakDateStr(`${leakDate.toString().split(" ")[3]}-12-${leakDate.toString().split(" ")[2]}`);
+
+      if (date.toString().split(" ")[2] !== "31") {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-12-${leakDate.toString().split(" ")[2]}`);
+      } else {
+        setLeakDateStr(`${leakDate.toString().split(" ")[3]}-01-01`);
+      }
     }
 
     if (date.toString().split(" ")[0] === "Mon") {
