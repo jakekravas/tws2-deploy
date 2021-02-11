@@ -28,16 +28,25 @@ router.get("/", async (req, res) => {
 // @access     Public
 router.put("/:id", async (req, res) => {
   try {
+    let teamHoursUpdateVal = req.body.teamHours;
+    let teamMinutesUpdateVal = req.body.teamMinutes;
+    let soloHoursUpdateVal = req.body.soloHours;
+    let soloMinutesUpdateVal = req.body.soloMinutes;
+
+    if (req.body.teamHours === null) teamHoursUpdateVal = 0;
+    if (req.body.teamMinutes === null) teamMinutesUpdateVal = 0;
+    if (req.body.soloHours === null) soloHoursUpdateVal = 0;
+    if (req.body.soloMinutes === null) soloMinutesUpdateVal = 0;
 
     if (req.body.type === "I") {
 
       // update int_wash_type
       await sequelize.query(`
         UPDATE tankwash.int_wash_types
-        SET int_team_hours = ${req.body.teamHours},
-        int_team_minutes = ${req.body.teamMinutes},
-        int_solo_hours = ${req.body.soloHours},
-        int_solo_minutes = ${req.body.soloMinutes}
+        SET int_team_hours = ${teamHoursUpdateVal},
+        int_team_minutes = ${teamMinutesUpdateVal},
+        int_solo_hours = ${soloHoursUpdateVal},
+        int_solo_minutes = ${soloMinutesUpdateVal}
         WHERE int_wash_code = '${req.body.code}'
       `);
 
@@ -46,10 +55,10 @@ router.put("/:id", async (req, res) => {
       // update ext_wash_type
       await sequelize.query(`
         UPDATE tankwash.ext_wash_types
-        SET ext_team_hours = ${req.body.teamHours},
-        ext_team_minutes = ${req.body.teamMinutes},
-        ext_solo_hours = ${req.body.soloHours},
-        ext_solo_minutes = ${req.body.soloMinutes}
+        SET ext_team_hours = ${teamHoursUpdateVal},
+        ext_team_minutes = ${teamMinutesUpdateVal},
+        ext_solo_hours = ${soloHoursUpdateVal},
+        ext_solo_minutes = ${soloMinutesUpdateVal}
         WHERE ext_wash_code = '${req.body.code}'
       `);
 
@@ -58,10 +67,10 @@ router.put("/:id", async (req, res) => {
     // update wash_type
     await sequelize.query(`
       UPDATE tankwash.wash_types
-      SET team_hours = ${req.body.teamHours},
-      team_minutes = ${req.body.teamMinutes},
-      solo_hours = ${req.body.soloHours},
-      solo_minutes = ${req.body.soloMinutes}
+      SET team_hours = ${teamHoursUpdateVal},
+      team_minutes = ${teamMinutesUpdateVal},
+      solo_hours = ${soloHoursUpdateVal},
+      solo_minutes = ${soloMinutesUpdateVal}
       WHERE wash_code = '${req.body.code}'
     `);
 

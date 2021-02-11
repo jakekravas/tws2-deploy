@@ -30,12 +30,10 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
   }
 
   const onEdit = async () => {
-    if (editTeamHours < 0 || editTeamMinutes < 0) {
+    if (editTeamHours < 0 || editTeamMinutes < 0 || editSoloHours < 0 || editSoloMinutes < 0) {
       alert("Cannot submit negative values");
-    } else if (editTeamMinutes > 59) {
+    } else if (editTeamMinutes > 59 || editSoloMinutes > 59) {
       alert("Minutes value must be between 0 and 59");
-    } else if (editTeamHours === 0 && editTeamMinutes === 0) {
-      alert("Duration cannot be empty");
     } else {
       let type = washTypes.filter(wt => wt.wash_code === codeToEdit)[0].type;
       const formData = {
@@ -46,10 +44,8 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
         soloHours: editSoloHours,
         soloMinutes: editSoloMinutes
       }
-
       await updateWashType(id, formData);
       setEditOpen(false);
-
     }
   }
 
@@ -141,6 +137,7 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
                 :
                   <td>
                     {type.team_hours !== 0 && <span>{type.team_hours}hr</span>} {type.team_minutes !== 0 && <span>{type.team_minutes}min</span>}
+                    {type.team_hours + type.team_minutes === 0 && <span>{type.team_minutes}min</span>}
                   </td>
                 }
                 {editOpen && codeToEdit === type.wash_code ?
@@ -168,6 +165,7 @@ const WashTypes = ({ getAllWashTypes, updateWashType, washTypes: { washTypes, lo
                 :
                   <td>
                     {type.solo_hours !== 0 && <span>{type.solo_hours}hr</span>} {type.solo_minutes !== 0 && <span>{type.solo_minutes}min</span>}
+                    {type.solo_hours + type.solo_minutes === 0 && <span>{type.solo_minutes}min</span>}
                   </td>
                 }
                 <td>
