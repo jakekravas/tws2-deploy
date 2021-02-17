@@ -38,32 +38,6 @@ router.put("/:id", async (req, res) => {
     if (req.body.soloHours === null) soloHoursUpdateVal = 0;
     if (req.body.soloMinutes === null) soloMinutesUpdateVal = 0;
 
-    if (req.body.type === "I") {
-
-      // update int_wash_type
-      await sequelize.query(`
-        UPDATE tankwash.int_wash_types
-        SET int_team_hours = ${teamHoursUpdateVal},
-        int_team_minutes = ${teamMinutesUpdateVal},
-        int_solo_hours = ${soloHoursUpdateVal},
-        int_solo_minutes = ${soloMinutesUpdateVal}
-        WHERE int_wash_code = '${req.body.code}'
-      `);
-
-    } else if (req.body.type === "E") {
-
-      // update ext_wash_type
-      await sequelize.query(`
-        UPDATE tankwash.ext_wash_types
-        SET ext_team_hours = ${teamHoursUpdateVal},
-        ext_team_minutes = ${teamMinutesUpdateVal},
-        ext_solo_hours = ${soloHoursUpdateVal},
-        ext_solo_minutes = ${soloMinutesUpdateVal}
-        WHERE ext_wash_code = '${req.body.code}'
-      `);
-
-    }
-
     // update wash_type
     await sequelize.query(`
       UPDATE tankwash.wash_types
