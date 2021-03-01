@@ -185,12 +185,12 @@ const formatOrder = order => {
   return order;
 }
 
-export const updateWorkOrderStatus = (id, resource, start, end, workOrders) => async dispatch => {
+export const updateWorkOrderStatus = (id, resource, start, end, workOrders, user) => async dispatch => {
   try {
     
     let filteredWorkOrders = workOrders.filter(wo => wo.wash_id !== id);
 
-    const res = await axios.put(`${process.env.REACT_APP_URL}/api/workorders/${id}`, {resource, start, end});
+    const res = await axios.put(`${process.env.REACT_APP_URL}/api/workorders/${id}`, {resource, start, end, user});
 
     const order = formatOrder(res.data.workOrder);
 
@@ -207,12 +207,12 @@ export const updateWorkOrderStatus = (id, resource, start, end, workOrders) => a
   }
 };
 
-export const unscheduleWorkOrder = (id, workOrders) => async dispatch => {
+export const unscheduleWorkOrder = (id, workOrders, user) => async dispatch => {
   try {
 
     let filteredWorkOrders = workOrders.filter(wo => wo.wash_id !== id);
 
-    const res = await axios.put(`${process.env.REACT_APP_URL}/api/workorders/unschedule/${id}`);
+    const res = await axios.put(`${process.env.REACT_APP_URL}/api/workorders/unschedule/${id}`, {user});
 
     const order = formatOrder(res.data.workOrder);
 

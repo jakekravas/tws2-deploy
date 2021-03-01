@@ -6,7 +6,7 @@ import '../../css/syncfusion.css';
 import Scheduler from "./layout/Scheduler";
 import { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
 
-const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrders, workOrders, washTypes, user: { terminals, hours } }) => {
+const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrders, workOrders, washTypes, user: { terminals, hours, user } }) => {
   const [displayCal, setDisplayCal] = useState(true);
   const [date, setDate] = useState(new Date());
   const [dateZeroed, setDateZeroed] = useState(new Date());
@@ -238,7 +238,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
     setDisplayCal(false);
   }
 
-  const onUnschedule = id => unscheduleWorkOrder(id, workOrders.workOrders);
+  const onUnschedule = id => unscheduleWorkOrder(id, workOrders.workOrders, user);
 
   const preventSave = (neededDateStr) => {
     getWorkOrders(terminals);
@@ -356,7 +356,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
   }
 
   const test = (id, resource, start, end) => {
-    updateWorkOrderStatus(id, resource, start, end, workOrders.workOrders);
+    updateWorkOrderStatus(id, resource, start, end, workOrders.workOrders, user);
   }
 
   const getPreviousDay = () => {
