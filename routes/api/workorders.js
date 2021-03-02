@@ -119,12 +119,12 @@ router.put("/:id", async (req, res) => {
       let changedFromStr = `${changedFrom.split(" ")[3]}-${month}-${changedFrom.split(" ")[1]}T${changedFrom.split(" ")[4]}`;
   
       await sequelize.query(`
-        INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+        INSERT INTO tankwash.trailer_wash_wo_logs(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
         VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '${changedFromStr}', '${req.body.start}')
       `);
     } else {
       await sequelize.query(`
-        INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+        INSERT INTO tankwash.trailer_wash_wo_logs(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
         VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '', '${req.body.start}')
       `);
     }
@@ -206,7 +206,7 @@ router.put("/unschedule/:id", async (req, res) => {
     let changedFromStr = `${changedFrom.split(" ")[3]}-${month}-${changedFrom.split(" ")[1]}T${changedFrom.split(" ")[4]}`;
 
     await sequelize.query(`
-      INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+      INSERT INTO tankwash.trailer_wash_wo_logs(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
       VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '${changedFromStr}', '')
     `);
 
