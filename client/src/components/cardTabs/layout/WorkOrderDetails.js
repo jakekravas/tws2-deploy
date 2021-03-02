@@ -11,7 +11,7 @@ const WorkOrderDetails = ({ wo, closeWoModal }) => {
       <div className="card-body">
         <div className="row mb-2">
           <div className="col-4 text-right">
-            Trailer wash WO <input className="text-right wo-inp" value={wo.order_id && wo.order_id} type="text" readOnly/>
+            Trailer wash WO <input className="text-right wo-inp" value={wo.wash_id && wo.wash_id} type="text" readOnly/>
           </div>
           <div className="col-4 text-right">
             Charge type <input className="text-right wo-inp" value={wo.charge_type && wo.charge_type} type="text" readOnly/>
@@ -86,7 +86,7 @@ const WorkOrderDetails = ({ wo, closeWoModal }) => {
 
         <div className="row mb-2">
           <div className="col-4 text-right">
-            Order <input className="text-right wo-inp" type="text" readOnly/>
+            Order <input className="text-right wo-inp" value={wo.order_id && wo.order_id} type="text" readOnly/>
           </div>
           <div className="col-4 text-right">
             Move <input className="text-right wo-inp" value={wo.movement_id && wo.movement_id} type="text" readOnly/>
@@ -181,11 +181,10 @@ const WorkOrderDetails = ({ wo, closeWoModal }) => {
         </div>
 
         <div className="row d-flex mt-2">
+          <button onClick={closeWoModal} className="btn btn-dark float-right close-wo-det-btn">View Changelog</button>
           <button onClick={closeWoModal} className="btn btn-dark float-right close-wo-det-btn">Close</button>
         </div>
-
       </div>
-
     </div>
   )
 }

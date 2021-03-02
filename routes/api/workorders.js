@@ -73,6 +73,8 @@ router.get("/user/:locations", async (req, res) => {
 // @access     Public
 router.put("/:id", async (req, res) => {
   try {
+    const workOrderPrev = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo WHERE wash_id = ${req.params.id}`);
+
     await TrailerWashWo.update(
       {
         resource: req.body.resource,
@@ -106,29 +108,50 @@ router.put("/:id", async (req, res) => {
     
     res.json({ workOrder: workOrder[0][0] });
 
-    const log = await TrailerWashWoLog.findOne({
-      where: { wash_id: req.params.id }
-    });
-
     let currentTime = new Date();
     currentTime = currentTime.toUTCString();
-
-    if (log !== null) {
-      await TrailerWashWoLog.update(
-        {
-          scheduled_by: req.body.user,
-          scheduled_at: currentTime,
-          is_scheduled: true
-        },
-        {where: { wash_id: req.params.id }}
-      )
+    
+    if (workOrderPrev[0][0].is_scheduled) {
+      let changedFrom = new Date(workOrderPrev[0][0].start_time);
+      let month = changedFrom.getMonth()+1;
+      if (month < 10) month = `0${month}`;
+      changedFrom = changedFrom.toUTCString();
+      let changedFromStr = `${changedFrom.split(" ")[3]}-${month}-${changedFrom.split(" ")[1]}T${changedFrom.split(" ")[4]}`;
+  
+      await sequelize.query(`
+        INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+        VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '${changedFromStr}', '${req.body.start}')
+      `);
     } else {
       await sequelize.query(`
-        INSERT INTO tankwash.trailer_wash_wo_logs
-        (wash_id, scheduled_by, scheduled_at, is_scheduled)
-        VALUES (${req.params.id}, '${req.body.user}', '${currentTime}', true)
+        INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+        VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '', '${req.body.start}')
       `);
     }
+
+    // const log = await TrailerWashWoLog.findOne({
+    //   where: { wash_id: req.params.id }
+    // });
+
+    // let currentTime = new Date();
+    // currentTime = currentTime.toUTCString();
+
+    // if (log !== null) {
+    //   await TrailerWashWoLog.update(
+    //     {
+    //       scheduled_by: req.body.user,
+    //       scheduled_at: currentTime,
+    //       is_scheduled: true
+    //     },
+    //     {where: { wash_id: req.params.id }}
+    //   )
+    // } else {
+    //   await sequelize.query(`
+    //     INSERT INTO tankwash.trailer_wash_wo_logs
+    //     (wash_id, scheduled_by, scheduled_at, is_scheduled)
+    //     VALUES (${req.params.id}, '${req.body.user}', '${currentTime}', true)
+    //   `);
+    // }
 
   } catch (err) {
     console.error(err.message);
@@ -141,6 +164,7 @@ router.put("/:id", async (req, res) => {
 // @access     Public
 router.put("/unschedule/:id", async (req, res) => {
   try {
+    const workOrderPrev = await sequelize.query(`SELECT * FROM tankwash.trailer_wash_wo WHERE wash_id = ${req.params.id}`);
 
     await TrailerWashWo.update(
       {
@@ -172,29 +196,43 @@ router.put("/unschedule/:id", async (req, res) => {
     
     res.json({ workOrder: workOrder[0][0] });
 
-    const log = await TrailerWashWoLog.findOne({
-      where: { wash_id: req.params.id }
-    });
-
     let currentTime = new Date();
     currentTime = currentTime.toUTCString();
+    
+    let changedFrom = new Date(workOrderPrev[0][0].start_time);
+    let month = changedFrom.getMonth()+1;
+    if (month < 10) month = `0${month}`;
+    changedFrom = changedFrom.toUTCString();
+    let changedFromStr = `${changedFrom.split(" ")[3]}-${month}-${changedFrom.split(" ")[1]}T${changedFrom.split(" ")[4]}`;
 
-    if (log !== null) {
-      await TrailerWashWoLog.update(
-        {
-          scheduled_by: req.body.user,
-          scheduled_at: currentTime,
-          is_scheduled: false
-        },
-        {where: { wash_id: req.params.id }}
-      )
-    } else {
-      await sequelize.query(`
-        INSERT INTO tankwash.trailer_wash_wo_logs
-        (wash_id, scheduled_by, scheduled_at, is_scheduled)
-        VALUES (${req.params.id}, '${req.body.user}', '${currentTime}', false)
-      `);
-    }
+    await sequelize.query(`
+      INSERT INTO tankwash.trailer_wash_wo_logss(application_name, table_name, column_name, key_value, changed_by, changed_at, changed_from, changed_to)
+      VALUES ('Scheduler', 'trailer_wash_wo', 'start_time', '${req.params.id}', '${req.body.user}', '${currentTime}', '${changedFromStr}', '')
+    `);
+
+    // const log = await TrailerWashWoLog.findOne({
+    //   where: { wash_id: req.params.id }
+    // });
+
+    // let currentTime = new Date();
+    // currentTime = currentTime.toUTCString();
+
+    // if (log !== null) {
+    //   await TrailerWashWoLog.update(
+    //     {
+    //       scheduled_by: req.body.user,
+    //       scheduled_at: currentTime,
+    //       is_scheduled: false
+    //     },
+    //     {where: { wash_id: req.params.id }}
+    //   )
+    // } else {
+    //   await sequelize.query(`
+    //     INSERT INTO tankwash.trailer_wash_wo_logs
+    //     (wash_id, scheduled_by, scheduled_at, is_scheduled)
+    //     VALUES (${req.params.id}, '${req.body.user}', '${currentTime}', false)
+    //   `);
+    // }
 
   } catch (err) {
     console.error(err.message);
