@@ -1,6 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Modal from "react-modal";
+import ChangeLogDetails from "./ChangeLogDetails";
 
-const WorkOrderDetails = ({ wo, closeWoModal }) => {
+Modal.setAppElement("#root");
+
+const WorkOrderDetails = ({ wo, closeWoModal, workOrderLogs, getLogsOfOrder, clearOrderLogs }) => {
+
+  const [logModalOpen, setLogModalOpen] = useState(false);
+
+  const toggleLogModal = () => {
+    if (!logModalOpen) {
+      getLogsOfOrder(wo.wash_id);
+    } else {
+      clearOrderLogs();
+    }
+
+    setLogModalOpen(!logModalOpen);
+  }
+
   return (
     <div className="card mx-auto col-10 wo-details">
 
@@ -180,11 +197,32 @@ const WorkOrderDetails = ({ wo, closeWoModal }) => {
           </div>
         </div>
 
-        <div className="row d-flex mt-2">
-          <button onClick={closeWoModal} className="btn btn-dark float-right close-wo-det-btn">View Changelog</button>
-          <button onClick={closeWoModal} className="btn btn-dark float-right close-wo-det-btn">Close</button>
+        <div className="row d-flex justify-content-between mt-2">
+          <div></div>
+          <div></div>
+          <div>
+            <button onClick={toggleLogModal} className="btn btn-dark close-wo-det-btn">View Changelog</button>
+            <button onClick={closeWoModal} className="btn btn-dark close-wo-det-btn">Close</button>
+          </div>
         </div>
       </div>
+      <Modal
+        isOpen={logModalOpen}
+        className="log-modal"
+        style = {
+          {
+            content: {
+              width: "950px",
+            }
+          }
+        }
+      >
+        <ChangeLogDetails
+          toggleLogModal={toggleLogModal}
+          // workOrderLogs={workOrderLogs.filter(log => parseInt(log.key_value) === wo.wash_id)}
+          workOrderLogs={workOrderLogs}
+        />
+      </Modal>
     </div>
   )
 }

@@ -1,10 +1,39 @@
 import axios from "axios";
 import {
   GET_WORK_ORDERS_OF_LOCATION,
+  GET_WORK_ORDER_LOGS,
+  CLEAR_WORK_ORDER_LOGS,
   WORK_ORDER_ERROR
 } from "./types";
 
 let currentTime = new Date();
+
+export const getLogsOfOrder = washId => async dispatch => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_URL}/api/workorders/logs/${washId}`);
+
+    dispatch({
+      type: GET_WORK_ORDER_LOGS,
+      payload: res.data.logs[0]
+    });
+
+  } catch (err) {
+    console.log("error");
+  }
+}
+
+export const clearOrderLogs = () => async dispatch => {
+  try {
+
+    dispatch({
+      type: CLEAR_WORK_ORDER_LOGS
+      // payload: null
+    });
+
+  } catch (err) {
+    console.log("error");
+  }
+}
 
 export const getWorkOrders = terminals => async dispatch => {
   try {
@@ -108,6 +137,11 @@ export const getWorkOrders = terminals => async dispatch => {
       type: GET_WORK_ORDERS_OF_LOCATION,
       payload: ordersArr
     });
+
+    // dispatch({
+    //   type: GET_WORK_ORDER_LOGS,
+    //   payload: res.data.workOrderLogs
+    // });
   } catch (err) {
     dispatch({
       type: WORK_ORDER_ERROR

@@ -4,9 +4,9 @@ import 'react-calendar/dist/Calendar.css';
 import { connect } from "react-redux";
 import '../../css/syncfusion.css';
 import Scheduler from "./layout/Scheduler";
-import { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder } from "../../actions/workOrders";
+import { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder, getLogsOfOrder, clearOrderLogs } from "../../actions/workOrders";
 
-const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrders, workOrders, washTypes, user: { terminals, hours, user } }) => {
+const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrders, getLogsOfOrder, clearOrderLogs, workOrders, washTypes, user: { terminals, hours, user } }) => {
   const [displayCal, setDisplayCal] = useState(true);
   const [date, setDate] = useState(new Date());
   const [dateZeroed, setDateZeroed] = useState(new Date());
@@ -536,6 +536,9 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     filterWashId={filterWashId}
                     filterTrailerId={filterTrailerId}
                     filterIntWashType={filterIntWashType}
+                    workOrderLogs={workOrders.workOrderLogs}
+                    getLogsOfOrder={getLogsOfOrder}
+                    clearOrderLogs={clearOrderLogs}
                     changeLocationFilter={changeLocationFilter}
                     changeWashIdFilter={changeWashIdFilter}
                     changeTrailerIdFilter={changeTrailerIdFilter}
@@ -567,4 +570,4 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps, { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder })(WashSchedule)
+export default connect(mapStateToProps, { getWorkOrders, updateWorkOrderStatus, unscheduleWorkOrder, getLogsOfOrder, clearOrderLogs })(WashSchedule)

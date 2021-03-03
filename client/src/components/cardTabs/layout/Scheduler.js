@@ -817,7 +817,7 @@ class Scheduler extends Component {
                   }
                 }
               }
-            >
+          >
             <div className="card wo-card">
               <div className="card text-center">
                 <div className="card-body">
@@ -836,6 +836,9 @@ class Scheduler extends Component {
             <WorkOrderDetails
               className="wo-modal"
               wo={this.state.currentWoDetails}
+              workOrderLogs={this.props.workOrderLogs}
+              getLogsOfOrder={this.props.getLogsOfOrder}
+              clearOrderLogs={this.props.clearOrderLogs}
               closeWoModal={this.closeWoModal}
             />
           </Modal>

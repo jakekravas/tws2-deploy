@@ -488,6 +488,13 @@ input[type=checkbox]:after {
   overflow-y: scroll !important;
 }
 
+.log-table {
+  max-height: 450px !important;
+  overflow-y: scroll !important;
+  font-size: 15px;
+  border: 1px solid #dee2e6;
+}
+
 /* WASH TYPE BUTTONS */
 .edit-wash-btn {
   margin-left: 6px;
@@ -657,6 +664,12 @@ tr {
 .modall {
   margin: 0 auto;
   margin-top: 120px;
+}
+
+.log-modal {
+  margin: 0 auto;
+  margin-top: 90px;
+  background-color: #f6f6f6;
 }
 
 .wo-card {

@@ -24,6 +24,23 @@ router.get("/:code", async (req, res) => {
   }
 });
 
+// @route      GET api/workorders/logs/:washId
+// @desc       Get changelog of specific work order
+// @access     Private
+router.get("/logs/:washId", async (req, res) => {
+  try {
+    const logs = await sequelize.query(`
+    SELECT * FROM tankwash.trailer_wash_wo_logs
+    WHERE key_value = '${req.params.washId}'
+    `);
+    
+    res.json({ logs });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 
 // @route      GET api/workorders/user/:code
 // @desc       Get all work orders of locations that user has access to
@@ -60,7 +77,11 @@ router.get("/user/:locations", async (req, res) => {
     AND wo.trailer_id IS NOT NULL
     AND wo.int_wash_code IS NOT null;`);
 
-    res.json({ workOrders });
+    const workOrderLogs = await sequelize.query(`
+      SELECT * FROM tankwash.trailer_wash_wo_logs
+    `);
+
+    res.json({ workOrders, workOrderLogs: workOrderLogs[0] });
 
   } catch (err) {
     console.error(err.message);
