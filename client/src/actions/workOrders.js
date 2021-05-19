@@ -5,6 +5,7 @@ import {
   CLEAR_WORK_ORDER_LOGS,
   WORK_ORDER_ERROR
 } from "./types";
+import { getRightTimezone } from './misc'
 
 let currentTime = new Date();
 
@@ -76,12 +77,13 @@ export const getWorkOrders = terminals => async dispatch => {
             es = 0;
           }        
   
-          // // set wash durations to work order object
+          // set wash durations to work order object
           orders[i][y].int_duration_mins_team = it;
           orders[i][y].ext_duration_mins_team = et;
           orders[i][y].int_duration_mins_solo = is;
           orders[i][y].ext_duration_mins_solo = es;
 
+          // Set start and end times to in_date and out_date if there is one
           if (orders[i][y].in_date !== null && orders[i][y].out_date !== null && orders[i][y].resource !== null) {
             orders[i][y].start = orders[i][y].in_date;
             orders[i][y].end = orders[i][y].out_date;

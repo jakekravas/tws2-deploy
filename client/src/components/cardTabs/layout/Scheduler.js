@@ -505,7 +505,7 @@ class Scheduler extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
+    // console.log(this.props.events);
     // load event data
     this.setState({
       startDate: this.props.dateStr,

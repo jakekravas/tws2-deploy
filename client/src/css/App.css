@@ -7,7 +7,12 @@
 }
 
 .main-container {
-  max-width: 1500px !important;
+  /* max-width: 1500px !important; */
+}
+
+.card-resize {
+  resize: both !important;
+  overflow: auto !important;
 }
 
 #schedule-container {

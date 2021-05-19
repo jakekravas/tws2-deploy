@@ -18,12 +18,16 @@ export const getTrailerWashWos = () => async dispatch => {
 
 export const checkForUser = () => async dispatch => {
   try {
+    console.log('hit');
     const res = await axios.get(`${process.env.REACT_APP_URL}/api/userid/checkuser`);
+    console.log(res);
     const user = res.data.userToSend
+    console.log(user);
     
     const targetUrl = `${process.env.REACT_APP_URL}/api/userid/user/${user}`;
     
     const userInfoRes = await fetch(targetUrl);
+    console.log(userInfoRes);
     const data = await userInfoRes.json();
     
     const hours = [];

@@ -516,7 +516,7 @@ const WashSchedule = ({ updateWorkOrderStatus, unscheduleWorkOrder, getWorkOrder
                     resources={ woResources }
                     events={
                       workOrders.workOrders.filter(wo =>
-                      (wo.is_scheduled)
+                      (wo.is_scheduled && wo.start !== null)
                     )}
                     day={weekdayDisplay}
                     hoursArr={hoursArr}

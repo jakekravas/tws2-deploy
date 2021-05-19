@@ -19,7 +19,8 @@ const Card = ({ user, checkForUser }) => {
   }, [user]);
 
   return (
-  <div className="card col-lg-9 mx-auto my-4 p-0">
+  // <div className="card col-lg-9 mx-auto my-4 p-0 card-resize">
+  <div className="card mx-auto my-4 p-0 card-resize">
     {user.user ? <p>Logged in as {user.user}</p> : <p>Loading...</p>}
     <div className="card-header text-center">
       <ul className="nav nav-tabs card-header-tabs pull-right"  id="myTab" role="tablist">
